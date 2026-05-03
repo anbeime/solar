@@ -44,13 +44,12 @@ jobs:
         run: |
           git remote add gitee ${{ env.GITEE_REPO }} || git remote set-url gitee ${{ env.GITEE_REPO }}
           git fetch gitee ${{ env.GITEE_BRANCH }}
-          git fetch origin ${{ env.GITHUB_BRANCH }}
 
       - name: Check for Updates
         id: check_updates
         run: |
           GITEE_COMMIT=$(git rev-parse gitee/${{ env.GITEE_BRANCH }})
-          GITHUB_COMMIT=$(git rev-parse origin/${{ env.GITHUB_BRANCH }} || echo "none")
+          GITHUB_COMMIT=$(git rev-parse HEAD)
           
           echo "Gitee commit: $GITEE_COMMIT"
           echo "GitHub commit: $GITHUB_COMMIT"
@@ -64,29 +63,17 @@ jobs:
             echo "gitee_commit=$GITEE_COMMIT" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Merge Gitee Changes
+      - name: Sync from Gitee (force reset)
         if: steps.check_updates.outputs.has_updates == 'true'
         run: |
-          git config pull.rebase false
-          
-          # Ensure we're on the target branch
-          git checkout ${{ env.GITHUB_BRANCH }}
-          
-          # Merge Gitee changes into local branch
-          git merge gitee/${{ env.GITEE_BRANCH }} --allow-unrelated-histories -m "sync: merge updates from Gitee (${{ env.GITEE_BRANCH }})
-          
-          Source: ${{ env.GITEE_REPO }}
-          Commit: ${{ steps.check_updates.outputs.gitee_commit }}"
+          # 以 Gitee 为准，强制 reset 到 Gitee 的提交
+          # 这样不会产生 merge 冲突
+          git reset --hard gitee/${{ env.GITEE_BRANCH }}
 
       - name: Push to GitHub
         if: steps.check_updates.outputs.has_updates == 'true'
         run: |
-          # Push with error handling
-          if ! git push origin ${{ env.GITHUB_BRANCH }}; then
-            echo "Push failed, attempting to pull and re-merge..."
-            git pull origin ${{ env.GITHUB_BRANCH }} --no-rebase || git pull origin ${{ env.GITHUB_BRANCH }} --rebase
-            git push origin ${{ env.GITHUB_BRANCH }}
-          fi
+          git push origin HEAD:${{ env.GITHUB_BRANCH }} --force
           echo "Successfully synced from Gitee to GitHub!"
 
       - name: Create Sync Summary
@@ -96,9 +83,9 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "✅ Successfully synced from Gitee to GitHub" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Source:** Gitee (${{ env.GITEE_REPO }}, branch: ${{ env.GITEE_BRANCH }})" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Target:** GitHub (${{ github.server_url }}/${{ github.repository }}, branch: ${{ env.GITHUB_BRANCH }})" >> "$GITHUB_STEP_SUMMARY"
-          echo "**Latest Commit:** ${{ steps.check_updates.outputs.gitee_commit }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Source:** Gitee (${{ env.GITEE_REPO }}, branch: \`${{ env.GITEE_BRANCH }}\`)" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Target:** GitHub (${{ github.server_url }}/${{ github.repository }}, branch: \`${{ env.GITHUB_BRANCH }}\`)" >> "$GITHUB_STEP_SUMMARY"
+          echo "**Latest Commit:** \`${{ steps.check_updates.outputs.gitee_commit }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "**Sync Time:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
 
       - name: No Updates Summary
