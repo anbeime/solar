@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "installCommand": "pnpm install --include=dev",
+  "installCommand": "pnpm install",
   "buildCommand": "pnpm next build",
   "devCommand": "pnpm dev"
 }
