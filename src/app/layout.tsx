@@ -1,12 +1,6 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
 import { JsonLd } from "./json-ld";
 import "./globals.css";
-
-const Inspector = dynamic(
-  () => import("react-dev-inspector").then((m) => m.Inspector),
-  { ssr: false },
-);
 
 export const metadata: Metadata = {
   title: {
@@ -72,7 +66,6 @@ export default function RootLayout({
     <html lang="zh-CN" suppressHydrationWarning>
       <body className="antialiased">
         <JsonLd />
-        {process.env.NODE_ENV === "development" && <Inspector />}
         {children}
       </body>
     </html>

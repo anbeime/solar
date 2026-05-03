@@ -67,7 +67,7 @@ export const CRAWL_SOURCES = {
   },
 } as const;
 
-// AI 分析 Prompt 模板
+// AI 分析 Prompt 模板 (Gemma 4 + Function Calling)
 export const AI_PROMPTS = {
   policy: `你是一位资深新能源政策分析师。请分析以下政策/新闻内容，提供：
 1. 核心要点（3-5条）
@@ -100,6 +100,31 @@ export const AI_PROMPTS = {
 5. 风险提示
 
 招标信息：{content}`,
+} as const;
+
+// 能源韧性分析 Prompt (Gemma 4 Good 参赛核心)
+export const RESILIENCE_PROMPTS = {
+  resilience: `你是一位能源韧性评估专家，专注于光伏储能系统的灾害响应和气候适应能力。
+
+请基于以下实时数据，评估 {location} 地区的能源韧性：
+
+【实时天气数据】
+{weather_data}
+
+【当前电价信息】
+{price_data}
+
+【项目信息】
+{project_info}
+
+请提供：
+1. 当前灾害风险评估（台风/暴雨/沙尘/极端温度对面板和储能系统的影响）
+2. 发电效率预测（基于天气条件的当日预期发电量偏差）
+3. 储能调度建议（基于峰谷电价差的充放电策略）
+4. 应急响应方案（极端天气下的系统保护措施）
+5. 气候适应建议（长期气候趋势下的设施优化方向）
+
+如果需要更精确的数据，请调用 get_weather、get_electricity_price 或 get_pv_forecast 工具。`,
 } as const;
 
 // 数据源链接（展示用）

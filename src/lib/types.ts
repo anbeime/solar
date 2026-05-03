@@ -122,7 +122,7 @@ export interface SearchableItem {
 
 // ===== AI 分析 =====
 export interface AIAnalysisRequest {
-  type: 'policy' | 'project' | 'trend' | 'bidding';
+  type: 'policy' | 'project' | 'trend' | 'bidding' | 'resilience';
   content: string;
   context?: string;
 }
@@ -168,6 +168,6 @@ export interface StatCardItem {
 // ===== 工具类型 =====
 export type SortKey = 'count' | 'capacity' | 'company';
 export type NavPage = 'home' | 'bidding' | 'awards' | 'province' | 'chargers' | 'dashboard' | 'ai';
-export type AnalysisType = 'policy' | 'project' | 'trend' | 'bidding';
+export type AnalysisType = 'policy' | 'project' | 'trend' | 'bidding' | 'resilience';
 export type RiskLevel = 'low' | 'medium' | 'high';
 export type Sentiment = 'positive' | 'neutral' | 'negative';
