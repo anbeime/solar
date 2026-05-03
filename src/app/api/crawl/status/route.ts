@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getLastCrawlResult } from '@/lib/crawl';
+import { getLastCrawlResult } from '@/lib/crawler';
 
 export async function GET() {
   const last = getLastCrawlResult();

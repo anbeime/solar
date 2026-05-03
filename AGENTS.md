@@ -28,40 +28,45 @@ src/
 │   ├── awards/page.tsx    # 中标公示页面
 │   ├── province/page.tsx  # 省份分析页面
 │   ├── chargers/page.tsx  # 充电桩查询页面
-│   ├── dashboard/page.tsx # 数据分析仪表盘 (新增)
-│   ├── ai/page.tsx        # AI智能助手 (新增)
+│   ├── dashboard/page.tsx # 数据分析仪表盘
+│   ├── ai/page.tsx        # AI智能助手
 │   ├── api/
-│   │   ├── crawl/         # 爬虫API (4个数据源)
+│   │   ├── crawl/         # 爬虫API (4个数据源 + 状态查询)
 │   │   ├── ai/            # AI分析API (分析/预测/搜索)
-│   │   ├── stats/         # 统计数据API
-│   │   ├── health/        # 健康检查API
-│   │   └── projects/      # 项目爬取API
+│   │   ├── stats/         # 统计数据API (5分钟缓存)
+│   │   ├── health/        # 健康检查API (Web+Ollama+DB+Forecast)
+│   │   └── projects/      # 项目爬取API (全源爬取)
 │   ├── robots.ts          # robots.txt 配置
 │   ├── json-ld.tsx        # JSON-LD 结构化数据
 │   └── globals.css        # 全局样式
 ├── components/
-│   ├── site-header.tsx    # 共享导航头部 (新增)
-│   ├── site-footer.tsx    # 共享底部 (新增)
+│   ├── site-header.tsx    # 共享导航头部 (响应式, 高亮当前页)
+│   ├── site-footer.tsx    # 共享底部 (数据来源链接)
+│   ├── page-layout.tsx    # 通用页面布局 (Header+Content+Footer)
+│   ├── stat-cards.tsx     # 统计卡片组件 (StatCards/SimpleStatCards)
+│   ├── data-source-card.tsx # 数据来源展示卡片
 │   └── ui/                # shadcn/ui 组件库
 ├── hooks/
-│   ├── use-data.ts        # 数据加载Hook (新增)
+│   ├── use-data.ts        # 数据加载Hook (统一获取+统计计算)
 │   └── use-mobile.ts      # 移动端检测
 └── lib/
-    ├── types.ts           # 统一类型定义 (新增)
-    ├── constants.ts       # 常量与配置 (新增)
-    ├── data.ts            # 数据工具函数 (新增)
-    ├── crawl.ts           # 原始爬虫模块
-    ├── crawler.ts         # 增强爬虫系统 (新增)
-    ├── ai.ts              # AI分析服务 (新增)
+    ├── types.ts           # 统一类型定义 (Project/BiddingItem/StatCardItem等)
+    ├── constants.ts       # 常量与配置 (省份/数据源/AI Prompt/导航)
+    ├── data.ts            # 数据工具函数 (解析/分类/统计/样式)
+    ├── crawler.ts         # 增强爬虫系统 (6数据源+自动Chrome检测)
+    ├── ai.ts              # AI分析服务 (Ollama+降级+搜索+预测)
     ├── db/
-    │   ├── index.ts       # 数据库Schema (新增)
-    │   └── client.ts      # 数据库客户端 (新增)
+    │   ├── index.ts       # 数据库Schema (6张表+Zod验证)
+    │   └── client.ts      # 数据库客户端 (连接池+健康检查)
     └── utils.ts           # 工具函数
 
 scripts/
-├── batch-crawl-v4.ts      # 批量爬取v4
-├── batch-crawl-v5.ts      # 增强批量爬取v5 (新增)
-├── deploy.sh              # 一键部署脚本 (新增)
+├── batch-crawl-v5.ts      # 增强批量爬取 (增量+5数据源)
+├── batch-crawl-v4.ts      # 旧版批量爬取
+├── db-migrate.ts          # 数据库迁移脚本
+├── db-seed.ts             # 数据库种子导入 (JSON→PostgreSQL)
+├── init.sql               # 数据库初始化SQL
+├── deploy.sh              # 一键部署脚本 (--dev/--prod/--migrate/--seed)
 ├── build.sh / dev.sh / start.sh
 └── prepare.sh
 
@@ -74,6 +79,17 @@ public/
 └── llms.txt               # AI友好的网站说明文件
 ```
 
+## 共享组件
+
+| 组件 | 作用 | 使用页面 |
+|------|------|---------|
+| `PageLayout` | 统一页面布局 (Header+Content+Footer) | 全部子页面 |
+| `StatCards` | 统计卡片组 (图标+数值+标签) | Dashboard |
+| `SimpleStatCards` | 简单统计卡片 | Bidding等 |
+| `DataSourceCard` | 数据来源展示 | 首页 |
+| `SiteHeader` | 响应式导航 (高亮当前页) | 全局 |
+| `SiteFooter` | 底部信息 (数据来源链接) | 全局 |
+
 ## 页面功能
 
 ### 1. 主页 (/)
@@ -83,24 +99,24 @@ public/
 - 行业报告预览
 - 数据来源链接
 
-### 2. 招标公告 (/bidding)
+### 2. 招标公告 (/bidding) - 使用 PageLayout
 - 卡片列表展示招标信息
-- 汇总统计、状态筛选、省份过滤
+- 汇总统计、状态筛选、省份过滤、搜索
 
-### 3. 中标公示 (/awards)
+### 3. 中标公示 (/awards) - 使用 PageLayout
 - 中标结果与金额公示
 - 汇总与搜索过滤
 
-### 4. 省份分析 (/province)
+### 4. 省份分析 (/province) - 使用 PageLayout
 - 省份项目排行（项目数/装机量/企业数排序切换）
 - 类型分布条形图
 
-### 5. 充电桩 (/chargers)
+### 5. 充电桩 (/chargers) - 使用 PageLayout
 - 充电站卡片网格
 - 省份过滤
 
-### 6. 数据看板 (/dashboard) [新增]
-- 核心指标卡片
+### 6. 数据看板 (/dashboard) - 使用 PageLayout + StatCards
+- 核心指标卡片 (StatCards组件)
 - 项目类型分布图
 - 省份排行 Top10
 - 年份分布图
@@ -108,8 +124,9 @@ public/
 - 招标状态分布
 - 投资方排行 Top10
 
-### 7. AI智能助手 (/ai) [新增]
+### 7. AI智能助手 (/ai) - 使用 PageLayout
 - 4种分析模式：政策解读/项目评估/趋势预测/招标分析
+- 预设问题快速开始
 - 实时对话式分析
 - Ollama LLM 智能分析 + 降级规则分析
 - 风险评级 + 情绪分析
@@ -135,7 +152,7 @@ public/
 2. 国家能源局 (nea.gov.cn) - SSR, 政策新闻
 3. 中国新能源网 (newenergy.org.cn) - SSR, 科研动态
 4. 索比光伏网 (solarbe.com) - SSR, 光伏行业
-5. 北极星光伏网 (bjx.com.cn) - SSR, 项目/招标 [新增]
+5. 北极星光伏网 (bjx.com.cn) - SSR, 项目/招标
 6. 中国政府采购网 (ccgp.gov.cn) - 招标/中标
 
 ### 特性
@@ -143,6 +160,7 @@ public/
 - 自动分类: 项目/招标/中标/充电桩
 - 信息提取: 省份/容量/金额/企业/日期
 - 状态保存: .crawl-state.json
+- 自动Chrome检测: 支持 Linux/Windows/macOS
 
 ## 数据库
 
@@ -154,11 +172,27 @@ public/
 - crawl_logs: 爬取日志
 - ai_analysis_logs: AI分析日志
 
+### 命令
+```bash
+# 运行SQL迁移
+pnpm db:migrate
+
+# 导入JSON种子数据
+pnpm db:seed
+
+# Drizzle Kit推送Schema
+pnpm db:push
+```
+
 ## 部署
 
 ### Docker Compose 一键部署
 ```bash
-bash scripts/deploy.sh --dev
+# 开发模式
+pnpm deploy:dev
+
+# 生产模式
+pnpm deploy
 ```
 
 服务:
@@ -193,12 +227,21 @@ pnpm build
 # 生产环境
 pnpm start
 
+# 类型检查
+pnpm ts-check
+
 # 批量爬取 (全量)
-npx tsx scripts/batch-crawl-v5.ts
+pnpm crawl
 
 # 批量爬取 (增量)
-npx tsx scripts/batch-crawl-v5.ts --incremental
+pnpm crawl:inc
 
 # 数据库迁移
-npx drizzle-kit push
+pnpm db:migrate
+
+# 数据库种子导入
+pnpm db:seed
+
+# Drizzle Kit推送
+pnpm db:push
 ```

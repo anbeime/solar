@@ -44,7 +44,7 @@ export default function Home() {
   const filteredProjects = useMemo(() => projects.filter(p => {
     const matchP = selectedProvince === '全部' || p.province === selectedProvince;
     const matchT = selectedType === '全部' || p.type === selectedType;
-    const matchS = !searchQuery || p.name.includes(searchQuery) || p.province.includes(searchQuery) || (p as any).company?.includes(searchQuery) || p.summary?.includes(searchQuery);
+    const matchS = !searchQuery || p.name.includes(searchQuery) || p.province.includes(searchQuery) || p.company?.includes(searchQuery) || p.summary?.includes(searchQuery);
     return matchP && matchT && matchS;
   }), [projects, selectedProvince, selectedType, searchQuery]);
 
@@ -156,7 +156,7 @@ export default function Home() {
                       {p.province && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{p.province}</span>}
                       {p.capacity && <span className="flex items-center gap-1"><Zap className="w-3 h-3" />{p.capacity}</span>}
                       {p.amount && <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" />{p.amount}</span>}
-                      {(p as any).company && <span className="flex items-center gap-1"><Building2 className="w-3 h-3" />{(p as any).company}</span>}
+                      {p.company && <span className="flex items-center gap-1"><Building2 className="w-3 h-3" />{p.company}</span>}
                       {p.date && <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{p.date}</span>}
                     </div>
                     {p.summary && <p className="text-xs text-slate-400 mt-2 line-clamp-2">{p.summary.slice(0, 120)}</p>}

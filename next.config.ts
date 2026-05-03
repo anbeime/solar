@@ -2,7 +2,8 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   // Docker 部署需要 standalone 输出
-  output: process.env.DOCKER_BUILD === '1' ? 'standalone' : undefined,
+  // 生产环境自动启用 standalone，开发环境不启用
+  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
 
   allowedDevOrigins: ['*.dev.coze.site'],
 

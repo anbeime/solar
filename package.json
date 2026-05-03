@@ -8,7 +8,14 @@
     "preinstall": "npx only-allow pnpm",
     "lint": "eslint",
     "start": "bash ./scripts/start.sh",
-    "ts-check": "tsc -p tsconfig.json"
+    "ts-check": "tsc -p tsconfig.json",
+    "db:migrate": "npx tsx scripts/db-migrate.ts",
+    "db:seed": "npx tsx scripts/db-seed.ts",
+    "db:push": "npx drizzle-kit push",
+    "crawl": "npx tsx scripts/batch-crawl-v5.ts",
+    "crawl:inc": "npx tsx scripts/batch-crawl-v5.ts --incremental",
+    "deploy": "bash scripts/deploy.sh --prod",
+    "deploy:dev": "bash scripts/deploy.sh --dev"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.958.0",

@@ -3,6 +3,7 @@ import { performAIAnalysis, checkOllamaHealth } from '@/lib/ai';
 import type { AIAnalysisRequest } from '@/lib/types';
 
 export async function POST(request: Request) {
+  const startTime = Date.now();
   try {
     const body: AIAnalysisRequest = await request.json();
 
@@ -22,7 +23,13 @@ export async function POST(request: Request) {
     }
 
     const result = await performAIAnalysis(body);
-    return NextResponse.json({ success: true, result });
+    const latencyMs = Date.now() - startTime;
+
+    return NextResponse.json({
+      success: true,
+      result,
+      latencyMs,
+    });
   } catch (error) {
     return NextResponse.json(
       { error: `Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}` },

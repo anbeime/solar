@@ -15,6 +15,8 @@ export interface Project {
   date: string;
   sourceUrl: string;
   sourceName: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export type ProjectType = '光伏' | '储能' | '风电' | '充电' | '氢能' | '综合能源';
@@ -33,6 +35,8 @@ export interface BiddingItem {
   status: BiddingStatus;
   sourceUrl: string;
   sourceName: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export type BiddingStatus = '报名中' | '已截止';
@@ -51,6 +55,8 @@ export interface AwardItem {
   status: string;
   sourceUrl: string;
   sourceName: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // ===== 充电桩 =====
@@ -64,6 +70,8 @@ export interface ChargerItem {
   date: string;
   sourceUrl: string;
   sourceName: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // ===== 通用 =====
@@ -104,6 +112,14 @@ export interface ProvinceStat {
   types: Record<string, number>;
 }
 
+// ===== 通用数据项（搜索用）=====
+export interface SearchableItem {
+  id: string;
+  title: string;
+  summary: string;
+  type: string;
+}
+
 // ===== AI 分析 =====
 export interface AIAnalysisRequest {
   type: 'policy' | 'project' | 'trend' | 'bidding';
@@ -133,6 +149,25 @@ export interface ForecastResult {
   capacity_factor: number;
 }
 
+// ===== 页面布局 =====
+export interface PageLayoutProps {
+  children: React.ReactNode;
+  title?: string;
+  description?: string;
+}
+
+// ===== 统计卡片 =====
+export interface StatCardItem {
+  icon: React.ComponentType<{ className?: string }>;
+  value: string | number;
+  label: string;
+  color?: string;
+  bg?: string;
+}
+
 // ===== 工具类型 =====
 export type SortKey = 'count' | 'capacity' | 'company';
 export type NavPage = 'home' | 'bidding' | 'awards' | 'province' | 'chargers' | 'dashboard' | 'ai';
+export type AnalysisType = 'policy' | 'project' | 'trend' | 'bidding';
+export type RiskLevel = 'low' | 'medium' | 'high';
+export type Sentiment = 'positive' | 'neutral' | 'negative';
