@@ -53,8 +53,10 @@ async function callProviderChat(
   }
 
   switch (providerKey) {
-    case 'ollama':
-      return callOllamaChat(messages, options);
+    case 'ollama': {
+      const resp = await callOllamaChat(messages, options);
+      return { content: resp.message.content, toolCalls: resp.message.tool_calls };
+    }
     case 'nvidia':
       return callNvidiaChat(provider, messages, options);
     case 'zhipuai':
