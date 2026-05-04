@@ -281,6 +281,36 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 导航卡片 */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {navCards.map((card) => {
+            const Icon = card.icon;
+            return (
+              <Link key={card.title} href={card.href} className="group">
+                <Card className="h-full hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden">
+                  <div className={`h-1.5 bg-gradient-to-r ${card.color}`} />
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className={`p-2 rounded-lg ${card.iconBg}`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {navStats[card.title]}
+                      </Badge>
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-sm mb-1">
+                      {card.title}
+                    </h3>
+                    <p className="text-xs text-slate-500">{card.desc}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+
       {/* AI智能应用 */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
         <div className="flex items-center justify-between mb-4">
