@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # ===== Web 前端 =====
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/pvmap
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=qwen2.5:7b
+      - FORECAST_API_URL=http://forecast:8001
+      - CHROME_PATH=/usr/bin/chromium-browser
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ===== PostgreSQL 数据库 =====
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: pvmap
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ===== Ollama LLM =====
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollamadata:/root/.ollama
+    # 如需GPU支持，取消注释:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # ===== 光伏预测 API (PatchTST) =====
+  forecast:
+    build:
+      context: ../GPU/solar-pv-forecast
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - MODEL_PATH=models/patchtst_solar.onnx
+      - NORMALIZER_PATH=data/processed/normalizer.npz
+    restart: unless-stopped
+    # 可选: GPU支持
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+volumes:
+  pgdata:
+  ollamadata:
