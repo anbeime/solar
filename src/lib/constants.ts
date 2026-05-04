@@ -2,67 +2,102 @@
  * 光伏储能地图站 - 常量与配置
  */
 
-export const SITE_NAME = '光伏储能地图站';
-export const SITE_DESCRIPTION = '国内领先的光伏储能行业垂直目录站，收录全国光伏储能项目、储能电站、充电站数据';
+export const SITE_NAME = "光伏储能地图站";
+export const SITE_DESCRIPTION =
+  "国内领先的光伏储能行业垂直目录站，收录全国光伏储能项目、储能电站、充电站数据";
 
 export const PROVINCES = [
-  '北京','天津','上海','重庆','河北','山西','辽宁','吉林','黑龙江',
-  '江苏','浙江','安徽','福建','江西','山东','河南','湖北','湖南',
-  '广东','海南','四川','贵州','云南','陕西','甘肃','青海',
-  '内蒙古','广西','西藏','宁夏','新疆',
+  "北京",
+  "天津",
+  "上海",
+  "重庆",
+  "河北",
+  "山西",
+  "辽宁",
+  "吉林",
+  "黑龙江",
+  "江苏",
+  "浙江",
+  "安徽",
+  "福建",
+  "江西",
+  "山东",
+  "河南",
+  "湖北",
+  "湖南",
+  "广东",
+  "海南",
+  "四川",
+  "贵州",
+  "云南",
+  "陕西",
+  "甘肃",
+  "青海",
+  "内蒙古",
+  "广西",
+  "西藏",
+  "宁夏",
+  "新疆",
 ] as const;
 
-export const PROJECT_TYPES = ['光伏', '储能', '风电', '充电', '氢能', '综合能源'] as const;
+export const PROJECT_TYPES = [
+  "光伏",
+  "储能",
+  "风电",
+  "充电",
+  "氢能",
+  "综合能源",
+] as const;
 
-export const BIDDING_STATUSES = ['报名中', '已截止'] as const;
+export const BIDDING_STATUSES = ["报名中", "已截止"] as const;
 
 // 爬虫数据源配置
 export const CRAWL_SOURCES = {
   chinapower: {
-    name: '中国电力网',
-    baseUrl: 'http://www.chinapower.com.cn',
+    name: "中国电力网",
+    baseUrl: "http://www.chinapower.com.cn",
     sections: [
-      { path: '/chuneng/', name: '储能' },
-      { path: '/tynfd/', name: '新能源发电' },
-      { path: '/fd/', name: '风电' },
-      { path: '/xw/', name: '电力新闻' },
-      { path: '/dww/', name: '电网' },
-      { path: '/flfd/', name: '分散式发电' },
-      { path: '/qingneng/', name: '氢能' },
-      { path: '/tanzhonghe/', name: '碳综合' },
-      { path: '/guihuajianshe/', name: '规划建设' },
+      { path: "/chuneng/", name: "储能" },
+      { path: "/tynfd/", name: "新能源发电" },
+      { path: "/fd/", name: "风电" },
+      { path: "/xw/", name: "电力新闻" },
+      { path: "/dww/", name: "电网" },
+      { path: "/flfd/", name: "分散式发电" },
+      { path: "/qingneng/", name: "氢能" },
+      { path: "/tanzhonghe/", name: "碳综合" },
+      { path: "/guihuajianshe/", name: "规划建设" },
     ],
     maxPages: 15,
   },
   nea: {
-    name: '国家能源局',
-    baseUrl: 'http://www.nea.gov.cn',
+    name: "国家能源局",
+    baseUrl: "http://www.nea.gov.cn",
     sections: [
-      { path: 'http://www.nea.gov.cn/xwzx/index.htm', name: '新闻中心' },
-      { path: 'http://www.nea.gov.cn/sjzz/index.htm', name: '数据中心' },
-      { path: 'http://www.nea.gov.cn/politics/index.htm', name: '政策法规' },
+      { path: "http://www.nea.gov.cn/xwzx/index.htm", name: "新闻中心" },
+      { path: "http://www.nea.gov.cn/sjzz/index.htm", name: "数据中心" },
+      { path: "http://www.nea.gov.cn/politics/index.htm", name: "政策法规" },
     ],
   },
   newenergy: {
-    name: '中国新能源网',
-    baseUrl: 'http://www.newenergy.org.cn',
+    name: "中国新能源网",
+    baseUrl: "http://www.newenergy.org.cn",
     sections: [
-      'http://www.newenergy.org.cn/xnyjz/yjdt/',
-      'http://www.newenergy.org.cn/xnyjz/zcfg/',
-      'http://www.newenergy.org.cn/hqsy/hqdt/',
+      "http://www.newenergy.org.cn/xnyjz/yjdt/",
+      "http://www.newenergy.org.cn/xnyjz/zcfg/",
+      "http://www.newenergy.org.cn/hqsy/hqdt/",
     ],
   },
   solarbe: {
-    name: '索比光伏网',
-    baseUrl: 'https://www.solarbe.com',
+    name: "索比光伏网",
+    baseUrl: "https://www.solarbe.com",
   },
   bjx: {
-    name: '北极星光伏网',
-    baseUrl: 'https://guangfu.bjx.com.cn',
+    name: "北极星光伏网",
+    baseUrl: "https://guangfu.bjx.com.cn",
     sections: [
-      'https://guangfu.bjx.com.cn/news/',
-      'https://guangfu.bjx.com.cn/project/',
-      'https://guangfu.bjx.com.cn/bidding/',
+      "https://guangfu.bjx.com.cn/news/",
+      "https://guangfu.bjx.com.cn/project/",
+      "https://guangfu.bjx.com.cn/bidding/",
     ],
   },
 } as const;
@@ -129,21 +164,52 @@ export const RESILIENCE_PROMPTS = {
 
 // 数据源链接（展示用）
 export const DATA_SOURCE_LINKS = [
-  { name: '中国电力网', url: 'http://www.chinapower.com.cn/' },
-  { name: '国家能源局', url: 'http://www.nea.gov.cn/' },
-  { name: '中国新能源网', url: 'http://www.newenergy.org.cn/' },
-  { name: '索比光伏网', url: 'https://www.solarbe.com/' },
-  { name: '中国充电联盟', url: 'http://www.evcipa.org.cn/' },
-  { name: '北极星光伏网', url: 'https://guangfu.bjx.com.cn/' },
+  { name: "中国电力网", url: "http://www.chinapower.com.cn/" },
+  { name: "国家能源局", url: "http://www.nea.gov.cn/" },
+  { name: "中国新能源网", url: "http://www.newenergy.org.cn/" },
+  { name: "索比光伏网", url: "https://www.solarbe.com/" },
+  { name: "中国充电联盟", url: "http://www.evcipa.org.cn/" },
+  { name: "北极星光伏网", url: "https://guangfu.bjx.com.cn/" },
 ] as const;
 
 // 导航配置
 export const NAV_ITEMS = [
-  { label: '首页', href: '/', key: 'home' as const },
-  { label: '招标动态', href: '/bidding', key: 'bidding' as const },
-  { label: '中标公示', href: '/awards', key: 'awards' as const },
-  { label: '省份分析', href: '/province', key: 'province' as const },
-  { label: '充电桩', href: '/chargers', key: 'chargers' as const },
-  { label: '数据看板', href: '/dashboard', key: 'dashboard' as const },
-  { label: 'AI助手', href: '/ai', key: 'ai' as const },
+  { label: "首页", href: "/", key: "home" as const },
+  { label: "招标动态", href: "/bidding", key: "bidding" as const },
+  { label: "中标公示", href: "/awards", key: "awards" as const },
+  { label: "省份分析", href: "/province", key: "province" as const },
+  { label: "充电桩", href: "/chargers", key: "chargers" as const },
+  { label: "数据看板", href: "/dashboard", key: "dashboard" as const },
+  { label: "AI助手", href: "/ai", key: "ai" as const },
+  {
+    label: "充电站优化",
+    href: "/dcic/ev-charging",
+    key: "ev-charging" as const,
+  },
+  {
+    label: "功率预测",
+    href: "/dcic/power-prediction",
+    key: "power-prediction" as const,
+  },
+  {
+    label: "数字孪生",
+    href: "/dcic/digital-twin",
+    key: "digital-twin" as const,
+  },
+  {
+    label: "缺陷检测",
+    href: "/dcic/power-inspection",
+    key: "power-inspection" as const,
+  },
+  {
+    label: "充电桩AI",
+    href: "/dcic/ev-charger-ai",
+    key: "ev-charger-ai" as const,
+  },
+  { label: "具身AI", href: "/dcic/embodied-ai", key: "embodied-ai" as const },
+  {
+    label: "信创能源",
+    href: "/dcic/xinchuang-energy",
+    key: "xinchuang-energy" as const,
+  },
 ] as const;
