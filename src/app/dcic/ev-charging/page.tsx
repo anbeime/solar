@@ -58,8 +58,8 @@ const evTasks = [
 export default function EVChargingPage() {
   return (
     <PageLayout
-      title="电动汽车充电站协同优化挑战"
-      description="数字中国创新大赛2026 - 数据应用赛道 | 基于多源数据融合的电动汽车充电站协同优化"
+      title="电动汽车充电站协同优化"
+      description="基于多源数据融合的电动汽车充电站智能协同优化系统"
     >
       <div className="space-y-6">
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
@@ -67,12 +67,11 @@ export default function EVChargingPage() {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
                 <h2 className="text-lg font-bold text-slate-900 mb-2">
-                  比赛简介
+                  系统概览
                 </h2>
                 <p className="text-sm text-slate-600 mb-4">
-                  本挑战赛由国网福建省电力有限公司和国网智慧车联网技术有限公司联合出题，
-                  旨在通过多源数据融合，实现电动汽车充电站的智能协同优化。奖金池
-                  ¥185,000。
+                  通过多源数据融合，实现电动汽车充电站的智能协同优化，
+                  包括负荷预测、V2G策略优化和车网协同调度。
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Badge className="bg-blue-100 text-blue-700">负荷预测</Badge>
@@ -87,14 +86,10 @@ export default function EVChargingPage() {
               <div className="flex gap-4 md:gap-6">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-blue-600">3</p>
-                  <p className="text-xs text-slate-500">核心任务</p>
+                  <p className="text-xs text-slate-500">核心模块</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-emerald-600">¥185K</p>
-                  <p className="text-xs text-slate-500">奖金池</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-amber-600">5</p>
+                  <p className="text-2xl font-bold text-emerald-600">5</p>
                   <p className="text-xs text-slate-500">数据源</p>
                 </div>
               </div>

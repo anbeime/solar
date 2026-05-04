@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Wind, Sun, Activity, Target, TrendingUp, Clock } from "lucide-react";
+import { Wind, Sun, Activity, Target, TrendingUp } from "lucide-react";
 import { PageLayout } from "@/components/page-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -36,8 +36,8 @@ const predictionTasks = [
 export default function PowerPredictionPage() {
   return (
     <PageLayout
-      title="新能源功率预测挑战"
-      description="数字中国创新大赛2026 - 人工智能赛道 | 基于时序大模型的新能源微观气象要素与功率预测"
+      title="新能源功率预测"
+      description="基于时序大模型的新能源场站功率预测系统"
     >
       <div className="space-y-6">
         <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
@@ -45,11 +45,11 @@ export default function PowerPredictionPage() {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="flex-1">
                 <h2 className="text-lg font-bold text-slate-900 mb-2">
-                  赛题简介
+                  系统概览
                 </h2>
                 <p className="text-sm text-slate-600 mb-4">
-                  基于时序大模型的新能源微观气象要素与功率预测，由国网福建省电力有限公司出题。
-                  目标是对5个风电场和5个光伏场站进行超短期(4h)和短期(24h)功率预测。
+                  基于时序大模型的新能源功率预测系统，对风电场和光伏场站进行
+                  超短期(4h)和短期(24h)功率预测，支持多场站联合预测。
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Badge className="bg-blue-100 text-blue-700">风电预测</Badge>
@@ -171,37 +171,6 @@ export default function PowerPredictionPage() {
                       </li>
                     ))}
                   </ul>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-r from-slate-50 to-blue-50">
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Clock className="w-4 h-4 text-slate-500" />
-              赛程安排
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              {[
-                { phase: "A榜评测", date: "2025.11-12", desc: "功率预测提交" },
-                { phase: "B榜评测", date: "2025.12", desc: "模型封装提交" },
-                { phase: "决赛答辩", date: "2026.01", desc: "现场演示" },
-                { phase: "颁奖典礼", date: "2026.02", desc: "获奖公示" },
-              ].map((p, i) => (
-                <div key={p.phase} className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-bold">
-                    {i + 1}
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">{p.phase}</p>
-                    <p className="text-xs text-slate-500">
-                      {p.date} | {p.desc}
-                    </p>
-                  </div>
                 </div>
               ))}
             </div>

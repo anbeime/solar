@@ -53,7 +53,7 @@ const techStack = [
 export default function XinchuangEnergyPage() {
   return (
     <PageLayout
-      title="信创赛道-能源行业赛"
+      title="能源行业信创解决方案"
       description="基于信创全栈的'源-网-荷-储'协同优化与数字孪生平台"
     >
       <div className="space-y-6">
