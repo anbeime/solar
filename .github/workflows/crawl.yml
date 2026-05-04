@@ -4,16 +4,18 @@ on:
   schedule:
     - cron: '0 2 * * *'  # 每天凌晨2点运行
   workflow_dispatch:  # 支持手动触发
-  push:
-    branches:
-      - master
 
 jobs:
   crawl:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -35,8 +37,6 @@ jobs:
           PUPPETEER_SKIP_DOWNLOAD: 'true'
 
       - name: Commit and push data
-        env:
-          GITEE_TOKEN: ${{ secrets.GITEE_TOKEN }}
         run: |
           git config --local user.email "crawler@github.com"
           git config --local user.name "GitHub Crawler"
@@ -45,6 +45,5 @@ jobs:
             echo "No new data to commit"
           else
             git commit -m "chore: 更新爬虫数据 $(date '+%Y-%m-%d %H:%M')"
-            git remote add gitee https://x-access-token:$GITEE_TOKEN@gitee.com/anbeime/solar.git
-            git push gitee master --force
+            git push origin main
           fi
