@@ -21,6 +21,9 @@ import {
   Globe,
   Brain,
   LayoutDashboard,
+  Eye,
+  Bot,
+  Shield,
 } from "lucide-react";
 import {
   Card,
@@ -114,6 +117,67 @@ const navCards = [
   },
 ];
 
+// ===== DCIC AI应用卡片配置 =====
+
+const dcicCards = [
+  {
+    title: "充电站优化",
+    desc: "负荷预测 / V2G优化 / 协同调度",
+    icon: Battery,
+    color: "from-blue-500 to-cyan-500",
+    iconBg: "bg-blue-100 text-blue-600",
+    href: "/dcic/ev-charging",
+  },
+  {
+    title: "功率预测",
+    desc: "风电 / 光伏 超短期+短期预测",
+    icon: Zap,
+    color: "from-amber-500 to-orange-500",
+    iconBg: "bg-amber-100 text-amber-600",
+    href: "/dcic/power-prediction",
+  },
+  {
+    title: "数字孪生",
+    desc: "源网荷储一体化调度平台",
+    icon: Activity,
+    color: "from-emerald-500 to-teal-500",
+    iconBg: "bg-emerald-100 text-emerald-600",
+    href: "/dcic/digital-twin",
+  },
+  {
+    title: "缺陷检测",
+    desc: "输电线路巡检缺陷智能识别",
+    icon: Eye,
+    color: "from-red-500 to-pink-500",
+    iconBg: "bg-red-100 text-red-600",
+    href: "/dcic/power-inspection",
+  },
+  {
+    title: "充电桩布局",
+    desc: "K-Means+LSTM智能选址",
+    icon: MapPin,
+    color: "from-purple-500 to-indigo-500",
+    iconBg: "bg-purple-100 text-purple-600",
+    href: "/dcic/ev-charger-ai",
+  },
+  {
+    title: "具身AI",
+    desc: "多机器人协同高风险作业",
+    icon: Bot,
+    color: "from-cyan-500 to-blue-500",
+    iconBg: "bg-cyan-100 text-cyan-600",
+    href: "/dcic/embodied-ai",
+  },
+  {
+    title: "信创能源",
+    desc: "国产化源网荷储协同平台",
+    icon: Shield,
+    color: "from-slate-500 to-gray-500",
+    iconBg: "bg-slate-100 text-slate-600",
+    href: "/dcic/xinchuang-energy",
+  },
+];
+
 export default function Home() {
   const { projects, bidding, awards, stats, provinces, types, loading } =
     useSiteData();
@@ -163,10 +227,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-10">
             <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
-              光伏储能垂直目录站
+              光伏储能垂直目录站 + AI智能应用
             </h1>
             <p className="text-blue-200 text-sm md:text-base max-w-2xl mx-auto">
-              收录全国光伏储能项目、招标动态、中标公示、充电桩数据，数据来源均标注原始出处，支持回源验证
+              收录全国光伏储能项目数据，支持招标动态追踪、充电桩查询、AI智能分析与7大AI应用
             </p>
           </div>
 
@@ -217,28 +281,34 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 导航卡片 */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10 mb-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {navCards.map((card) => {
+      {/* AI智能应用 */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <Brain className="w-5 h-5 text-purple-600" />
+            AI智能应用
+          </h2>
+          <span className="text-xs text-slate-400">7个智能应用</span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+          {dcicCards.map((card) => {
             const Icon = card.icon;
             return (
               <Link key={card.title} href={card.href} className="group">
                 <Card className="h-full hover:shadow-lg transition-all duration-300 border-0 shadow-md overflow-hidden">
-                  <div className={`h-1.5 bg-gradient-to-r ${card.color}`} />
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className={`p-2 rounded-lg ${card.iconBg}`}>
-                        <Icon className="w-5 h-5" />
-                      </div>
-                      <Badge variant="outline" className="text-xs">
-                        {navStats[card.title]}
-                      </Badge>
+                  <div className={`h-1 bg-gradient-to-r ${card.color}`} />
+                  <CardContent className="p-3">
+                    <div
+                      className={`p-1.5 rounded-lg ${card.iconBg} w-fit mb-2`}
+                    >
+                      <Icon className="w-4 h-4" />
                     </div>
-                    <h3 className="font-bold text-slate-900 text-sm mb-1">
+                    <h3 className="font-bold text-slate-900 text-xs mb-0.5">
                       {card.title}
                     </h3>
-                    <p className="text-xs text-slate-500">{card.desc}</p>
+                    <p className="text-xs text-slate-500 leading-tight">
+                      {card.desc}
+                    </p>
                   </CardContent>
                 </Card>
               </Link>
