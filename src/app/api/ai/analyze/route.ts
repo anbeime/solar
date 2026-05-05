@@ -1,47 +1,41 @@
 import { NextResponse } from 'next/server';
-import { performAIAnalysis, checkOllamaHealth } from '@/lib/ai';
-import type { AIAnalysisRequest } from '@/lib/types';
+import { chatWithAI } from '@/lib/ai-service';
 
 export async function POST(request: Request) {
-  const startTime = Date.now();
   try {
-    const body: AIAnalysisRequest = await request.json();
+    const body = await request.json();
+    const { type, content } = body;
 
-    if (!body.type || !body.content) {
+    if (!type || !content) {
       return NextResponse.json(
         { error: 'Missing required fields: type, content' },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    const validTypes = ['policy', 'project', 'trend', 'bidding'];
-    if (!validTypes.includes(body.type)) {
-      return NextResponse.json(
-        { error: `Invalid analysis type. Must be one of: ${validTypes.join(', ')}` },
-        { status: 400 },
-      );
-    }
-
-    const result = await performAIAnalysis(body);
-    const latencyMs = Date.now() - startTime;
+    const result = await chatWithAI({ message: content });
 
     return NextResponse.json({
       success: true,
-      result,
-      latencyMs,
+      result: {
+        summary: result.content,
+        keyPoints: [],
+        riskLevel: 'medium' as const,
+        recommendations: [],
+        sentiment: 'neutral' as const,
+      },
     });
   } catch (error) {
     return NextResponse.json(
-      { error: `Analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}` },
-      { status: 500 },
+      { error: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
     );
   }
 }
 
 export async function GET() {
-  const health = await checkOllamaHealth();
   return NextResponse.json({
     service: 'AI Analysis',
-    ollama: health,
+    provider: 'nvidia/zhipuai',
   });
 }

@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import { assessEnergyResilience, checkOllamaHealth } from '@/lib/ai';
+import { chatWithAI } from '@/lib/ai-service';
 
 export async function POST(request: Request) {
-  const startTime = Date.now();
   try {
     const body = await request.json();
     const { location, projectInfo } = body;
@@ -10,32 +9,28 @@ export async function POST(request: Request) {
     if (!location || typeof location !== 'string') {
       return NextResponse.json(
         { error: 'Missing required field: location' },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
-    const result = await assessEnergyResilience(location, projectInfo);
-    const latencyMs = Date.now() - startTime;
+    const prompt = `请分析 ${location} 地区的能源韧性，评估光伏储能系统的灾害响应能力。项目信息：${projectInfo || '无'}`;
+    const result = await chatWithAI({ message: prompt });
 
     return NextResponse.json({
       success: true,
-      result,
-      latencyMs,
-      model: 'Gemma 4 via Ollama',
+      result: {
+        summary: result.content,
+        keyPoints: [],
+        riskLevel: 'medium',
+        recommendations: [],
+        sentiment: 'neutral',
+      },
+      realtimeData: {},
     });
   } catch (error) {
     return NextResponse.json(
-      { error: `Resilience assessment failed: ${error instanceof Error ? error.message : 'Unknown error'}` },
-      { status: 500 },
+      { error: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
     );
   }
-}
-
-export async function GET() {
-  const health = await checkOllamaHealth();
-  return NextResponse.json({
-    service: 'Energy Resilience Assessment (Gemma 4)',
-    ollama: health,
-    tools: ['get_weather', 'get_electricity_price', 'get_pv_forecast'],
-  });
 }
