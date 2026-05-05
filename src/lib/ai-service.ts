@@ -348,10 +348,10 @@ export async function chatWithAI(request: AIChatRequest): Promise<AIChatResponse
 
       if (toolResults.length > 0) {
         // 第二次调用 - 用工具结果回答
-        const followUpMessages = [
+        const followUpMessages: ChatMessage[] = [
           ...messages,
-          { role: 'assistant', content: response.content },
-          { role: 'user', content: `以下是工具返回的信息：\n${toolResults.join('\n')}\n\n请根据这些信息回答用户问题。` },
+          { role: 'assistant' as const, content: response.content },
+          { role: 'user' as const, content: `以下是工具返回的信息：\n${toolResults.join('\n')}\n\n请根据这些信息回答用户问题。` },
         ];
         const followUp = await callLLM(providerKey, followUpMessages);
         finalContent = followUp.content;
