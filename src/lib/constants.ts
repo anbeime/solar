@@ -73,10 +73,18 @@ export const CRAWL_SOURCES = {
     name: "国家能源局",
     baseUrl: "http://www.nea.gov.cn",
     sections: [
-      { path: "http://www.nea.gov.cn/xwzx/index.htm", name: "新闻中心" },
-      { path: "http://www.nea.gov.cn/sjzz/index.htm", name: "数据中心" },
-      { path: "http://www.nea.gov.cn/politics/index.htm", name: "政策法规" },
+      { path: "/xwzx/zwgg/", name: "通知公告" },
+      { path: "/xwzx/xw/", name: "新闻中心" },
+      { path: "/sjzz/sjzz/", name: "数据中心" },
+      { path: "/zcfg/zcjd/", name: "政策解读" },
     ],
+    maxPages: 10,
+  },
+  neaSearch: {
+    name: "国家能源局搜索",
+    baseUrl: "https://www.nea.gov.cn",
+    searchUrl: "https://www.nea.gov.cn/search.htm",
+    keywords: ["光伏", "储能", "风电", "新能源", "招标", "项目"],
   },
   newenergy: {
     name: "中国新能源网",
@@ -90,6 +98,12 @@ export const CRAWL_SOURCES = {
   solarbe: {
     name: "索比光伏网",
     baseUrl: "https://www.solarbe.com",
+    sections: [
+      "https://www.solarbe.com/news/",
+      "https://www.solarbe.com/policy/",
+      "https://www.solarbe.com/market/",
+    ],
+    maxPages: 10,
   },
   bjx: {
     name: "北极星光伏网",
@@ -99,6 +113,21 @@ export const CRAWL_SOURCES = {
       "https://guangfu.bjx.com.cn/project/",
       "https://guangfu.bjx.com.cn/bidding/",
     ],
+    maxPages: 15,
+  },
+  ggzy: {
+    name: "中国招标投标网",
+    baseUrl: "https://www.ggzy.gov.cn",
+    sections: [
+      "https://www.ggzy.gov.cn/deal/dealList.html",
+      "https://www.ggzy.gov.cn/deal/dealListBid.html",
+    ],
+  },
+  cninfo: {
+    name: "巨潮资讯网",
+    baseUrl: "https://www.cninfo.com.cn",
+    searchUrl: "https://www.cninfo.com.cn/new/fulltextSearch",
+    keywords: ["光伏", "储能", "风电", "新能源"],
   },
 } as const;
 
