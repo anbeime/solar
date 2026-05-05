@@ -80,11 +80,36 @@ export const CRAWL_SOURCES = {
     ],
     maxPages: 10,
   },
-  neaSearch: {
-    name: "国家能源局搜索",
-    baseUrl: "https://www.nea.gov.cn",
-    searchUrl: "https://www.nea.gov.cn/search.htm",
-    keywords: ["光伏", "储能", "风电", "新能源", "招标", "项目"],
+  ndrpc: {
+    name: "国家发改委",
+    baseUrl: "https://www.ndrc.gov.cn",
+    sections: [
+      { path: "/xwzx/zwgg/", name: "通知公告" },
+      { path: "/xwzx/xw/", name: "新闻动态" },
+      { path: "/zcfg/zcjd/", name: "政策解读" },
+    ],
+    keywords: ["光伏", "储能", "风电", "新能源", "可再生能源", "绿电", "碳达峰", "碳中和"],
+    maxPages: 10,
+  },
+  gdgov: {
+    name: "广东省政府",
+    baseUrl: "https://www.gd.gov.cn",
+    sections: [
+      { path: "/zwgk/zwgk02/gggky/", name: "公示公告" },
+      { path: "/zwgk/zwgk06/", name: "政策解读" },
+    ],
+    keywords: ["光伏", "储能", "风电", "新能源", "充电桩", "氢能", "电池", "可再生能源"],
+    maxPages: 10,
+  },
+  gddrc: {
+    name: "广东省发改委",
+    baseUrl: "https://drc.gd.gov.cn",
+    sections: [
+      { path: "/zwgk/ztzl/xzgfxgk/", name: "政策法规" },
+      { path: "/zwgk/tzgg/", name: "通知公告" },
+    ],
+    keywords: ["光伏", "储能", "风电", "新能源", "项目", "招标"],
+    maxPages: 10,
   },
   newenergy: {
     name: "中国新能源网",
@@ -130,6 +155,38 @@ export const CRAWL_SOURCES = {
     keywords: ["光伏", "储能", "风电", "新能源"],
   },
 } as const;
+
+// 爬虫搜索关键词
+export const CRAWL_KEYWORDS = [
+  "光伏",
+  "储能",
+  "风电",
+  "新能源",
+  "可再生能源",
+  "充电桩",
+  "充电站",
+  "氢能",
+  "制氢",
+  "锂电池",
+  "电池",
+  "绿电",
+  "碳达峰",
+  "碳中和",
+  "源网荷储",
+  "虚拟电厂",
+  "微电网",
+  "综合能源",
+  "中标",
+  "招标",
+  "项目",
+  "开工",
+  "投产",
+  "并网",
+  "签约",
+  "审批",
+  "核准",
+  "备案",
+];
 
 // AI 分析 Prompt 模板 (Gemma 4 + Function Calling)
 export const AI_PROMPTS = {
