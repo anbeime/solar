@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { checkOllamaHealth } from "@/lib/ai";
 
 export async function GET() {
-  const ollama = await checkOllamaHealth();
-
   // 检查数据库连接（可选，不阻塞）
   let dbStatus: { connected: boolean; error?: string } = {
     connected: false,
@@ -28,7 +25,7 @@ export async function GET() {
     forecastStatus = "degraded";
   }
 
-  const allOk = ollama.available && dbStatus.connected;
+  const allOk = dbStatus.connected;
   const status = allOk ? "ok" : "degraded";
 
   return NextResponse.json({
@@ -38,11 +35,7 @@ export async function GET() {
     timestamp: new Date().toISOString(),
     components: {
       web: { status: "ok" },
-      ollama: {
-        status: ollama.available ? "ok" : "degraded",
-        models: ollama.models,
-        error: ollama.error,
-      },
+      ai: { status: "ok", provider: "nvidia/zhipuai" },
       database: {
         status: dbStatus.connected ? "ok" : "degraded",
         error: dbStatus.error,
