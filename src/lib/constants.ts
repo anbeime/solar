@@ -148,6 +148,27 @@ export const CRAWL_SOURCES = {
       "https://www.ggzy.gov.cn/deal/dealListBid.html",
     ],
   },
+  csg: {
+    name: "南方电网",
+    baseUrl: "https://www.csg.cn",
+    sections: [
+      { path: "/ Columnid=6636", name: "新闻动态" },
+      { path: "/ Columnid=6645", name: "公示公告" },
+      { path: "/ Columnid=6638", name: "采购信息" },
+    ],
+    keywords: ["光伏", "储能", "风电", "新能源", "充电桩", "招标", "项目"],
+    maxPages: 10,
+  },
+  csgb: {
+    name: "南方电网深圳",
+    baseUrl: "https://www.sz.csg.cn",
+    sections: [
+      { path: "/zwgk/gggs/", name: "公示公告" },
+      { path: "/cggg/cgxm/", name: "采购公告" },
+    ],
+    keywords: ["光伏", "储能", "充电桩", "招标"],
+    maxPages: 10,
+  },
   cninfo: {
     name: "巨潮资讯网",
     baseUrl: "https://www.cninfo.com.cn",
