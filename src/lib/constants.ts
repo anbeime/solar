@@ -159,6 +159,13 @@ export const CRAWL_SOURCES = {
     keywords: ["光伏", "储能", "风电", "新能源", "充电桩", "招标", "项目"],
     maxPages: 10,
   },
+  csgBid: {
+    name: "南方电网招标",
+    baseUrl: "https://www.bidding.csg.cn",
+    searchUrl: "https://www.bidding.csg.cn/zbcg/index.jhtml",
+    keywords: ["光伏", "储能", "风电", "新能源", "充电桩", "设备", "安装", "施工", "监理", "设计"],
+    maxPages: 10,
+  },
   csgb: {
     name: "南方电网深圳",
     baseUrl: "https://www.sz.csg.cn",
