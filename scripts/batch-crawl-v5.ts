@@ -45,7 +45,7 @@ function isWithinDays(dateStr: string, days: number): boolean {
   }
 }
 
-function getRecencyScore(dateStr: string): number {
+function getRecencyScore(dateStr: string | undefined): number {
   if (!dateStr) return 0;
   try {
     const date = new Date(dateStr);
