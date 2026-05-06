@@ -70,7 +70,7 @@ function filterByDate<T extends { date?: string }>(items: T[]): T[] {
       return b._date.localeCompare(a._date);
     })
     .filter(item => item._score > 0)
-    .map(({ _score, _date, ...item }) => item as T);
+    .map(({ _score, _date, ...item }) => item as unknown as T);
 }
 
 // ===== 爬取状态管理 =====
