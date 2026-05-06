@@ -62,10 +62,13 @@ function getRecencyScore(dateStr: string): number {
 
 function filterByDate<T extends { date?: string }>(items: T[]): T[] {
   return items
-    .map(item => ({ ...item, _score: getRecencyScore(item.date) }))
-    .sort((a, b) => b._score - a._score)
+    .map(item => ({ ...item, _score: getRecencyScore(item.date), _date: item.date || '' }))
+    .sort((a, b) => {
+      if (b._score !== a._score) return b._score - a._score;
+      return b._date.localeCompare(a._date);
+    })
     .filter(item => item._score > 0)
-    .map(({ _score, ...item }) => item as T);
+    .map(({ _score, _date, ...item }) => item as T);
 }
 
 // ===== 爬取状态管理 =====
