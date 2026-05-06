@@ -52,9 +52,11 @@ function getRecencyScore(dateStr: string | undefined): number {
     if (isNaN(date.getTime())) return 0;
     const now = new Date();
     const diffDays = (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24);
-    if (diffDays <= DAYS_TO_RECENT) return 100;
-    if (diffDays <= DAYS_TO_KEEP) return 50;
-    return 10;
+    if (diffDays <= DAYS_TO_KEEP) {
+      if (diffDays <= DAYS_TO_RECENT) return 100;
+      return 50;
+    }
+    return 0;
   } catch {
     return 0;
   }
