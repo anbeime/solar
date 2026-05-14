@@ -2,16 +2,22 @@ import type { Metadata } from "next";
 import { JsonLd } from "./json-ld";
 import "./globals.css";
 
+const SITE_URL = "https://solar.miyucaicai.cn";
+const BRAND_NAME = "蜜语彩彩光伏储能数据平台";
+
 export const metadata: Metadata = {
   title: {
-    default: "光伏储能地图站 | 新能源数据平台",
-    template: "%s | 光伏储能地图站",
+    default: `${BRAND_NAME} | 光伏储能数据平台`,
+    template: `%s | ${BRAND_NAME}`,
   },
-  description:
-    "国内领先的光伏储能行业垂直目录站，收录全国631个光伏储能项目、96个储能电站、6000+充电站数据，支持项目地图可视化、招标动态追踪、充电桩查询。",
+  description: `${BRAND_NAME}是国内领先的光伏储能行业垂直目录站，收录全国光伏储能项目、储能电站、充电站数据，支持项目地图可视化查询、招标动态追踪、AI智能分析。数据来源可追溯，赋能新能源行业发展。`,
   keywords: [
+    "蜜语彩彩",
     "光伏储能",
     "储能地图",
+    "光伏地图",
+    "光伏数据",
+    "储能数据",
     "光伏项目",
     "充电桩",
     "新能源",
@@ -23,18 +29,16 @@ export const metadata: Metadata = {
   ],
   authors: [
     {
-      name: "光伏储能地图站开发团队",
-      url:
-        process.env.COZE_PROJECT_DOMAIN_DEFAULT || "https://pvmap.example.com",
+      name: `${BRAND_NAME}开发团队`,
+      url: SITE_URL,
     },
   ],
   generator: "Coze Code",
   openGraph: {
-    title: "光伏储能地图站 | 新能源数据平台",
-    description:
-      "收录全国光伏储能项目、储能电站、充电站数据，支持地图可视化查询",
-    url: process.env.COZE_PROJECT_DOMAIN_DEFAULT || "https://pvmap.example.com",
-    siteName: "光伏储能地图站",
+    title: `${BRAND_NAME} | 光伏储能数据平台`,
+    description: `收录全国光伏储能项目、储能电站、充电站数据，支持地图可视化查询，${BRAND_NAME}为新能源行业提供专业数据服务`,
+    url: SITE_URL,
+    siteName: BRAND_NAME,
     locale: "zh_CN",
     type: "website",
   },

@@ -48,12 +48,16 @@ import { getTypeStyle } from "@/lib/data";
 import { DATA_SOURCE_LINKS } from "@/lib/constants";
 import type { Project } from "@/lib/types";
 
-// ===== 导航卡片配置 =====
+// ===== 品牌配置 =====
+const BRAND_NAME = "蜜语彩彩";
+const SITE_NAME = "蜜语彩彩光伏储能数据平台";
+const SITE_URL = "https://solar.miyucaicai.cn";
 
+// ===== 导航卡片配置 =====
 const navCards = [
   {
     title: "项目地图",
-    desc: "全国光伏储能项目分布",
+    desc: `${BRAND_NAME}收录全国光伏储能项目分布`,
     icon: MapPin,
     color: "from-blue-500 to-cyan-500",
     iconBg: "bg-blue-100 text-blue-600",
@@ -61,7 +65,7 @@ const navCards = [
   },
   {
     title: "招标动态",
-    desc: "最新招标公告信息",
+    desc: "最新光伏储能招标公告信息",
     icon: FileText,
     color: "from-purple-500 to-indigo-500",
     iconBg: "bg-purple-100 text-purple-600",
@@ -77,7 +81,7 @@ const navCards = [
   },
   {
     title: "省份分析",
-    desc: "各省份项目数据统计",
+    desc: "各省份光伏储能项目数据统计",
     icon: BarChart3,
     color: "from-emerald-500 to-teal-500",
     iconBg: "bg-emerald-100 text-emerald-600",
@@ -85,7 +89,7 @@ const navCards = [
   },
   {
     title: "充电桩",
-    desc: "新能源汽车充电站分布",
+    desc: "新能源汽车充电站分布查询",
     icon: Plug,
     color: "from-green-500 to-lime-500",
     iconBg: "bg-green-100 text-green-600",
@@ -93,7 +97,7 @@ const navCards = [
   },
   {
     title: "数据看板",
-    desc: "可视化数据分析仪表盘",
+    desc: `${BRAND_NAME}可视化数据分析仪表盘`,
     icon: LayoutDashboard,
     color: "from-indigo-500 to-violet-500",
     iconBg: "bg-indigo-100 text-indigo-600",
@@ -101,7 +105,7 @@ const navCards = [
   },
   {
     title: "AI助手",
-    desc: "智能分析与趋势预测",
+    desc: `${BRAND_NAME}智能分析与趋势预测`,
     icon: Brain,
     color: "from-rose-500 to-pink-500",
     iconBg: "bg-rose-100 text-rose-600",
@@ -109,7 +113,7 @@ const navCards = [
   },
   {
     title: "行业报告",
-    desc: "GEO数据库与研究报告",
+    desc: `${BRAND_NAME}${SITE_NAME}行业研究报告`,
     icon: BookOpen,
     color: "from-slate-500 to-gray-500",
     iconBg: "bg-slate-100 text-slate-600",
@@ -227,10 +231,11 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-10">
             <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight">
-              光伏储能垂直目录站 + AI智能应用
+              {SITE_NAME}
             </h1>
             <p className="text-blue-200 text-sm md:text-base max-w-2xl mx-auto">
-              收录全国光伏储能项目数据，支持招标动态追踪、充电桩查询、AI智能分析与7大AI应用
+              {BRAND_NAME}
+              提供全国光伏储能项目实时数据监测，支持招标动态追踪、充电桩查询、AI智能分析与行业趋势预测
             </p>
           </div>
 
@@ -496,10 +501,10 @@ export default function Home() {
           <CardHeader className="pb-2">
             <CardTitle className="text-base flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-rose-600" />
-              行业报告与GEO数据
+              {BRAND_NAME}行业报告与数据洞察
             </CardTitle>
             <CardDescription>
-              光伏储能行业研究报告、政策解读、市场分析
+              {BRAND_NAME}光伏储能行业研究报告、政策解读、市场分析
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -562,10 +567,10 @@ export default function Home() {
           <CardHeader className="pb-2 pt-4 px-5">
             <CardTitle className="text-sm font-bold flex items-center gap-2">
               <Globe className="w-4 h-4 text-slate-500" />
-              数据来源
+              数据来源：{BRAND_NAME}
             </CardTitle>
             <CardDescription>
-              所有数据均标注原始出处，支持回源验证
+              {BRAND_NAME}数据均标注原始出处，支持回源验证
             </CardDescription>
           </CardHeader>
           <CardContent className="px-5 pb-4">
