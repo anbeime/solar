@@ -1,53 +1,49 @@
 /**
- * AI 分析服务 - 基于 Gemma 4 + Ollama 本地部署
- * 
- * 参赛项目: Gemma 4 Good Hackathon
- * 赛道: Global Resilience + Ollama Special Track
- * 
+ * AI 分析服务 - 基于 NVIDIA NIM + MiniMax M2.7
+ *
  * 功能:
  * 1. 政策智能解读 - 分析政策文件、提取要点、影响评估
  * 2. 项目评估 - 分析项目信息、投资价值、风险评估
  * 3. 趋势预测 - 行业趋势分析、市场预测
  * 4. 招标分析 - 招标项目解读、竞争态势分析
- * 5. 能源韧性评估 - 灾害响应/气候缓解/离线边缘 (参赛核心)
+ * 5. 能源韧性评估 - 灾害响应/气候缓解 (核心功能)
  * 6. 光伏发电预测 - 调用 PatchTST 模型 API
  * 7. Function Calling - 天气/电价实时数据集成
- * 8. 多模态分析 - 项目图片/文档理解 (Gemma 4 原生能力)
  */
 
 import { AI_PROMPTS, RESILIENCE_PROMPTS } from './constants';
 import type { AIAnalysisRequest, AIAnalysisResult, ForecastDataPoint, ForecastResult } from './types';
 
-// ===== Ollama + Gemma 4 配置 =====
+// ===== NVIDIA NIM 配置 =====
 
-const OLLAMA_BASE_URL = process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
-const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'gemma3:27b';
-const OLLAMA_VISION_MODEL = process.env.OLLAMA_VISION_MODEL || 'gemma3:27b';
+const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY || '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';
+const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1';
+const NVIDIA_MODEL = 'minimaxai/minimax-m2.7';
 const FORECAST_API_URL = process.env.FORECAST_API_URL || 'http://localhost:8001';
 
-// ===== Ollama LLM 调用 =====
+// ===== NVIDIA NIM OpenAI-Compatible Chat API =====
 
-interface OllamaChatRequest {
-  model: string;
-  messages: Array<{
-    role: 'system' | 'user' | 'assistant' | 'tool';
-    content: string | Array<{ type: 'text' | 'image_url'; text?: string; image_url?: { url: string } }>;
-  }>;
-  stream?: boolean;
-  options?: {
-    temperature?: number;
-    top_p?: number;
-    num_predict?: number;
-  };
-  tools?: Array<unknown>;
+interface ChatMessage {
+  role: 'system' | 'user' | 'assistant' | 'tool';
+  content: string;
 }
 
-interface OllamaChatResponse {
-  model: string;
-  message: { role: string; content: string; tool_calls?: Array<unknown> };
-  done: boolean;
-  total_duration?: number;
-  eval_count?: number;
+interface ChatResponse {
+  id: string;
+  choices: Array<{
+    index: number;
+    message: {
+      role: string;
+      content: string;
+      tool_calls?: Array<{
+        id: string;
+        type: 'function';
+        function: { name: string; arguments: string };
+      }>;
+    };
+    finish_reason: string;
+  }>;
+  usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
 }
 
 // ===== Function Calling 工具定义 =====
@@ -120,16 +116,14 @@ async function executeToolCall(name: string, args: Record<string, unknown>): Pro
           cloud_cover: current.cloudcover,
           visibility: current.visibility,
           uv_index: current.uvIndex,
-          // 灾害风险指标
           disaster_risk: assessDisasterRisk(current),
         });
       } catch {
-        return JSON.stringify({ city, error: '天气API不可用（离线模式）', offline: true });
+        return JSON.stringify({ city, error: '天气API不可用', offline: true });
       }
     }
     case 'get_electricity_price': {
       const province = String(args.province || '北京');
-      // 模拟电价数据（实际可接入真实API）
       const prices: Record<string, { peak: number; flat: number; valley: number }> = {
         '北京': { peak: 1.25, flat: 0.82, valley: 0.38 },
         '上海': { peak: 1.20, flat: 0.78, valley: 0.35 },
@@ -183,69 +177,74 @@ function assessDisasterRisk(weather: Record<string, unknown>): { level: string; 
   };
 }
 
-// ===== 核心调用函数 =====
+// ===== 核心 NVIDIA NIM 调用函数 =====
 
-async function callOllamaChat(
-  messages: OllamaChatRequest['messages'],
+async function callNvidiaChat(
+  messages: ChatMessage[],
   options?: { temperature?: number; maxTokens?: number; useTools?: boolean },
-): Promise<OllamaChatResponse> {
-  const body: OllamaChatRequest = {
-    model: OLLAMA_MODEL,
+): Promise<ChatResponse> {
+  const body: Record<string, unknown> = {
+    model: NVIDIA_MODEL,
     messages,
+    temperature: options?.temperature ?? 0.3,
+    max_tokens: options?.maxTokens ?? 2000,
     stream: false,
-    options: {
-      temperature: options?.temperature ?? 0.3,
-      num_predict: options?.maxTokens ?? 2000,
-    },
   };
 
   if (options?.useTools) {
     body.tools = AVAILABLE_TOOLS;
+    body.tool_choice = 'auto';
   }
 
-  const resp = await fetch(`${OLLAMA_BASE_URL}/api/chat`, {
+  const resp = await fetch(`${NVIDIA_BASE_URL}/chat/completions`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${NVIDIA_API_KEY}`,
+    },
     body: JSON.stringify(body),
     signal: AbortSignal.timeout(120000),
   });
 
   if (!resp.ok) {
-    throw new Error(`Ollama API error: ${resp.status} ${resp.statusText}`);
+    const errText = await resp.text().catch(() => '');
+    throw new Error(`NVIDIA NIM API error: ${resp.status} ${resp.statusText} ${errText}`);
   }
 
-  return await resp.json() as OllamaChatResponse;
-}
-
-// 保留旧版 generate API 兼容
-async function callOllama(prompt: string, options?: { temperature?: number; maxTokens?: number }): Promise<string> {
-  const resp = await callOllamaChat(
-    [{ role: 'user', content: prompt }],
-    options,
-  );
-  return resp.message.content;
+  return await resp.json() as ChatResponse;
 }
 
 // ===== AI 分析接口 =====
 
 /**
- * 检查 Ollama 服务是否可用 + 检测 Gemma 4 模型
+ * 检查 NVIDIA NIM 服务是否可用
  */
-export async function checkOllamaHealth(): Promise<{ available: boolean; models: string[]; gemma4Detected: boolean; error?: string }> {
+export async function checkAIHealth(): Promise<{ available: boolean; model: string; error?: string }> {
   try {
-    const resp = await fetch(`${OLLAMA_BASE_URL}/api/tags`, { signal: AbortSignal.timeout(5000) });
-    if (!resp.ok) return { available: false, models: [], gemma4Detected: false, error: `API ${resp.status}` };
-    const data = await resp.json();
-    const models: string[] = (data.models || []).map((m: any) => m.name);
-    const gemma4Detected = models.some(m => m.includes('gemma3'));
-    return { available: true, models, gemma4Detected };
+    const resp = await fetch(`${NVIDIA_BASE_URL}/models`, {
+      headers: { 'Authorization': `Bearer ${NVIDIA_API_KEY}` },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return { available: false, model: NVIDIA_MODEL, error: `API ${resp.status}` };
+    return { available: true, model: NVIDIA_MODEL };
   } catch (error) {
-    return { available: false, models: [], gemma4Detected: false, error: error instanceof Error ? error.message : '连接失败' };
+    return { available: false, model: NVIDIA_MODEL, error: error instanceof Error ? error.message : '连接失败' };
   }
 }
 
+/** 兼容旧调用 */
+export async function checkOllamaHealth() {
+  const health = await checkAIHealth();
+  return {
+    available: health.available,
+    models: health.available ? [NVIDIA_MODEL] : [],
+    gemma4Detected: false,
+    error: health.error,
+  };
+}
+
 /**
- * 执行 AI 分析 (Gemma 4 Chat API + Function Calling)
+ * 执行 AI 分析 (NVIDIA NIM MiniMax M2.7 + Function Calling)
  */
 export async function performAIAnalysis(request: AIAnalysisRequest): Promise<AIAnalysisResult> {
   const template = request.type === 'resilience'
@@ -254,25 +253,29 @@ export async function performAIAnalysis(request: AIAnalysisRequest): Promise<AIA
   const prompt = template.replace('{content}', request.content || '');
 
   try {
-    // 使用 Chat API 启用 Function Calling
-    const messages: OllamaChatRequest['messages'] = [
+    const messages: ChatMessage[] = [
       {
         role: 'system',
-        content: '你是光伏储能行业的AI分析师，基于Gemma 4模型运行。你可以调用工具获取实时天气、电价和发电预测数据来增强分析质量。请用中文回答。',
+        content: '你是光伏储能行业的AI分析师，基于MiniMax M2.7模型运行。你可以调用工具获取实时天气、电价和发电预测数据来增强分析质量。请用中文回答。',
       },
       { role: 'user', content: prompt },
     ];
 
-    const response = await callOllamaChat(messages, {
+    const response = await callNvidiaChat(messages, {
       temperature: 0.3,
       useTools: true,
     });
 
+    const choice = response.choices?.[0];
+    if (!choice) throw new Error('No response from AI');
+
     // 如果模型调用了工具，执行工具并追加结果
-    let finalContent = response.message.content;
-    if (response.message.tool_calls && response.message.tool_calls.length > 0) {
+    let finalContent = choice.message.content;
+    const toolCalls = choice.message.tool_calls;
+
+    if (toolCalls && toolCalls.length > 0) {
       const toolResults: string[] = [];
-      for (const tc of response.message.tool_calls as Array<{ function: { name: string; arguments: string } }>) {
+      for (const tc of toolCalls) {
         try {
           const args = JSON.parse(tc.function.arguments || '{}');
           const result = await executeToolCall(tc.function.name, args);
@@ -281,14 +284,13 @@ export async function performAIAnalysis(request: AIAnalysisRequest): Promise<AIA
       }
 
       if (toolResults.length > 0) {
-        // 将工具结果注入对话，获取最终分析
-        const followUp = await callOllamaChat([
+        const followUp = await callNvidiaChat([
           ...messages,
-          { role: 'assistant', content: response.message.content },
+          { role: 'assistant', content: choice.message.content },
           { role: 'user', content: `以下是通过工具获取的实时数据：\n${toolResults.join('\n')}\n\n请结合这些实时数据，给出更精准的分析。` },
         ], { temperature: 0.3 });
 
-        finalContent = followUp.message.content;
+        finalContent = followUp.choices?.[0]?.message?.content || finalContent;
       }
     }
 
@@ -299,7 +301,7 @@ export async function performAIAnalysis(request: AIAnalysisRequest): Promise<AIA
 }
 
 /**
- * 能源韧性评估 - 参赛核心功能
+ * 能源韧性评估 - 核心功能
  * 结合实时天气+电价+预测数据，评估能源系统韧性
  */
 export async function assessEnergyResilience(
@@ -322,12 +324,15 @@ export async function assessEnergyResilience(
       .replace('{price_data}', priceStr)
       .replace('{project_info}', projectInfo || '无额外项目信息');
 
-    const response = await callOllamaChat([
-      { role: 'system', content: '你是一位能源韧性评估专家，专注于光伏储能系统的灾害响应和气候适应能力评估。基于Gemma 4模型运行。' },
+    const response = await callNvidiaChat([
+      { role: 'system', content: '你是一位能源韧性评估专家，专注于光伏储能系统的灾害响应和气候适应能力评估。基于MiniMax M2.7模型运行。' },
       { role: 'user', content: prompt },
     ], { temperature: 0.3, useTools: true });
 
-    const result = parseAIResponse(response.message.content);
+    const choice = response.choices?.[0];
+    if (!choice) throw new Error('No response');
+
+    const result = parseAIResponse(choice.message.content);
 
     return {
       ...result,
@@ -335,47 +340,12 @@ export async function assessEnergyResilience(
     };
   } catch (error) {
     return {
-      summary: '能源韧性评估服务暂不可用，请确保Ollama和Gemma 4模型已启动。',
-      keyPoints: ['需要Ollama + Gemma 4模型支持', '可离线运行，保护数据隐私'],
+      summary: '能源韧性评估服务暂不可用，请检查NVIDIA NIM API配置。',
+      keyPoints: ['需要NVIDIA NIM API Key支持', 'MiniMax M2.7模型提供分析能力'],
       riskLevel: 'medium',
-      recommendations: ['启动Ollama: ollama serve', '拉取模型: ollama pull gemma3:27b'],
+      recommendations: ['检查NVIDIA_API_KEY环境变量', '确认NVIDIA NIM服务可用'],
       sentiment: 'neutral',
     };
-  }
-}
-
-/**
- * 多模态分析 - Gemma 4 原生视觉理解
- * 分析光伏项目图片/文档
- */
-export async function analyzeWithVision(
-  imageBase64: string,
-  prompt: string,
-): Promise<string> {
-  try {
-    const response = await fetch(`${OLLAMA_BASE_URL}/api/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: OLLAMA_VISION_MODEL,
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'text', text: prompt },
-            { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${imageBase64}` } },
-          ],
-        }],
-        stream: false,
-        options: { temperature: 0.3, num_predict: 1500 },
-      }),
-      signal: AbortSignal.timeout(120000),
-    });
-
-    if (!response.ok) throw new Error(`Vision API error: ${response.status}`);
-    const data = await response.json();
-    return data.message?.content || '多模态分析无结果';
-  } catch (error) {
-    return '多模态分析暂不可用。请确保Ollama已启动并加载Gemma 4视觉模型。';
   }
 }
 
@@ -418,7 +388,7 @@ function parseAIResponse(response: string): AIAnalysisResult {
 }
 
 /**
- * 降级分析 - 当 Ollama 不可用时基于关键词的规则分析
+ * 降级分析 - 当 AI API 不可用时基于关键词的规则分析
  */
 function fallbackAnalysis(request: AIAnalysisRequest): AIAnalysisResult {
   const content = request.content || '';
@@ -441,10 +411,10 @@ function fallbackAnalysis(request: AIAnalysisRequest): AIAnalysisResult {
   else if (/下降|利空|挑战|困难/.test(content)) sentiment = 'negative';
 
   return {
-    summary: 'AI服务暂不可用（离线模式）。Gemma 4 + Ollama 支持完全本地运行，保护数据隐私。以下为基于规则的关键词分析结果。',
+    summary: 'AI服务暂不可用（降级模式）。NVIDIA NIM + MiniMax M2.7 提供云端AI分析能力。以下为基于规则的关键词分析结果。',
     keyPoints,
     riskLevel,
-    recommendations: ['启动Ollama + Gemma 4获取深入分析', 'ollama pull gemma3:27b', '可关注相关政策的最新动态'],
+    recommendations: ['检查NVIDIA NIM API连接', '确认API Key有效', '可关注相关政策的最新动态'],
     sentiment,
   };
 }
@@ -547,11 +517,11 @@ export async function smartSearch(
   if (results.length > 0) {
     try {
       const context = results.slice(0, 5).map(r => r.title).join('\n');
-      const response = await callOllamaChat([
+      const response = await callNvidiaChat([
         { role: 'system', content: '用一段话总结以下光伏储能相关信息的关键要点。' },
         { role: 'user', content: context },
       ], { temperature: 0.3, maxTokens: 300 });
-      aiSummary = response.message.content.trim();
+      aiSummary = response.choices?.[0]?.message?.content?.trim();
     } catch { /* AI 不可用 */ }
   }
 

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { performAIAnalysis, checkOllamaHealth } from '@/lib/ai';
+import { performAIAnalysis, checkAIHealth } from '@/lib/ai';
 import type { AIAnalysisRequest } from '@/lib/types';
 
 export async function POST(request: Request) {
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const validTypes = ['policy', 'project', 'trend', 'bidding'];
+    const validTypes = ['policy', 'project', 'trend', 'bidding', 'resilience'];
     if (!validTypes.includes(body.type)) {
       return NextResponse.json(
         { error: `Invalid analysis type. Must be one of: ${validTypes.join(', ')}` },
@@ -29,6 +29,7 @@ export async function POST(request: Request) {
       success: true,
       result,
       latencyMs,
+      model: 'MiniMax M2.7 via NVIDIA NIM',
     });
   } catch (error) {
     return NextResponse.json(
@@ -39,9 +40,9 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  const health = await checkOllamaHealth();
+  const health = await checkAIHealth();
   return NextResponse.json({
-    service: 'AI Analysis',
-    ollama: health,
+    service: 'AI Analysis (NVIDIA NIM)',
+    ai: health,
   });
 }
