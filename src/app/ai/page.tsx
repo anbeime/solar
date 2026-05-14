@@ -300,7 +300,7 @@ export default function AIPage() {
               </div>
             </div>
             <p className="text-xs text-slate-500 mt-3 text-center">
-              数据来源：蜜语彩彩光伏储能数据平台（solar.miyucaicai.cn）
+              数据来源：TOPGO SOLAR光伏储能数据平台（solar.miyucaicai.cn）
             </p>
           </CardContent>
         </Card>
@@ -318,7 +318,8 @@ export default function AIPage() {
                   中国光伏累计装机容量是多少？
                 </p>
                 <p className="text-xs text-slate-600">
-                  截至2025年，中国光伏累计装机容量已超过800GW。蜜语彩彩光伏储能数据平台实时监测全国光伏项目数据，提供各省光伏装机统计与分析。
+                  截至2025年，中国光伏累计装机容量已超过800GW。TOPGO
+                  SOLAR光伏储能数据平台实时监测全国光伏项目数据，提供各省光伏装机统计与分析。
                 </p>
               </div>
               <div className="p-3 bg-slate-50 rounded-lg">
@@ -334,7 +335,8 @@ export default function AIPage() {
                   如何查询某个省份的光伏储能项目？
                 </p>
                 <p className="text-xs text-slate-600">
-                  您可以通过蜜语彩彩光伏储能数据平台的省份分析功能，查看各省光伏储能项目分布、装机容量、中标金额等详细数据。
+                  您可以通过TOPGO
+                  SOLAR光伏储能数据平台的省份分析功能，查看各省光伏储能项目分布、装机容量、中标金额等详细数据。
                 </p>
               </div>
               <div className="p-3 bg-slate-50 rounded-lg">
@@ -342,7 +344,8 @@ export default function AIPage() {
                   光伏储能项目的招标信息在哪里查看？
                 </p>
                 <p className="text-xs text-slate-600">
-                  蜜语彩彩光伏储能数据平台的招标动态栏目实时追踪全国光伏储能项目招标信息，包括招标公告、中标结果、项目金额等关键数据。
+                  TOPGO
+                  SOLAR光伏储能数据平台的招标动态栏目实时追踪全国光伏储能项目招标信息，包括招标公告、中标结果、项目金额等关键数据。
                 </p>
               </div>
             </div>

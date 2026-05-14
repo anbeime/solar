@@ -3,7 +3,7 @@ import { JsonLd } from "./json-ld";
 import "./globals.css";
 
 const SITE_URL = "https://solar.miyucaicai.cn";
-const BRAND_NAME = "蜜语彩彩光伏储能数据平台";
+const BRAND_NAME = "TOPGO SOLAR 光伏储能数据平台";
 
 export const metadata: Metadata = {
   title: {

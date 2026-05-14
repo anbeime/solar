@@ -49,8 +49,8 @@ import { DATA_SOURCE_LINKS } from "@/lib/constants";
 import type { Project } from "@/lib/types";
 
 // ===== 品牌配置 =====
-const BRAND_NAME = "蜜语彩彩";
-const SITE_NAME = "蜜语彩彩光伏储能数据平台";
+const BRAND_NAME = "TOPGO SOLAR";
+const SITE_NAME = "TOPGO SOLAR 光伏储能数据平台";
 const SITE_URL = "https://solar.miyucaicai.cn";
 
 // ===== 导航卡片配置 =====
