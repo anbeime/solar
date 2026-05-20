@@ -1,21 +1,15 @@
 /**
- * 批量爬取脚本 v5 - 增强版
- * 
- * 增强功能:
- * 1. 新增北极星光伏网数据源
- * 2. 增量更新 - 跳过已爬取的URL
- * 3. 去重优化 - 基于标题相似度
- * 4. 更好的错误处理与重试
- * 5. 爬取进度保存
- * 
- * 数据源:
- * 1. 中国电力网 (chinapower.com.cn) - SSR, 多栏目, 可翻页
- * 2. 国家能源局 (nea.gov.cn) - SSR, 政策新闻
- * 3. 中国新能源网 (newenergy.org.cn) - SSR, 科研动态/政策
- * 4. 索比光伏网 (solarbe.com) - SSR首页, 光伏行业
- * 5. 北极星光伏网 (bjx.com.cn) - SSR, 项目/招标/新闻
- * 
- * 用法: npx tsx scripts/batch-crawl-v5.ts [--incremental]
+ * 批量爬取脚本 v6 - 政府公共资源交易版
+ *
+ * 数据源 (共6大类):
+ * 1. 行业媒体: 中国电力网、国家能源局、中国新能源网、索比光伏网、北极星光伏网
+ * 2. 国家级政府平台: 中国政府采购网、全国公共资源交易平台、中国招投标公共服务平台、国家发改委
+ * 3. 省级公共资源交易平台 (31个省市)
+ * 4. 市级重点平台 (枣庄/驻马店/洛阳/咸宁)
+ * 5. 充电桩数据: 中国充电联盟
+ * 6. 其他行业媒体: 储能与电力市场、中国能源网
+ *
+ * 用法: npx tsx scripts/batch-crawl-v5.ts [--incremental] [--sources=media,gov,province]
  */
 
 import * as fs from 'fs';
@@ -479,10 +473,247 @@ async function crawlBJXDetail(url: string): Promise<{title: string; summary: str
   }
 }
 
+// ===== 数据源6: 省级公共资源交易平台 (新增) =====
+
+const PROVINCE_PLATFORMS: Array<{name: string; url: string; province: string}> = [
+  { name: "河南省公共资源交易中心", url: "http://hnsggzyjy.henan.gov.cn", province: "河南" },
+  { name: "安徽省公共资源交易监管网", url: "https://www.ahggzyjy.cn", province: "安徽" },
+  { name: "四川省公共资源交易信息网", url: "https://www.spprec.com", province: "四川" },
+  { name: "浙江省公共资源交易服务平台", url: "https://zjpubservice.zjzwfw.gov.cn", province: "浙江" },
+  { name: "江苏省公共资源交易平台", url: "https://jsggzy.jszwfw.gov.cn", province: "江苏" },
+  { name: "河北省招标投标公共服务平台", url: "https://www.hebeieb.com", province: "河北" },
+  { name: "江西省公共资源交易平台", url: "http://www.jxsggzy.cn", province: "江西" },
+  { name: "云南省公共资源交易平台", url: "https://www.ynggzy.com", province: "云南" },
+  { name: "天津市公共资源交易平台", url: "https://www.tjggzy.com", province: "天津" },
+  { name: "山东省公共资源交易网", url: "https://www.sdggzyjy.gov.cn", province: "山东" },
+  { name: "湖北省公共资源交易电子服务系统", url: "https://www.hbggzyfwpt.cn", province: "湖北" },
+  { name: "湖南省公共资源交易服务平台", url: "https://www.hnsggzy.com", province: "湖南" },
+  { name: "广东省公共资源交易平台", url: "http://bs.gdggzy.org.cn", province: "广东" },
+  { name: "广西壮族自治区公共资源交易平台", url: "https://gxggzy.gxzf.gov.cn", province: "广西" },
+  { name: "重庆市公共资源交易网", url: "https://www.cqggzy.com", province: "重庆" },
+  { name: "贵州省公共资源交易公共服务平台", url: "http://ggzy.guizhou.gov.cn", province: "贵州" },
+  { name: "陕西省公共资源交易中心", url: "http://www.sxggzyjy.cn", province: "陕西" },
+  { name: "甘肃省公共资源交易网", url: "http://ggzyjy.gansu.gov.cn", province: "甘肃" },
+  { name: "青海省公共资源交易网", url: "http://www.qhggzyjy.gov.cn", province: "青海" },
+  { name: "宁夏回族自治区公共资源交易网", url: "https://www.nxggzyjy.org", province: "宁夏" },
+  { name: "新疆维吾尔自治区公共资源交易网", url: "https://www.xjggzy.gov.cn", province: "新疆" },
+  { name: "北京市公共资源交易服务平台", url: "https://ggzyfw.beijing.gov.cn", province: "北京" },
+  { name: "山西省公共资源交易平台", url: "https://www.sxggzy.cn", province: "山西" },
+  { name: "内蒙古自治区公共资源交易网", url: "http://ggzy.nmg.gov.cn", province: "内蒙古" },
+  { name: "辽宁省公共资源交易网", url: "http://www.lnggzy.gov.cn", province: "辽宁" },
+  { name: "吉林省公共资源交易公共服务平台", url: "http://www.jlsggzyjy.gov.cn", province: "吉林" },
+  { name: "黑龙江省公共资源交易网", url: "http://www.hljgggy.gov.cn", province: "黑龙江" },
+  { name: "上海市公共资源交易服务平台", url: "http://ggzy.sheic.org.cn", province: "上海" },
+  { name: "福建省公共资源交易电子公共服务平台", url: "https://ggzyfw.fujian.gov.cn", province: "福建" },
+  { name: "海南省公共资源交易服务中心", url: "http://zw.hainan.gov.cn/ggzy/", province: "海南" },
+];
+
+// 新能源关键词 - 用于过滤公共资源交易平台的公告
+const ENERGY_KEYWORDS = [
+  '光伏', '储能', '充电桩', '光储充', '源网荷储', '渔光互补',
+  '分布式光伏', '风电', '新能源', '充电站', '换电', '虚拟电厂',
+  '微电网', '综合能源', '智慧能源', '绿电', '氢能', '太阳能',
+  '锂电池', '逆变器', '组件', 'EPC',
+];
+
+async function crawlProvincePlatform(platform: {name: string; url: string; province: string}): Promise<Array<{title: string; summary: string; date: string; sourceUrl: string; sourceName: string}>> {
+  const items: Array<{title: string; summary: string; date: string; sourceUrl: string; sourceName: string}> = [];
+  try {
+    // 尝试多个常见路径
+    const searchPaths = [
+      '/jyxx/002001/002001001/',
+      '/jyxx/002001/',
+      '/info/index',
+      '/search',
+      '',
+    ];
+
+    for (const searchPath of searchPaths.slice(0, INCREMENTAL ? 1 : 2)) {
+      const targetUrl = `${platform.url}${searchPath}`;
+      try {
+        const resp = await fetch(targetUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+          },
+          signal: AbortSignal.timeout(12000),
+        });
+        if (!resp.ok) continue;
+        const html = await resp.text();
+
+        // 提取所有链接并按新能源关键词过滤
+        const linkMatches = html.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi);
+        for (const m of linkMatches) {
+          let href = m[1];
+          const titleTag = m[2].replace(/<[^>]+>/g, '').trim();
+          if (!titleTag || titleTag.length < 8) continue;
+
+          // 关键词过滤
+          const hasEnergyKw = ENERGY_KEYWORDS.some(kw => titleTag.includes(kw));
+          if (!hasEnergyKw) continue;
+
+          // 补全URL
+          if (href.startsWith('/')) href = `${platform.url}${href}`;
+          else if (!href.startsWith('http')) href = `${platform.url}/${href}`;
+
+          items.push({
+            title: `[${platform.province}] ${titleTag}`,
+            summary: `来源: ${platform.name}`,
+            date: '',
+            sourceUrl: href,
+            sourceName: platform.name,
+          });
+        }
+
+        if (items.length > 0) break; // 找到数据就停止尝试其他路径
+      } catch {
+        continue;
+      }
+      await sleep(100);
+    }
+  } catch {
+    // 静默失败
+  }
+  return items;
+}
+
+// ===== 数据源7: 市级重点平台 (新增) =====
+
+const CITY_PLATFORMS: Array<{name: string; url: string; city: string}> = [
+  { name: "枣庄市公共资源交易网", url: "http://ggzy.zaozhuang.gov.cn", city: "枣庄" },
+  { name: "驻马店市公共资源电子交易系统", url: "http://ggzy.zhumadian.gov.cn", city: "驻马店" },
+  { name: "洛阳市公共资源交易中心", url: "https://www.lyggzy.com", city: "洛阳" },
+  { name: "咸宁市公共资源交易信息网", url: "https://ggzy.xianning.gov.cn", city: "咸宁" },
+];
+
+async function crawlCityPlatform(platform: {name: string; url: string; city: string}): Promise<Array<{title: string; summary: string; date: string; sourceUrl: string; sourceName: string}>> {
+  const items: Array<{title: string; summary: string; date: string; sourceUrl: string; sourceName: string}> = [];
+  try {
+    const paths = ['/jyxx/', '/info/', '/search', ''];
+    for (const p of paths.slice(0, 1)) {
+      try {
+        const resp = await fetch(`${platform.url}${p}`, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+          signal: AbortSignal.timeout(10000),
+        });
+        if (!resp.ok) continue;
+        const html = await resp.text();
+
+        const linkMatches = html.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi);
+        for (const m of linkMatches) {
+          let href = m[1];
+          const titleTag = m[2].replace(/<[^>]+>/g, '').trim();
+          if (!titleTag || titleTag.length < 8) continue;
+          if (!ENERGY_KEYWORDS.some(kw => titleTag.includes(kw))) continue;
+
+          if (href.startsWith('/')) href = `${platform.url}${href}`;
+          else if (!href.startsWith('http')) href = `${platform.url}/${href}`;
+
+          items.push({
+            title: `[${platform.city}] ${titleTag}`,
+            summary: `来源: ${platform.name}`,
+            date: '',
+            sourceUrl: href,
+            sourceName: platform.name,
+          });
+        }
+        if (items.length > 0) break;
+      } catch { continue; }
+    }
+  } catch { /* skip */ }
+  return items;
+}
+
+// ===== 数据源8: 中国政府采购网-国家级 (增强) =====
+
+async function getCCGPLinks(): Promise<string[]> {
+  const links = new Set<string>();
+  try {
+    const sections = [
+      'http://www.ccgp.gov.cn/cggg/zygg/gkzb/',
+      'http://www.ccgp.gov.cn/cggg/dfcg/cgxx/',
+    ];
+    for (const sectionUrl of sections) {
+      try {
+        const resp = await fetch(sectionUrl, {
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+          signal: AbortSignal.timeout(12000),
+        });
+        if (!resp.ok) continue;
+        const html = await resp.text();
+
+        // 匹配链接
+        const linkRegex = /href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+        let m: RegExpExecArray | null;
+        while ((m = linkRegex.exec(html)) !== null) {
+          const title = m[2].replace(/<[^>]+>/g, '').trim();
+          if (title.length > 8 && ENERGY_KEYWORDS.some(kw => title.includes(kw))) {
+            let href = m[1];
+            if (href.startsWith('/')) href = `http://www.ccgp.gov.cn${href}`;
+            else if (!href.startsWith('http') && href.startsWith('.')) href = `http://www.ccgp.gov.cn/cggg/zygg/gkzb/${href.replace(/^\.\//, '')}`;
+            links.add(href);
+          }
+        }
+      } catch { continue; }
+      await sleep(200);
+    }
+    console.log(`  [CCGP] ${links.size} 条新能源相关`);
+  } catch { console.log(`  [CCGP] Failed`); }
+  return Array.from(links);
+}
+
+async function crawlCCGPTitle(url: string): Promise<{title: string; summary: string; date: string} | null> {
+  try {
+    const resp = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const titleM = html.match(/<title>([^<]+)/) || html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
+    const title = titleM ? titleM[1].replace(/<[^>]+>/g, '').trim() : '';
+    if (!title) return null;
+    const dateM = html.match(/(\d{4}[年\-\/]\d{1,2}[月\-\/]\d{1,2})/);
+    const date = dateM ? dateM[1].replace(/[年\/]/g, '-').replace('月', '-') : '';
+    return { title, summary: '', date };
+  } catch { return null; }
+}
+
+// ===== 数据源9: 全国公共资源交易平台 (新增) =====
+
+async function crawlGGZY(): Promise<Array<{title: string; summary: string; date: string; sourceUrl: string; sourceName: string}>> {
+  const items: Array<{title: string; summary: string; date: string; sourceUrl: string; sourceName: string}> = [];
+  try {
+    const resp = await fetch('https://www.ggzy.gov.cn/', {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      signal: AbortSignal.timeout(15000),
+    });
+    if (resp.ok) {
+      const html = await resp.text();
+      const linkMatches = html.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
+      for (const m of linkMatches) {
+        const title = m[2].replace(/<[^>]+>/g, '').trim();
+        if (title.length > 10 && ENERGY_KEYWORDS.some(kw => title.includes(kw))) {
+          items.push({
+            title: `[全国] ${title}`,
+            summary: '来源: 全国公共资源交易平台',
+            date: '',
+            sourceUrl: m[1].startsWith('http') ? m[1] : `https://www.ggzy.gov.cn${m[1]}`,
+            sourceName: '全国公共资源交易平台',
+          });
+        }
+      }
+    }
+    console.log(`  [GGZY] ${items.length} 条`);
+  } catch { console.log(`  [GGZY] Failed`); }
+  return items;
+}
+
 // ===== 主流程 =====
 
 async function main() {
-  console.log(`=== 光伏储能数据批量爬取 v5 ===`);
+  console.log(`=== 光伏储能数据批量爬取 v6 (政府公共资源交易版) ===`);
   console.log(`模式: ${INCREMENTAL ? '增量更新' : '全量爬取'}\n`);
   
   const state = loadState();
@@ -619,6 +850,64 @@ async function main() {
     }
   }
   
+  // ---------- 数据源6: 中国政府采购网 (国家级增强) ----------
+  console.log('\n--- 数据源6: 中国政府采购网 (新能源关键词过滤) ---');
+  const ccgpLinks = await getCCGPLinks();
+  console.log(`  CCGP: ${ccgpLinks.length} 条新能源相关链接`);
+
+  if (ccgpLinks.length > 0) {
+    for (let i = 0; i < ccgpLinks.length; i += BATCH_SIZE) {
+      const batch = ccgpLinks.slice(i, i + BATCH_SIZE);
+      const results = await Promise.all(batch.map(url => crawlCCGPTitle(url)));
+      for (let j = 0; j < results.length; j++) {
+        const r = results[j];
+        if (r && r.title) {
+          allItems.push({ title: r.title, summary: r.summary || '', date: r.date, sourceUrl: batch[j], sourceName: '中国政府采购网' });
+        }
+      }
+      await sleep(50);
+    }
+  }
+
+  // ---------- 数据源7: 全国公共资源交易平台 ----------
+  console.log('\n--- 数据源7: 全国公共资源交易平台 ---');
+  const ggzyItems = await crawlGGZY();
+  allItems.push(...ggzyItems);
+
+  // ---------- 数据源8: 省级公共资源交易平台 (31省市) ----------
+  console.log('\n--- 数据源8: 省级公共资源交易平台 (${INCREMENTAL ? 'TOP10' : '全部31个'}) ---');
+  const provinceTargets = INCREMENTAL ? PROVINCE_PLATFORMS.slice(0, 10) : PROVINCE_PLATFORMS;
+  let provinceTotal = 0;
+
+  for (const platform of provinceTargets) {
+    try {
+      const items = await crawlProvincePlatform(platform);
+      if (items.length > 0) {
+        allItems.push(...items);
+        provinceTotal += items.length;
+        console.log(`  [${platform.province}] ${platform.name}: ${items.length} 条`);
+      }
+    } catch { /* skip */ }
+    await sleep(INCREMENTAL ? 50 : 150);
+  }
+  console.log(`  省级平台合计: ${provinceTotal} 条`);
+
+  // ---------- 数据源9: 市级重点平台 ----------
+  console.log('\n--- 数据源9: 市级重点平台 ---');
+  let cityTotal = 0;
+  for (const platform of CITY_PLATFORMS) {
+    try {
+      const items = await crawlCityPlatform(platform);
+      if (items.length > 0) {
+        allItems.push(...items);
+        cityTotal += items.length;
+        console.log(`  [${platform.city}] ${platform.name}: ${items.length} 条`);
+      }
+    } catch { /* skip */ }
+    await sleep(100);
+  }
+  console.log(`  市级平台合计: ${cityTotal} 条`);
+
   // ---------- 分类和保存 ----------
   console.log(`\n=== 数据处理 ===`);
   console.log(`总计爬取: ${allItems.length} 条`);

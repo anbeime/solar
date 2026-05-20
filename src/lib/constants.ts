@@ -52,10 +52,15 @@ export const PROJECT_TYPES = [
 export const BIDDING_STATUSES = ["报名中", "已截止"] as const;
 
 // 爬虫数据源配置
+// 类别说明:
+//   - 行业媒体: chinapower, newenergy, solarbe, bjx, escn, china5e, evcipa
+//   - 政府平台: ccgp, ggzy, ndrc, tender (国家级); provinces (省级公共资源交易)
 export const CRAWL_SOURCES = {
+  // ===== 行业媒体类 =====
   chinapower: {
     name: "中国电力网",
     baseUrl: "http://www.chinapower.com.cn",
+    type: 'media' as const,
     sections: [
       { path: "/chuneng/", name: "储能" },
       { path: "/tynfd/", name: "新能源发电" },
@@ -72,6 +77,7 @@ export const CRAWL_SOURCES = {
   nea: {
     name: "国家能源局",
     baseUrl: "http://www.nea.gov.cn",
+    type: 'government' as const,
     sections: [
       { path: "http://www.nea.gov.cn/xwzx/index.htm", name: "新闻中心" },
       { path: "http://www.nea.gov.cn/sjzz/index.htm", name: "数据中心" },
@@ -81,6 +87,7 @@ export const CRAWL_SOURCES = {
   newenergy: {
     name: "中国新能源网",
     baseUrl: "http://www.newenergy.org.cn",
+    type: 'media' as const,
     sections: [
       "http://www.newenergy.org.cn/xnyjz/yjdt/",
       "http://www.newenergy.org.cn/xnyjz/zcfg/",
@@ -90,15 +97,113 @@ export const CRAWL_SOURCES = {
   solarbe: {
     name: "索比光伏网",
     baseUrl: "https://www.solarbe.com",
+    type: 'media' as const,
   },
   bjx: {
     name: "北极星光伏网",
     baseUrl: "https://guangfu.bjx.com.cn",
+    type: 'media' as const,
     sections: [
       "https://guangfu.bjx.com.cn/news/",
       "https://guangfu.bjx.com.cn/project/",
       "https://guangfu.bjx.com.cn/bidding/",
     ],
+  },
+  escn: {
+    name: "储能与电力市场",
+    baseUrl: "https://www.escn.com.cn",
+    type: 'media' as const,
+    sections: ["news/", "policy/", "market/"],
+  },
+  china5e: {
+    name: "中国能源网",
+    baseUrl: "https://www.china5e.com",
+    type: 'media' as const,
+    sections: ["news/", "news/zonghe/", "news/huanbao/"],
+  },
+  // ===== 政府采购/招标类（国家级） =====
+  ccgp: {
+    name: "中国政府采购网",
+    baseUrl: "https://www.ccgp.gov.cn",
+    type: 'government' as const,
+    sections: [
+      { path: "/cggg/zygg/gkzb/", name: "招标公告" },
+      { path: "/cggg/dfcg/cgxx/", name: "地方采购" },
+    ],
+  },
+  ggzy: {
+    name: "全国公共资源交易平台",
+    baseUrl: "https://www.ggzy.gov.cn",
+    type: 'government' as const,
+    description: "国家级公共资源交易信息总入口，整合全国各省市工程、采购信息",
+  },
+  tender: {
+    name: "中国招投标公共服务平台",
+    baseUrl: "https://www.cebpubservice.com",
+    type: 'government' as const,
+    sections: ["cgxx/", "zbcgxx/"],
+  },
+  ndrc: {
+    name: "国家发改委",
+    baseUrl: "https://www.ndrc.gov.cn",
+    type: 'government' as const,
+    sections: ["xwzx/tzgg/", "fzggw/"],
+  },
+  evcipa: {
+    name: "中国充电联盟",
+    baseUrl: "http://www.evcipa.org.cn",
+    type: 'industry' as const,
+  },
+  // ===== 省级公共资源交易平台 =====
+  provinces: {
+    name: "省级公共资源交易平台",
+    type: 'government' as const,
+    description: "覆盖31个省市自治区公共资源交易平台",
+    platforms: [
+      { name: "北京市公共资源交易服务平台", url: "https://ggzyfw.beijing.gov.cn", province: "北京" },
+      { name: "天津市公共资源交易平台", url: "https://www.tjggzy.com", province: "天津" },
+      { name: "河北省招标投标公共服务平台", url: "https://www.hebeieb.com", province: "河北" },
+      { name: "河北省公共资源交易平台", url: "https://www.hbggzy.cn", province: "河北" },
+      { name: "山西省公共资源交易平台", url: "https://www.sxggzy.cn", province: "山西" },
+      { name: "内蒙古自治区公共资源交易网", url: "http://ggzy.nmg.gov.cn", province: "内蒙古" },
+      { name: "辽宁省公共资源交易网", url: "http://www.lnggzy.gov.cn", province: "辽宁" },
+      { name: "吉林省公共资源交易公共服务平台", url: "http://www.jlsggzyjy.gov.cn", province: "吉林" },
+      { name: "黑龙江省公共资源交易网", url: "http://www.hljgggy.gov.cn", province: "黑龙江" },
+      { name: "上海市公共资源交易服务平台", url: "http://ggzy.sheic.org.cn", province: "上海" },
+      { name: "江苏省公共资源交易平台", url: "https://jsggzy.jszwfw.gov.cn", province: "江苏" },
+      { name: "浙江省公共资源交易服务平台", url: "https://zjpubservice.zjzwfw.gov.cn", province: "浙江" },
+      { name: "安徽省公共资源交易监管网", url: "https://www.ahggzyjy.cn", province: "安徽" },
+      { name: "福建省公共资源交易电子公共服务平台", url: "https://ggzyfw.fujian.gov.cn", province: "福建" },
+      { name: "江西省公共资源交易平台", url: "http://www.jxsggzy.cn", province: "江西" },
+      { name: "山东省公共资源交易网", url: "https://www.sdggzyjy.gov.cn", province: "山东" },
+      { name: "河南省公共资源交易中心网", url: "http://hnsggzyjy.henan.gov.cn", province: "河南" },
+      { name: "湖北省公共资源交易电子服务系统", url: "https://www.hbggzyfwpt.cn", province: "湖北" },
+      { name: "湖南省公共资源交易服务平台", url: "https://www.hnsggzy.com", province: "湖南" },
+      { name: "广东省公共资源交易平台", url: "http://bs.gdggzy.org.cn", province: "广东" },
+      { name: "广西壮族自治区公共资源交易平台", url: "https://gxggzy.gxzf.gov.cn", province: "广西" },
+      { name: "海南省公共资源交易服务中心", url: "http://zw.hainan.gov.cn/ggzy/", province: "海南" },
+      { name: "重庆市公共资源交易网", url: "https://www.cqggzy.com", province: "重庆" },
+      { name: "四川省公共资源交易信息网", url: "https://ggzyjy.sc.gov.cn", province: "四川" },
+      { name: "贵州省公共资源交易公共服务平台", url: "http://ggzy.guizhou.gov.cn", province: "贵州" },
+      { name: "云南省公共资源交易信息网", url: "https://ggzy.yn.gov.cn", province: "云南" },
+      { name: "陕西省公共资源交易中心", url: "http://www.sxggzyjy.cn", province: "陕西" },
+      { name: "甘肃省公共资源交易网", url: "http://ggzyjy.gansu.gov.cn", province: "甘肃" },
+      { name: "青海省公共资源交易网", url: "http://www.qhggzyjy.gov.cn", province: "青海" },
+      { name: "宁夏回族自治区公共资源交易网", url: "https://www.nxggzyjy.org", province: "宁夏" },
+      { name: "新疆维吾尔自治区公共资源交易网", url: "https://www.xjggzy.gov.cn", province: "新疆" },
+    ] as const,
+  },
+  // ===== 市级重点平台 =====
+  cities: {
+    name: "市级公共资源交易平台（重点）",
+    type: 'government' as const,
+    description: "新能源项目密集城市的市级交易平台",
+    platforms: [
+      { name: "枣庄市公共资源交易网", url: "http://ggzy.zaozhuang.gov.cn", city: "枣庄" },
+      { name: "驻马店市公共资源电子交易系统", url: "http://ggzy.zhumadian.gov.cn", city: "驻马店" },
+      { name: "洛阳市公共资源交易中心", url: "https://www.lyggzy.com", city: "洛阳" },
+      { name: "咸宁市公共资源交易信息网", url: "https://ggzy.xianning.gov.cn", city: "咸宁" },
+    ] as const,
   },
 } as const;
 
@@ -162,14 +267,65 @@ export const RESILIENCE_PROMPTS = {
 如果需要更精确的数据，请调用 get_weather、get_electricity_price 或 get_pv_forecast 工具。`,
 } as const;
 
-// 数据源链接（展示用）
+// 数据源链接（展示用）- 分组展示
 export const DATA_SOURCE_LINKS = [
+  // 国家级综合平台
+  { name: "中国政府采购网", url: "https://www.ccgp.gov.cn/" },
+  { name: "全国公共资源交易平台", url: "https://www.ggzy.gov.cn/" },
+  { name: "中国招投标公共服务平台", url: "https://www.cebpubservice.com/" },
+  // 行业媒体
   { name: "中国电力网", url: "http://www.chinapower.com.cn/" },
   { name: "国家能源局", url: "http://www.nea.gov.cn/" },
   { name: "中国新能源网", url: "http://www.newenergy.org.cn/" },
   { name: "索比光伏网", url: "https://www.solarbe.com/" },
-  { name: "中国充电联盟", url: "http://www.evcipa.org.cn/" },
   { name: "北极星光伏网", url: "https://guangfu.bjx.com.cn/" },
+  { name: "储能与电力市场", url: "https://www.escn.com.cn/" },
+  { name: "中国能源网", url: "https://www.china5e.com/" },
+  { name: "中国充电联盟", url: "http://www.evcipa.org.cn/" },
+  // 政府部门
+  { name: "国家发改委", url: "https://www.ndrc.gov.cn/" },
+] as const;
+
+// 省级公共资源交易平台链接（展示用）
+export const PROVINCE_PLATFORM_LINKS = [
+  { name: "北京市公共资源交易服务平台", url: "https://ggzyfw.beijing.gov.cn", province: "北京" },
+  { name: "天津市公共资源交易平台", url: "https://www.tjggzy.com", province: "天津" },
+  { name: "河北省公共资源交易平台", url: "https://www.hbggzy.cn", province: "河北" },
+  { name: "山西省公共资源交易平台", url: "https://www.sxggzy.cn", province: "山西" },
+  { name: "内蒙古自治区公共资源交易网", url: "http://ggzy.nmg.gov.cn", province: "内蒙古" },
+  { name: "辽宁省公共资源交易网", url: "http://www.lnggzy.gov.cn", province: "辽宁" },
+  { name: "吉林省公共资源交易公共服务平台", url: "http://www.jlsggzyjy.gov.cn", province: "吉林" },
+  { name: "黑龙江省公共资源交易网", url: "http://www.hljgggy.gov.cn", province: "黑龙江" },
+  { name: "上海市公共资源交易服务平台", url: "http://ggzy.sheic.org.cn", province: "上海" },
+  { name: "江苏省公共资源交易平台", url: "https://jsggzy.jszwfw.gov.cn", province: "江苏" },
+  { name: "浙江省公共资源交易服务平台", url: "https://zjpubservice.zjzwfw.gov.cn", province: "浙江" },
+  { name: "安徽省公共资源交易监管网", url: "https://www.ahggzyjy.cn", province: "安徽" },
+  { name: "福建省公共资源交易电子公共服务平台", url: "https://ggzyfw.fujian.gov.cn", province: "福建" },
+  { name: "江西省公共资源交易平台", url: "http://www.jxsggzy.cn", province: "江西" },
+  { name: "山东省公共资源交易网", url: "https://www.sdggzyjy.gov.cn", province: "山东" },
+  { name: "河南省公共资源交易中心网", url: "http://hnsggzyjy.henan.gov.cn", province: "河南" },
+  { name: "湖北省公共资源交易电子服务系统", url: "https://www.hbggzyfwpt.cn", province: "湖北" },
+  { name: "湖南省公共资源交易服务平台", url: "https://www.hnsggzy.com", province: "湖南" },
+  { name: "广东省公共资源交易平台", url: "http://bs.gdggzy.org.cn", province: "广东" },
+  { name: "广西壮族自治区公共资源交易平台", url: "https://gxggzy.gxzf.gov.cn", province: "广西" },
+  { name: "海南省公共资源交易服务中心", url: "http://zw.hainan.gov.cn/ggzy/", province: "海南" },
+  { name: "重庆市公共资源交易网", url: "https://www.cqggzy.com", province: "重庆" },
+  { name: "四川省公共资源交易信息网", url: "https://ggzyjy.sc.gov.cn", province: "四川" },
+  { name: "贵州省公共资源交易公共服务平台", url: "http://ggzy.guizhou.gov.cn", province: "贵州" },
+  { name: "云南省公共资源交易信息网", url: "https://ggzy.yn.gov.cn", province: "云南" },
+  { name: "陕西省公共资源交易中心", url: "http://www.sxggzyjy.cn", province: "陕西" },
+  { name: "甘肃省公共资源交易网", url: "http://ggzyjy.gansu.gov.cn", province: "甘肃" },
+  { name: "青海省公共资源交易网", url: "http://www.qhggzyjy.gov.cn", province: "青海" },
+  { name: "宁夏回族自治区公共资源交易网", url: "https://www.nxggzyjy.org", province: "宁夏" },
+  { name: "新疆维吾尔自治区公共资源交易网", url: "https://www.xjggzy.gov.cn", province: "新疆" },
+] as const;
+
+// 搜索关键词配置
+export const CRAWL_KEYWORDS = [
+  "光伏", "储能", "充电桩", "光储充", "源网荷储",
+  "渔光互补", "分布式光伏", "风电", "新能源",
+  "充电站", "换电站", "虚拟电厂", "微电网",
+  "综合能源", "智慧能源", "绿电", "氢能",
 ] as const;
 
 // 导航配置
