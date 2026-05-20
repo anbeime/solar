@@ -6256,5 +6256,61 @@
     "sourceName": "中国新能源网",
     "type": "综合能源",
     "name": "欧盟积极探索耐高压高温地热能钻井开采技术"
+  },
+  {
+    "id": "517",
+    "title": "柬埔寨 - 太阳能发电站项目A",
+    "province": "",
+    "summary": "柬埔寨发展理事会（CDC）下属柬投资委员会审批的太阳能发电站项目。该项目为柬埔寨推进可再生能源发展的重点工程之一，旨在利用当地丰富的太阳能资源，提升清洁能源发电占比。",
+    "capacity": "",
+    "amount": "",
+    "company": "",
+    "date": "2026-05-19",
+    "sourceUrl": "https://gitee.com/anbeime/solar",
+    "sourceName": "柬埔寨发展理事会公告",
+    "type": "太阳能",
+    "name": "柬埔寨太阳能发电站A"
+  },
+  {
+    "id": "518",
+    "title": "柬埔寨 - 太阳能发电站项目B",
+    "province": "",
+    "summary": "柬埔寨发展理事会（CDC）下属柬投资委员会审批的太阳能发电站项目，与项目A同期审查，补充柬埔寨地区清洁能源供给。",
+    "capacity": "",
+    "amount": "",
+    "company": "",
+    "date": "2026-05-19",
+    "sourceUrl": "https://gitee.com/anbeime/solar",
+    "sourceName": "柬埔寨发展理事会公告",
+    "type": "太阳能",
+    "name": "柬埔寨太阳能发电站B"
+  },
+  {
+    "id": "519",
+    "title": "柬埔寨 - 太阳能发电站项目C",
+    "province": "",
+    "summary": "柬埔寨发展理事会（CDC）下属柬投资委员会审批的第三座太阳能发电站项目。该批次项目合计规模可观，体现了柬埔寨对光伏产业的持续投资力度。",
+    "capacity": "",
+    "amount": "",
+    "company": "",
+    "date": "2026-05-19",
+    "sourceUrl": "https://gitee.com/anbeime/solar",
+    "sourceName": "柬埔寨发展理事会公告",
+    "type": "太阳能",
+    "name": "柬埔寨太阳能发电站C"
+  },
+  {
+    "id": "520",
+    "title": "柬埔寨 - 500MW储能电池系统",
+    "province": "",
+    "summary": "柬埔寨发展理事会（CDC）下属柬投资委员会审批的大型储能项目，规模达500MW，为柬埔寨目前规划中规模最大的电池储能系统。该项目将显著提升柬埔寨电网调峰能力和新能源消纳水平，对东南亚储能市场具有示范意义。",
+    "capacity": "500MW",
+    "amount": "",
+    "company": "",
+    "date": "2026-05-19",
+    "sourceUrl": "https://gitee.com/anbeime/solar",
+    "sourceName": "柬埔寨发展理事会公告",
+    "type": "储能",
+    "name": "柬埔寨500MW储能电池系统"
   }
 ]
