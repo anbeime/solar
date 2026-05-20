@@ -34,6 +34,6 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
     ],
-    sitemap: `${process.env.COZE_PROJECT_DOMAIN_DEFAULT || 'https://pvmap.example.com'}/sitemap.xml`,
+    sitemap: `${process.env.COZE_PROJECT_DOMAIN_DEFAULT || 'https://solar.miyucaicai.cn'}/sitemap.xml`,
   };
 }
