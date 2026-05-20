@@ -1,97 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://solar.xkx.dev/</loc>
+    <loc>https://solar.miyucaicai.cn/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/ai</loc>
+    <loc>https://solar.miyucaicai.cn/ai</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/awards</loc>
+    <loc>https://solar.miyucaicai.cn/awards</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/bidding</loc>
+    <loc>https://solar.miyucaicai.cn/bidding</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/chargers</loc>
+    <loc>https://solar.miyucaicai.cn/chargers</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dashboard</loc>
+    <loc>https://solar.miyucaicai.cn/dashboard</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/province</loc>
+    <loc>https://solar.miyucaicai.cn/province</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/digital-twin</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/digital-twin</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/embodied-ai</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/embodied-ai</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/ev-charger-ai</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/ev-charger-ai</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/ev-charging</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/ev-charging</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/ev-forecast</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/ev-forecast</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/ev-grid</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/ev-grid</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/ev-v2g</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/ev-v2g</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/power-inspection</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/power-inspection</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/power-prediction</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/power-prediction</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/power-solar</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/power-solar</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/power-wind</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/power-wind</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://solar.xkx.dev/dcic/xinchuang-energy</loc>
+    <loc>https://solar.miyucaicai.cn/dcic/xinchuang-energy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
