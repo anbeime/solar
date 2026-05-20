@@ -79,10 +79,43 @@ export const CRAWL_SOURCES = {
     baseUrl: "http://www.nea.gov.cn",
     type: 'government' as const,
     sections: [
-      { path: "http://www.nea.gov.cn/xwzx/index.htm", name: "新闻中心" },
-      { path: "http://www.nea.gov.cn/sjzz/index.htm", name: "数据中心" },
-      { path: "http://www.nea.gov.cn/politics/index.htm", name: "政策法规" },
+      { path: "/xwzx/zwgg/", name: "通知公告" },
+      { path: "/xwzx/xw/", name: "新闻中心" },
+      { path: "/sjzz/sjzz/", name: "数据中心" },
+      { path: "/zcfg/zcjd/", name: "政策解读" },
     ],
+    maxPages: 10,
+  },
+  ndrpc: {
+    name: "国家发改委",
+    baseUrl: "https://www.ndrc.gov.cn",
+    sections: [
+      { path: "/xwzx/zwgg/", name: "通知公告" },
+      { path: "/xwzx/xw/", name: "新闻动态" },
+      { path: "/zcfg/zcjd/", name: "政策解读" },
+    ],
+    keywords: ["光伏", "储能", "风电", "新能源", "可再生能源", "绿电", "碳达峰", "碳中和"],
+    maxPages: 10,
+  },
+  gdgov: {
+    name: "广东省政府",
+    baseUrl: "https://www.gd.gov.cn",
+    sections: [
+      { path: "/zwgk/zwgk02/gggky/", name: "公示公告" },
+      { path: "/zwgk/zwgk06/", name: "政策解读" },
+    ],
+    keywords: ["光伏", "储能", "风电", "新能源", "充电桩", "氢能", "电池", "可再生能源"],
+    maxPages: 10,
+  },
+  gddrc: {
+    name: "广东省发改委",
+    baseUrl: "https://drc.gd.gov.cn",
+    sections: [
+      { path: "/zwgk/ztzl/xzgfxgk/", name: "政策法规" },
+      { path: "/zwgk/tzgg/", name: "通知公告" },
+    ],
+    keywords: ["光伏", "储能", "风电", "新能源", "项目", "招标"],
+    maxPages: 10,
   },
   newenergy: {
     name: "中国新能源网",
@@ -97,7 +130,13 @@ export const CRAWL_SOURCES = {
   solarbe: {
     name: "索比光伏网",
     baseUrl: "https://www.solarbe.com",
-    type: 'media' as const,
+type: 'media' as const,
+sections: [
+"https://www.solarbe.com/news/",
+"https://www.solarbe.com/policy/",
+"https://www.solarbe.com/market/",
+],
+maxPages: 10,
   },
   bjx: {
     name: "北极星光伏网",
@@ -108,6 +147,49 @@ export const CRAWL_SOURCES = {
       "https://guangfu.bjx.com.cn/project/",
       "https://guangfu.bjx.com.cn/bidding/",
     ],
+    maxPages: 15,
+  },
+  ggzy: {
+    name: "中国招标投标网",
+    baseUrl: "https://www.ggzy.gov.cn",
+    sections: [
+      "https://www.ggzy.gov.cn/deal/dealList.html",
+      "https://www.ggzy.gov.cn/deal/dealListBid.html",
+    ],
+  },
+  csg: {
+    name: "南方电网",
+    baseUrl: "https://www.csg.cn",
+    sections: [
+      { path: "/ Columnid=6636", name: "新闻动态" },
+      { path: "/ Columnid=6645", name: "公示公告" },
+      { path: "/ Columnid=6638", name: "采购信息" },
+    ],
+    keywords: ["光伏", "储能", "风电", "新能源", "充电桩", "招标", "项目"],
+    maxPages: 10,
+  },
+  csgBid: {
+    name: "南方电网招标",
+    baseUrl: "https://www.bidding.csg.cn",
+    searchUrl: "https://www.bidding.csg.cn/zbcg/index.jhtml",
+    keywords: ["光伏", "储能", "风电", "新能源", "充电桩", "设备", "安装", "施工", "监理", "设计"],
+    maxPages: 10,
+  },
+  csgb: {
+    name: "南方电网深圳",
+    baseUrl: "https://www.sz.csg.cn",
+    sections: [
+      { path: "/zwgk/gggs/", name: "公示公告" },
+      { path: "/cggg/cgxm/", name: "采购公告" },
+    ],
+    keywords: ["光伏", "储能", "充电桩", "招标"],
+    maxPages: 10,
+  },
+  cninfo: {
+    name: "巨潮资讯网",
+    baseUrl: "https://www.cninfo.com.cn",
+    searchUrl: "https://www.cninfo.com.cn/new/fulltextSearch",
+    keywords: ["光伏", "储能", "风电", "新能源"],
   },
   escn: {
     name: "储能与电力市场",
@@ -206,6 +288,38 @@ export const CRAWL_SOURCES = {
     ] as const,
   },
 } as const;
+
+// 爬虫搜索关键词
+export const CRAWL_KEYWORDS = [
+  "光伏",
+  "储能",
+  "风电",
+  "新能源",
+  "可再生能源",
+  "充电桩",
+  "充电站",
+  "氢能",
+  "制氢",
+  "锂电池",
+  "电池",
+  "绿电",
+  "碳达峰",
+  "碳中和",
+  "源网荷储",
+  "虚拟电厂",
+  "微电网",
+  "综合能源",
+  "中标",
+  "招标",
+  "项目",
+  "开工",
+  "投产",
+  "并网",
+  "签约",
+  "审批",
+  "核准",
+  "备案",
+];
 
 // AI 分析 Prompt 模板 (Gemma 4 + Function Calling)
 export const AI_PROMPTS = {

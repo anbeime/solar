@@ -225,7 +225,7 @@ export default function Home() {
       <SiteHeader />
 
       {/* Hero 区域 */}
-      <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white py-12 relative overflow-hidden">
+      <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white py-12 relative">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(59,130,246,0.15),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(16,185,129,0.1),transparent_50%)]" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -287,7 +287,7 @@ export default function Home() {
       </section>
 
       {/* 导航卡片 */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10 mb-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-[-1.5rem] relative z-20 mb-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {navCards.map((card) => {
             const Icon = card.icon;
@@ -317,7 +317,7 @@ export default function Home() {
       </section>
 
       {/* AI智能应用 */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <Brain className="w-5 h-5 text-purple-600" />

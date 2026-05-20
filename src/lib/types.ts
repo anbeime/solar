@@ -125,6 +125,8 @@ export interface AIAnalysisRequest {
   type: 'policy' | 'project' | 'trend' | 'bidding' | 'resilience';
   content: string;
   context?: string;
+  provider?: 'ollama' | 'nvidia' | 'zhipuai';
+  model?: string;
 }
 
 export interface AIAnalysisResult {

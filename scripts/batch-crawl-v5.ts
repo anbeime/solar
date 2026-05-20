@@ -21,6 +21,52 @@ const INCREMENTAL = process.argv.includes('--incremental');
 
 function sleep(ms: number) { return new Promise(r => setTimeout(r, ms)); }
 
+// ===== 时间过滤配置 =====
+const DAYS_TO_KEEP = 90; // 默认保留90天内的信息
+const DAYS_TO_RECENT = 30; // 最近30天的信息优先显示
+
+function isWithinDays(dateStr: string, days: number): boolean {
+  if (!dateStr) return true;
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return true;
+    const now = new Date();
+    const diffTime = now.getTime() - date.getTime();
+    const diffDays = diffTime / (1000 * 60 * 60 * 24);
+    return diffDays <= days;
+  } catch {
+    return true;
+  }
+}
+
+function getRecencyScore(dateStr: string | undefined): number {
+  if (!dateStr) return 0;
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return 0;
+    const now = new Date();
+    const diffDays = (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24);
+    if (diffDays <= DAYS_TO_KEEP) {
+      if (diffDays <= DAYS_TO_RECENT) return 100;
+      return 50;
+    }
+    return 0;
+  } catch {
+    return 0;
+  }
+}
+
+function filterByDate<T extends { date?: string }>(items: T[]): T[] {
+  return items
+    .map(item => ({ ...item, _score: getRecencyScore(item.date), _date: item.date || '' }))
+    .sort((a, b) => {
+      if (b._score !== a._score) return b._score - a._score;
+      return b._date.localeCompare(a._date);
+    })
+    .filter(item => item._score > 0)
+    .map(({ _score, _date, ...item }) => item as unknown as T);
+}
+
 // ===== 爬取状态管理 =====
 
 interface CrawlState {
@@ -964,26 +1010,38 @@ async function main() {
     }
   }
   
-  console.log(`\n分类结果:`);
+  console.log(`\n分类结果 (过滤前):`);
   console.log(`  项目: ${projects.length}`);
   console.log(`  招标: ${bidding.length}`);
   console.log(`  中标: ${awards.length}`);
   console.log(`  充电桩: ${chargers.length}`);
+
+  // 按时间过滤和排序
+  const filteredProjects = filterByDate(projects);
+  const filteredBidding = filterByDate(bidding);
+  const filteredAwards = filterByDate(awards);
+  const filteredChargers = filterByDate(chargers);
+
+  console.log(`\n时间过滤后 (保留${DAYS_TO_KEEP}天内):`);
+  console.log(`  项目: ${filteredProjects.length}`);
+  console.log(`  招标: ${filteredBidding.length}`);
+  console.log(`  中标: ${filteredAwards.length}`);
+  console.log(`  充电桩: ${filteredChargers.length}`);
   
   // 保存
-  fs.writeFileSync(path.join(DATA_DIR, 'projects.json'), JSON.stringify(projects, null, 2));
-  fs.writeFileSync(path.join(DATA_DIR, 'bidding.json'), JSON.stringify(bidding, null, 2));
-  fs.writeFileSync(path.join(DATA_DIR, 'awards.json'), JSON.stringify(awards, null, 2));
-  fs.writeFileSync(path.join(DATA_DIR, 'chargers.json'), JSON.stringify(chargers, null, 2));
+  fs.writeFileSync(path.join(DATA_DIR, 'projects.json'), JSON.stringify(filteredProjects, null, 2));
+  fs.writeFileSync(path.join(DATA_DIR, 'bidding.json'), JSON.stringify(filteredBidding, null, 2));
+  fs.writeFileSync(path.join(DATA_DIR, 'awards.json'), JSON.stringify(filteredAwards, null, 2));
+  fs.writeFileSync(path.join(DATA_DIR, 'chargers.json'), JSON.stringify(filteredChargers, null, 2));
   
   // 保存爬取状态
   state.lastRun = new Date().toISOString();
   state.crawledUrls = [...crawledUrls, ...uniqueItems.map(i => i.sourceUrl)];
   state.stats = {
-    projects: projects.length,
-    bidding: bidding.length,
-    awards: awards.length,
-    chargers: chargers.length,
+    projects: filteredProjects.length,
+    bidding: filteredBidding.length,
+    awards: filteredAwards.length,
+    chargers: filteredChargers.length,
     total: uniqueItems.length,
   };
   saveState(state);
