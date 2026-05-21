@@ -1263,24 +1263,39 @@ async function crawlGovProcurementPlatform(platform: {
 
 async function getESCNLinks(): Promise<string[]> {
   const links = new Set<string>();
-  const ENERGY_KW = ["光伏", "储能", "风电", "新能源", "充电", "氢能", "电池"];
+  const ENERGY_KW = [
+    "光伏",
+    "储能",
+    "风电",
+    "新能源",
+    "充电",
+    "氢能",
+    "电池",
+    "电池储能",
+    "光储",
+  ];
   try {
     const resp = await fetch("https://www.escn.com.cn/news/", {
-      headers: { "User-Agent": "Mozilla/5.0" },
-      signal: AbortSignal.timeout(15000),
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
+      signal: AbortSignal.timeout(20000),
     });
+    if (!resp.ok) return [];
     const html = await resp.text();
-    const linkRegex = /href="(https?:\/\/www\.escn\.com\.cn\/[^"]*)"/g;
+    const linkRegex = /href="(\/[^"]*\/[^"]*\.html)"/g;
     let m: RegExpExecArray | null;
     while ((m = linkRegex.exec(html)) !== null) {
-      const titleM = html.match(new RegExp(`href="${m[1]}"[^>]*>([^<]{10,})`));
-      const title = titleM ? titleM[1] : "";
-      if (ENERGY_KW.some((kw) => title.includes(kw))) {
-        links.add(m[1]);
+      const fullUrl = `https://www.escn.com.cn${m[1]}`;
+      if (ENERGY_KW.some((kw) => m[0].includes(kw))) {
+        links.add(fullUrl);
       }
     }
-  } catch {
-    /* skip */
+  } catch (e) {
+    console.log(
+      `  [ESCN] Error: ${e instanceof Error ? e.message : String(e)}`,
+    );
   }
   return Array.from(links);
 }
@@ -1315,22 +1330,29 @@ async function crawlESCNDetail(
 
 async function getChina5ELinks(): Promise<string[]> {
   const links = new Set<string>();
-  const ENERGY_KW = ["光伏", "储能", "风电", "新能源"];
   try {
     const resp = await fetch("https://www.china5e.com/news/", {
-      headers: { "User-Agent": "Mozilla/5.0" },
-      signal: AbortSignal.timeout(15000),
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
+      signal: AbortSignal.timeout(20000),
     });
+    if (!resp.ok) {
+      console.log(`  [China5E] HTTP ${resp.status}`);
+      return [];
+    }
     const html = await resp.text();
-    const linkRegex = /href="(https?:\/\/www\.china5e\.com\/[^"]*)"/g;
+    const linkRegex = /href="(\/news\/[^"]+\.html)"/g;
     let m: RegExpExecArray | null;
     while ((m = linkRegex.exec(html)) !== null) {
-      if (ENERGY_KW.some((kw) => m[1].includes(kw))) {
-        links.add(m[1]);
-      }
+      links.add(`https://www.china5e.com${m[1]}`);
     }
-  } catch {
-    /* skip */
+    console.log(`  [China5E] Found ${links.size} links`);
+  } catch (e) {
+    console.log(
+      `  [China5E] Error: ${e instanceof Error ? e.message : String(e)}`,
+    );
   }
   return Array.from(links);
 }
