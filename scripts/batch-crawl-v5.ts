@@ -555,64 +555,7 @@ async function crawlNewEnergyDetail(
   }
 }
 
-// ===== 数据源4: 索比光伏网 =====
-
-async function getSolarbeLinks(): Promise<string[]> {
-  const links = new Set<string>();
-  try {
-    const resp = await fetch("https://www.solarbe.com/", {
-      headers: { "User-Agent": "Mozilla/5.0" },
-      signal: AbortSignal.timeout(15000),
-    });
-    const html = await resp.text();
-    const linkRegex =
-      /href="(https?:\/\/www\.solarbe\.com\/[^"]*show-htm-itemid-\d+\.html)"/g;
-    let m: RegExpExecArray | null;
-    while ((m = linkRegex.exec(html)) !== null) {
-      links.add(m[1]);
-    }
-  } catch {
-    console.log(`  [Solarbe] Failed`);
-  }
-  return Array.from(links);
-}
-
-async function crawlSolarbeDetail(
-  url: string,
-): Promise<{ title: string; summary: string; date: string } | null> {
-  try {
-    const resp = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0" },
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!resp.ok) return null;
-    const html = await resp.text();
-
-    const titleM = html.match(/<title>([^<]+)<\/title>/);
-    let title = titleM ? titleM[1].replace(/-索比光伏网$/, "").trim() : "";
-    const dateM = html.match(/(\d{4}-\d{2}-\d{2})/);
-    const date = dateM ? dateM[1] : "";
-
-    const paragraphs = html.match(/<p[^>]*>([^<]{30,})<\/p>/g) || [];
-    const summary = paragraphs
-      .map((p) => p.replace(/<[^>]+>/g, "").trim())
-      .filter(
-        (t) =>
-          t.length > 30 &&
-          !t.includes("索比光伏网为您提供") &&
-          !t.includes("商务合作"),
-      )
-      .join(" ")
-      .slice(0, 500);
-
-    if (!title || summary.length < 30) return null;
-    return { title, summary, date };
-  } catch {
-    return null;
-  }
-}
-
-// ===== 数据源5: 北极星光伏网 (新增) =====
+// ===== 数据源5: 北极星光伏网 =====
 
 async function getBJXLinks(
   sectionUrl: string,
@@ -861,9 +804,29 @@ const PROVINCE_PLATFORMS: Array<{
     province: "福建",
   },
   {
-    name: "海南省公共资源交易服务中心",
-    url: "http://zw.hainan.gov.cn/ggzy/",
-    province: "海南",
+    name: "黑龙江省公共资源交易网",
+    url: "http://www.hljggzy.gov.cn",
+    province: "黑龙江",
+  },
+  {
+    name: "安徽省公共资源交易监管网",
+    url: "http://ggzy.ah.gov.cn",
+    province: "安徽",
+  },
+  {
+    name: "四川省公共资源交易信息网",
+    url: "https://ggzyjy.sc.gov.cn",
+    province: "四川",
+  },
+  {
+    name: "云南省公共资源交易信息网",
+    url: "https://ggzy.yn.gov.cn",
+    province: "云南",
+  },
+  {
+    name: "河北省公共资源交易平台",
+    url: "https://www.hebggzy.cn",
+    province: "河北",
   },
 ];
 
@@ -1004,6 +967,166 @@ const CITY_PLATFORMS: Array<{ name: string; url: string; city: string }> = [
   },
 ];
 
+// ===== 省级政府采购平台 =====
+
+const PROVINCE_GOV_PROCUREMENT: Array<{
+  name: string;
+  url: string;
+  province: string;
+}> = [
+  {
+    name: "北京市政府采购网",
+    url: "http://www.ccgp-beijing.gov.cn",
+    province: "北京",
+  },
+  {
+    name: "上海政府采购",
+    url: "http://www.ccgp-shanghai.gov.cn",
+    province: "上海",
+  },
+  {
+    name: "天津市政府采购网",
+    url: "https://www.ccgp-tianjin.gov.cn",
+    province: "天津",
+  },
+  {
+    name: "重庆市政府采购网",
+    url: "https://www.ccgp-chongqing.gov.cn",
+    province: "重庆",
+  },
+  {
+    name: "河北省政府采购网",
+    url: "http://www.ccgp-hebei.gov.cn",
+    province: "河北",
+  },
+  {
+    name: "山西省政府采购网",
+    url: "http://www.ccgp-shanxi.gov.cn",
+    province: "山西",
+  },
+  {
+    name: "内蒙古自治区政府采购网",
+    url: "http://www.ccgp-neimenggu.gov.cn",
+    province: "内蒙古",
+  },
+  {
+    name: "辽宁省政府采购网",
+    url: "http://www.ccgp-liaoning.gov.cn",
+    province: "辽宁",
+  },
+  {
+    name: "吉林省政府采购网",
+    url: "http://www.ccgp-jilin.gov.cn",
+    province: "吉林",
+  },
+  {
+    name: "黑龙江省政府采购网",
+    url: "http://www.ccgp-heilongjiang.gov.cn",
+    province: "黑龙江",
+  },
+  {
+    name: "江苏政府采购",
+    url: "http://www.ccgp-jiangsu.gov.cn",
+    province: "江苏",
+  },
+  {
+    name: "浙江政府采购网",
+    url: "http://www.ccgp-zhejiang.gov.cn",
+    province: "浙江",
+  },
+  {
+    name: "安徽省政府采购网",
+    url: "http://www.ccgp-anhui.gov.cn",
+    province: "安徽",
+  },
+  {
+    name: "福建省政府采购网",
+    url: "http://www.ccgp-fujian.gov.cn",
+    province: "福建",
+  },
+  {
+    name: "江西省政府采购网",
+    url: "http://www.ccgp-jiangxi.gov.cn",
+    province: "江西",
+  },
+  {
+    name: "山东省政府采购网",
+    url: "http://www.ccgp-shandong.gov.cn",
+    province: "山东",
+  },
+  {
+    name: "河南省政府采购网",
+    url: "http://www.ccgp-henan.gov.cn",
+    province: "河南",
+  },
+  {
+    name: "湖北政府购买服务信息平台",
+    url: "http://www.ccgp-hubei.gov.cn",
+    province: "湖北",
+  },
+  {
+    name: "中国湖南政府采购网",
+    url: "http://www.ccgp-hunan.gov.cn",
+    province: "湖南",
+  },
+  {
+    name: "广东省政府采购网",
+    url: "http://www.ccgp-guangdong.gov.cn",
+    province: "广东",
+  },
+  {
+    name: "广西壮族自治区政府采购网",
+    url: "http://www.ccgp-guangxi.gov.cn",
+    province: "广西",
+  },
+  {
+    name: "海南省政府采购网",
+    url: "https://www.ccgp-hainan.gov.cn",
+    province: "海南",
+  },
+  {
+    name: "四川省政府采购网",
+    url: "http://www.ccgp-sichuan.gov.cn",
+    province: "四川",
+  },
+  { name: "贵州省政府采购网", url: "https://gzgp.zbytb.com", province: "贵州" },
+  {
+    name: "云南省政府采购网",
+    url: "http://www.ccgp-yunnan.gov.cn",
+    province: "云南",
+  },
+  {
+    name: "西藏自治区政府采购网",
+    url: "http://www.ccgp-xizang.gov.cn",
+    province: "西藏",
+  },
+  {
+    name: "陕西省政府采购网",
+    url: "http://www.ccgp-shaanxi.gov.cn",
+    province: "陕西",
+  },
+  {
+    name: "甘肃政府采购网",
+    url: "http://www.ccgp-gansu.gov.cn",
+    province: "甘肃",
+  },
+  {
+    name: "青海省政府采购网",
+    url: "http://www.ccgp-qinghai.gov.cn",
+    province: "青海",
+  },
+  {
+    name: "宁夏回族自治区政府采购网",
+    url: "http://www.ccgp-ningxia.gov.cn",
+    province: "宁夏",
+  },
+  {
+    name: "新疆维吾尔自治区政府采购网",
+    url: "http://www.ccgp-xinjiang.gov.cn",
+    province: "新疆",
+  },
+];
+
 async function crawlCityPlatform(platform: {
   name: string;
   url: string;
@@ -1052,6 +1175,73 @@ async function crawlCityPlatform(platform: {
 
           items.push({
             title: `[${platform.city}] ${titleTag}`,
+            summary: `来源: ${platform.name}`,
+            date: "",
+            sourceUrl: href,
+            sourceName: platform.name,
+          });
+        }
+        if (items.length > 0) break;
+      } catch {
+        continue;
+      }
+    }
+  } catch {
+    /* skip */
+  }
+  return items;
+}
+
+// ===== 省级政府采购平台爬虫 =====
+
+async function crawlGovProcurementPlatform(platform: {
+  name: string;
+  url: string;
+  province: string;
+}): Promise<
+  Array<{
+    title: string;
+    summary: string;
+    date: string;
+    sourceUrl: string;
+    sourceName: string;
+  }>
+> {
+  const items: Array<{
+    title: string;
+    summary: string;
+    date: string;
+    sourceUrl: string;
+    sourceName: string;
+  }> = [];
+  try {
+    const paths = ["/", "/jyxx/", "/zbxx/", "/cgxx/"];
+    for (const p of paths.slice(0, 1)) {
+      try {
+        const resp = await fetch(`${platform.url}${p}`, {
+          headers: {
+            "User-Agent":
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          },
+          signal: AbortSignal.timeout(10000),
+        });
+        if (!resp.ok) continue;
+        const html = await resp.text();
+
+        const linkMatches = html.matchAll(
+          /<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi,
+        );
+        for (const m of linkMatches) {
+          let href = m[1];
+          const titleTag = m[2].replace(/<[^>]+>/g, "").trim();
+          if (!titleTag || titleTag.length < 8) continue;
+          if (!ENERGY_KEYWORDS.some((kw) => titleTag.includes(kw))) continue;
+
+          if (href.startsWith("/")) href = `${platform.url}${href}`;
+          else if (!href.startsWith("http")) href = `${platform.url}/${href}`;
+
+          items.push({
+            title: `[${platform.province}] ${titleTag}`,
             summary: `来源: ${platform.name}`,
             date: "",
             sourceUrl: href,
@@ -1624,31 +1814,8 @@ async function main() {
     }
   }
 
-  // ---------- 数据源4: 索比光伏网 ----------
-  console.log("\n--- 数据源4: 索比光伏网 ---");
-  const sbLinks = await getSolarbeLinks();
-  console.log(`  索比光伏网: ${sbLinks.length} 个链接`);
-
-  if (sbLinks.length > 0) {
-    const results = await Promise.all(
-      sbLinks.map((url) => crawlSolarbeDetail(url)),
-    );
-    for (let j = 0; j < results.length; j++) {
-      const r = results[j];
-      if (r && r.title) {
-        allItems.push({
-          title: r.title,
-          summary: r.summary || "",
-          date: r.date,
-          sourceUrl: sbLinks[j],
-          sourceName: "索比光伏网",
-        });
-      }
-    }
-  }
-
-  // ---------- 数据源5: 北极星光伏网 (新增) ----------
-  console.log("\n--- 数据源5: 北极星光伏网 ---");
+  // ---------- 数据源4: 北极星光伏网 ----------
+  console.log("\n--- 数据源4: 北极星光伏网 ---");
   const bjxSections = [
     "https://guangfu.bjx.com.cn/news/",
     "https://guangfu.bjx.com.cn/project/",
@@ -1763,7 +1930,33 @@ async function main() {
   }
   console.log(`  市级平台合计: ${cityTotal} 条`);
 
-  // ---------- 数据源10: 储能与电力市场 ----------
+  // ---------- 数据源10: 省级政府采购平台 ----------
+  console.log(
+    `\n--- 数据源10: 省级政府采购平台 (${INCREMENTAL ? "TOP10" : "全部31个"}) ---`,
+  );
+  const govProcurementTargets = INCREMENTAL
+    ? PROVINCE_GOV_PROCUREMENT.slice(0, 10)
+    : PROVINCE_GOV_PROCUREMENT;
+  let govProcurementTotal = 0;
+
+  for (const platform of govProcurementTargets) {
+    try {
+      const items = await crawlGovProcurementPlatform(platform);
+      if (items.length > 0) {
+        allItems.push(...items);
+        govProcurementTotal += items.length;
+        console.log(
+          `  [${platform.province}] ${platform.name}: ${items.length} 条`,
+        );
+      }
+    } catch {
+      /* skip */
+    }
+    await sleep(INCREMENTAL ? 50 : 100);
+  }
+  console.log(`  省级政府采购合计: ${govProcurementTotal} 条`);
+
+  // ---------- 数据源11: 储能与电力市场 ----------
   console.log("\n--- 数据源10: 储能与电力市场 ---");
   try {
     const escnLinks = await getESCNLinks();
