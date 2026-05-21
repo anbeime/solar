@@ -43,6 +43,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { SubscribeSection } from "@/components/subscribe-section";
 import { useSiteData } from "@/hooks/use-data";
 import { getTypeStyle } from "@/lib/data";
 import { DATA_SOURCE_LINKS } from "@/lib/constants";
@@ -591,6 +592,9 @@ export default function Home() {
           </CardContent>
         </Card>
       </section>
+
+      {/* 免费订阅入口 */}
+      <SubscribeSection />
 
       <div className="flex-1" />
       <SiteFooter />
