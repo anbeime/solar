@@ -1069,6 +1069,303 @@ async function crawlCityPlatform(platform: {
   return items;
 }
 
+// ===== 数据源10: 储能与电力市场 =====
+
+async function getESCNLinks(): Promise<string[]> {
+  const links = new Set<string>();
+  const ENERGY_KW = ["光伏", "储能", "风电", "新能源", "充电", "氢能", "电池"];
+  try {
+    const resp = await fetch("https://www.escn.com.cn/news/", {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(15000),
+    });
+    const html = await resp.text();
+    const linkRegex = /href="(https?:\/\/www\.escn\.com\.cn\/[^"]*)"/g;
+    let m: RegExpExecArray | null;
+    while ((m = linkRegex.exec(html)) !== null) {
+      const titleM = html.match(new RegExp(`href="${m[1]}"[^>]*>([^<]{10,})`));
+      const title = titleM ? titleM[1] : "";
+      if (ENERGY_KW.some((kw) => title.includes(kw))) {
+        links.add(m[1]);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+  return Array.from(links);
+}
+
+async function crawlESCNDetail(
+  url: string,
+): Promise<{ title: string; summary: string; date: string } | null> {
+  try {
+    const resp = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const titleM = html.match(/<title>([^<]+)<\/title>/);
+    const title = titleM
+      ? titleM[1].replace(/ - 储能与电力市场$/, "").trim()
+      : "";
+    const dateM = html.match(/(\d{4}-\d{2}-\d{2})/);
+    const paragraphs = html.match(/<p[^>]*>([^<]{30,})<\/p>/g) || [];
+    const summary = paragraphs
+      .map((p) => p.replace(/<[^>]+>/g, ""))
+      .join(" ")
+      .slice(0, 300);
+    return { title, summary, date: dateM ? dateM[1] : "" };
+  } catch {
+    return null;
+  }
+}
+
+// ===== 数据源11: 中国能源网 =====
+
+async function getChina5ELinks(): Promise<string[]> {
+  const links = new Set<string>();
+  const ENERGY_KW = ["光伏", "储能", "风电", "新能源"];
+  try {
+    const resp = await fetch("https://www.china5e.com/news/", {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(15000),
+    });
+    const html = await resp.text();
+    const linkRegex = /href="(https?:\/\/www\.china5e\.com\/[^"]*)"/g;
+    let m: RegExpExecArray | null;
+    while ((m = linkRegex.exec(html)) !== null) {
+      if (ENERGY_KW.some((kw) => m[1].includes(kw))) {
+        links.add(m[1]);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+  return Array.from(links);
+}
+
+async function crawlChina5EDetail(
+  url: string,
+): Promise<{ title: string; summary: string; date: string } | null> {
+  try {
+    const resp = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const titleM = html.match(/<title>([^<]+)<\/title>/);
+    const title = titleM ? titleM[1].replace(/_中国能源网$/, "").trim() : "";
+    const dateM = html.match(/(\d{4}-\d{2}-\d{2})/);
+    const paragraphs = html.match(/<p[^>]*>([^<]{30,})<\/p>/g) || [];
+    const summary = paragraphs
+      .map((p) => p.replace(/<[^>]+>/g, ""))
+      .join(" ")
+      .slice(0, 300);
+    return { title, summary, date: dateM ? dateM[1] : "" };
+  } catch {
+    return null;
+  }
+}
+
+// ===== 数据源12: 新浪财经能源 =====
+
+async function getSinaFinanceLinks(): Promise<string[]> {
+  const links = new Set<string>();
+  const ENERGY_KW = ["光伏", "储能", "风电", "新能源"];
+  try {
+    const resp = await fetch("https://finance.sina.com.cn/energy/", {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(15000),
+    });
+    const html = await resp.text();
+    const linkRegex = /href="(https?:\/\/finance\.sina\.com\.cn\/[^"]*)"/g;
+    let m: RegExpExecArray | null;
+    while ((m = linkRegex.exec(html)) !== null) {
+      if (ENERGY_KW.some((kw) => m[1].includes(kw))) {
+        links.add(m[1]);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+  return Array.from(links);
+}
+
+async function crawlSinaDetail(
+  url: string,
+): Promise<{ title: string; summary: string; date: string } | null> {
+  try {
+    const resp = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const titleM = html.match(/<title>([^<]+)<\/title>/);
+    const title = titleM ? titleM[1].replace(/_新浪财经$/, "").trim() : "";
+    const dateM = html.match(/(\d{4}-\d{2}-\d{2})/);
+    const paragraphs = html.match(/<p[^>]*>([^<]{30,})<\/p>/g) || [];
+    const summary = paragraphs
+      .map((p) => p.replace(/<[^>]+>/g, ""))
+      .join(" ")
+      .slice(0, 300);
+    return { title, summary, date: dateM ? dateM[1] : "" };
+  } catch {
+    return null;
+  }
+}
+
+// ===== 数据源13: 东方财富网 =====
+
+async function getEastMoneyLinks(): Promise<string[]> {
+  const links = new Set<string>();
+  const ENERGY_KW = ["光伏", "储能", "风电", "新能源"];
+  try {
+    const resp = await fetch(
+      "https://search.eastmoney.com/search/s?keyword=%E5%85%89%E4%BC%8F%E5%82%A8%E8%83%BD",
+      {
+        headers: { "User-Agent": "Mozilla/5.0" },
+        signal: AbortSignal.timeout(15000),
+      },
+    );
+    const html = await resp.text();
+    const linkRegex = /href="(https?:\/\/([^\/]+)\.eastmoney\.com\/[^"]*)"/g;
+    let m: RegExpExecArray | null;
+    while ((m = linkRegex.exec(html)) !== null) {
+      if (m[1].length > 50) links.add(m[1]);
+    }
+  } catch {
+    /* skip */
+  }
+  return Array.from(links).slice(0, 50);
+}
+
+async function crawlEastMoneyDetail(
+  url: string,
+): Promise<{ title: string; summary: string; date: string } | null> {
+  try {
+    const resp = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const titleM = html.match(/<title>([^<]+)<\/title>/);
+    const title = titleM ? titleM[1].replace(/东方财富网$/, "").trim() : "";
+    const dateM = html.match(/(\d{4}-\d{2}-\d{2})/);
+    const paragraphs = html.match(/<p[^>]*>([^<]{30,})<\/p>/g) || [];
+    const summary = paragraphs
+      .map((p) => p.replace(/<[^>]+>/g, ""))
+      .join(" ")
+      .slice(0, 300);
+    return { title, summary, date: dateM ? dateM[1] : "" };
+  } catch {
+    return null;
+  }
+}
+
+// ===== 数据源14: 国家发改委 =====
+
+async function getNDRCLinks(): Promise<string[]> {
+  const links = new Set<string>();
+  const ENERGY_KW = ["光伏", "储能", "新能源", "项目"];
+  try {
+    const resp = await fetch("https://www.ndrc.gov.cn/xwzx/tzgg/", {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(15000),
+    });
+    const html = await resp.text();
+    const linkRegex = /href="(https?:\/\/www\.ndrc\.gov\.cn\/[^"]*)"/g;
+    let m: RegExpExecArray | null;
+    while ((m = linkRegex.exec(html)) !== null) {
+      if (ENERGY_KW.some((kw) => m[1].includes(kw))) {
+        links.add(m[1]);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+  return Array.from(links);
+}
+
+async function crawlNDRCDetail(
+  url: string,
+): Promise<{ title: string; summary: string; date: string } | null> {
+  try {
+    const resp = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const titleM = html.match(/<title>([^<]+)<\/title>/);
+    const title = titleM
+      ? titleM[1].replace(/国家发展和改革委员会$/, "").trim()
+      : "";
+    const dateM = html.match(/(\d{4}-\d{2}-\d{2})/);
+    const paragraphs = html.match(/<p[^>]*>([^<]{30,})<\/p>/g) || [];
+    const summary = paragraphs
+      .map((p) => p.replace(/<[^>]+>/g, ""))
+      .join(" ")
+      .slice(0, 300);
+    return { title, summary, date: dateM ? dateM[1] : "" };
+  } catch {
+    return null;
+  }
+}
+
+// ===== 数据源15: 中国招投标公共服务平台 =====
+
+async function getTenderInfoLinks(): Promise<string[]> {
+  const links = new Set<string>();
+  const ENERGY_KW = ["光伏", "储能", "新能源", "招标"];
+  try {
+    const resp = await fetch("https://www.cebpubservice.com/cggg/zygg/gkzb/", {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(15000),
+    });
+    const html = await resp.text();
+    const linkRegex = /href="(https?:\/\/www\.cebpubservice\.com\/[^"]*)"/g;
+    let m: RegExpExecArray | null;
+    while ((m = linkRegex.exec(html)) !== null) {
+      if (ENERGY_KW.some((kw) => m[1].includes(kw))) {
+        links.add(m[1]);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+  return Array.from(links);
+}
+
+async function crawlTenderDetail(
+  url: string,
+): Promise<{ title: string; summary: string; date: string } | null> {
+  try {
+    const resp = await fetch(url, {
+      headers: { "User-Agent": "Mozilla/5.0" },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return null;
+    const html = await resp.text();
+    const titleM = html.match(/<title>([^<]+)<\/title>/);
+    const title = titleM
+      ? titleM[1].replace(/ - 中国招投标公共服务平台$/, "").trim()
+      : "";
+    const dateM = html.match(/(\d{4}-\d{2}-\d{2})/);
+    const paragraphs = html.match(/<p[^>]*>([^<]{30,})<\/p>/g) || [];
+    const summary = paragraphs
+      .map((p) => p.replace(/<[^>]+>/g, ""))
+      .join(" ")
+      .slice(0, 300);
+    return { title, summary, date: dateM ? dateM[1] : "" };
+  } catch {
+    return null;
+  }
+}
+
 // ===== 数据源8: 中国政府采购网-国家级 (增强) =====
 
 async function getCCGPLinks(): Promise<string[]> {
@@ -1465,6 +1762,110 @@ async function main() {
     await sleep(100);
   }
   console.log(`  市级平台合计: ${cityTotal} 条`);
+
+  // ---------- 数据源10: 储能与电力市场 ----------
+  console.log("\n--- 数据源10: 储能与电力市场 ---");
+  try {
+    const escnLinks = await getESCNLinks();
+    console.log(`  储能与电力市场: ${escnLinks.length} 条`);
+    for (const link of escnLinks) {
+      const detail = await crawlESCNDetail(link);
+      if (detail?.title) {
+        allItems.push({
+          ...detail,
+          sourceUrl: link,
+          sourceName: "储能与电力市场",
+        });
+        await sleep(50);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+
+  // ---------- 数据源11: 中国能源网 ----------
+  console.log("\n--- 数据源11: 中国能源网 ---");
+  try {
+    const china5eLinks = await getChina5ELinks();
+    console.log(`  中国能源网: ${china5eLinks.length} 条`);
+    for (const link of china5eLinks) {
+      const detail = await crawlChina5EDetail(link);
+      if (detail?.title) {
+        allItems.push({ ...detail, sourceUrl: link, sourceName: "中国能源网" });
+        await sleep(50);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+
+  // ---------- 数据源12: 新浪财经能源 ----------
+  console.log("\n--- 数据源12: 新浪财经能源 ---");
+  try {
+    const sinaLinks = await getSinaFinanceLinks();
+    console.log(`  新浪财经: ${sinaLinks.length} 条`);
+    for (const link of sinaLinks) {
+      const detail = await crawlSinaDetail(link);
+      if (detail?.title) {
+        allItems.push({ ...detail, sourceUrl: link, sourceName: "新浪财经" });
+        await sleep(50);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+
+  // ---------- 数据源13: 东方财富网 ----------
+  console.log("\n--- 数据源13: 东方财富网 ---");
+  try {
+    const eastmoneyLinks = await getEastMoneyLinks();
+    console.log(`  东方财富网: ${eastmoneyLinks.length} 条`);
+    for (const link of eastmoneyLinks) {
+      const detail = await crawlEastMoneyDetail(link);
+      if (detail?.title) {
+        allItems.push({ ...detail, sourceUrl: link, sourceName: "东方财富网" });
+        await sleep(50);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+
+  // ---------- 数据源14: 国家发改委 ----------
+  console.log("\n--- 数据源14: 国家发改委 ---");
+  try {
+    const ndrcLinks = await getNDRCLinks();
+    console.log(`  国家发改委: ${ndrcLinks.length} 条`);
+    for (const link of ndrcLinks) {
+      const detail = await crawlNDRCDetail(link);
+      if (detail?.title) {
+        allItems.push({ ...detail, sourceUrl: link, sourceName: "国家发改委" });
+        await sleep(50);
+      }
+    }
+  } catch {
+    /* skip */
+  }
+
+  // ---------- 数据源15: 中国招投标公共服务平台 ----------
+  console.log("\n--- 数据源15: 中国招投标公共服务平台 ---");
+  try {
+    const tenderLinks = await getTenderInfoLinks();
+    console.log(`  中国招投标公共服务平台: ${tenderLinks.length} 条`);
+    for (const link of tenderLinks) {
+      const detail = await crawlTenderDetail(link);
+      if (detail?.title) {
+        allItems.push({
+          ...detail,
+          sourceUrl: link,
+          sourceName: "中国招投标公共服务平台",
+        });
+        await sleep(50);
+      }
+    }
+  } catch {
+    /* skip */
+  }
 
   // ---------- 分类和保存 ----------
   console.log(`\n=== 数据处理 ===`);
