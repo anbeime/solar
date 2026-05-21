@@ -1,0 +1,3070 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光伏储能地图站 - 行业大数据平台</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- 高德地图将通过components/map-amap.js动态加载 -->
+    <script src="components/map-amap.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #00d4ff;
+            --primary-dark: #0099cc;
+            --secondary: #00ff88;
+            --accent: #7b2dff;
+            --accent-orange: #ff8844;
+            --accent-red: #ff4466;
+            --bg-dark: #0a0e27;
+            --bg-card: rgba(20, 30, 60, 0.6);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border-glow: rgba(0, 212, 255, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #8892b0;
+            --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #7b2dff 100%);
+            --gradient-secondary: linear-gradient(135deg, #00ff88 0%, #00d4ff 100%);
+            --gradient-accent: linear-gradient(135deg, #7b2dff 0%, #ff4466 100%);
+            --shadow-glow: 0 0 30px rgba(0, 212, 255, 0.2);
+            --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        body { 
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background: var(--bg-dark); 
+            color: var(--text-primary); 
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* 背景装饰 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(123, 45, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(0, 255, 136, 0.03) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 网格背景 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* 头部 */
+        .header {
+            position: relative;
+            z-index: 100;
+            background: linear-gradient(180deg, rgba(10, 14, 39, 0.95) 0%, rgba(10, 14, 39, 0.8) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 0 30px;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.5;
+        }
+        
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px; 
+            font-weight: 700; 
+            letter-spacing: 2px;
+            cursor: pointer;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.6); }
+        }
+        
+        .logo-text {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 搜索框 */
+        .search-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 25px;
+            padding: 8px 20px;
+            width: 300px;
+            transition: all 0.3s;
+        }
+        
+        .search-box:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+            background: rgba(0, 212, 255, 0.05);
+        }
+        
+        .search-box input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .search-box input::placeholder {
+            color: var(--text-secondary);
+        }
+        
+        .search-box .search-icon {
+            color: var(--primary);
+            font-size: 16px;
+        }
+        
+        .header-info { 
+            display: flex; 
+            gap: 25px; 
+            align-items: center; 
+            font-size: 13px; 
+            color: var(--text-secondary); 
+        }
+        
+        .header-info span:first-child {
+            opacity: 0.7;
+        }
+        
+        .update-time { 
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .update-time::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* 统计卡片区域 */
+        .stats-bar { 
+            position: relative;
+            z-index: 10;
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 20px; 
+            padding: 25px 30px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 100%);
+        }
+        
+        .stat-card { 
+            position: relative;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px; 
+            padding: 22px; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .stat-card:hover { 
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--border-glow);
+            box-shadow: var(--shadow-glow), var(--shadow-card);
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        
+        .stat-card:hover::after {
+            left: 100%;
+        }
+        
+        .stat-card:nth-child(1)::before { background: var(--gradient-primary); }
+        .stat-card:nth-child(2)::before { background: var(--gradient-secondary); }
+        .stat-card:nth-child(3)::before { background: var(--gradient-accent); }
+        .stat-card:nth-child(4)::before { background: linear-gradient(90deg, #ff8844, #ff4466); }
+        .stat-card:nth-child(5)::before { background: linear-gradient(90deg, #ffd700, #ff8844); }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            background: var(--bg-glass);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        
+        .stat-value { 
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px; 
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 6px;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        .stat-value.green { 
+            color: var(--secondary);
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+        }
+        .stat-value.purple { 
+            color: var(--accent);
+            text-shadow: 0 0 20px rgba(123, 45, 255, 0.5);
+        }
+        .stat-value.orange { 
+            color: var(--accent-orange);
+            text-shadow: 0 0 20px rgba(255, 136, 68, 0.5);
+        }
+        .stat-value.red { 
+            color: var(--accent-red);
+            text-shadow: 0 0 20px rgba(255, 68, 102, 0.5);
+        }
+        
+        .stat-label { 
+            font-size: 13px; 
+            color: var(--text-secondary); 
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+        
+        /* ========== 目录卡片区域 ========== */
+        .nav-cards-section {
+            position: relative;
+            z-index: 10;
+            padding: 30px;
+        }
+        
+        .nav-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .nav-card {
+            position: relative;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 28px 24px;
+            border: 1px solid rgba(255,255,255,0.08);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+            transition: left 0.6s;
+        }
+        
+        .nav-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            border-color: var(--border-glow);
+            box-shadow: var(--shadow-glow), var(--shadow-card);
+        }
+        
+        .nav-card:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-card:hover::after {
+            left: 100%;
+        }
+        
+        /* 每个卡片不同的顶部渐变色 */
+        .nav-card:nth-child(1)::before { background: linear-gradient(90deg, #00d4ff, #00ff88); }
+        .nav-card:nth-child(2)::before { background: linear-gradient(90deg, #ff8844, #ffd700); }
+        .nav-card:nth-child(3)::before { background: linear-gradient(90deg, #b44aff, #ff4466); }
+        .nav-card:nth-child(4)::before { background: linear-gradient(90deg, #00d4ff, #b44aff); }
+        .nav-card:nth-child(5)::before { background: linear-gradient(90deg, #00ff88, #00d4ff); }
+        .nav-card:nth-child(6)::before { background: linear-gradient(90deg, #ffd700, #ff8844); }
+        .nav-card:nth-child(7)::before { background: linear-gradient(90deg, #7b2dff, #00d4ff); }
+        .nav-card:nth-child(8)::before { background: linear-gradient(90deg, #00d4ff, #7b2dff); }
+        
+        .nav-card-icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 16px;
+            background: var(--bg-glass);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            transition: all 0.3s;
+        }
+        
+        .nav-card:hover .nav-card-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .nav-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .nav-card-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+        
+        .nav-card-stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+        
+        .nav-card:nth-child(1) .nav-card-stat { color: #00d4ff; }
+        .nav-card:nth-child(2) .nav-card-stat { color: #ff8844; }
+        .nav-card:nth-child(3) .nav-card-stat { color: #b44aff; }
+        .nav-card:nth-child(4) .nav-card-stat { color: #00d4ff; }
+        .nav-card:nth-child(5) .nav-card-stat { color: #00ff88; }
+        .nav-card:nth-child(6) .nav-card-stat { color: #ffd700; }
+        .nav-card:nth-child(7) .nav-card-stat { color: #7b2dff; }
+        .nav-card:nth-child(8) .nav-card-stat { color: #00d4ff; }
+        
+        .nav-card-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .nav-card:hover .nav-card-btn {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+        }
+        
+        /* ========== 标签页区域 ========== */
+        .tabs { 
+            position: relative;
+            z-index: 10;
+            display: flex; 
+            gap: 8px; 
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .tab { 
+            position: relative;
+            padding: 12px 28px; 
+            border-radius: 12px; 
+            cursor: pointer; 
+            background: var(--bg-glass);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid transparent;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tab::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.4s;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .tab:hover { 
+            color: var(--text-primary);
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .tab:hover::before {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+        }
+        
+        .tab.active { 
+            background: var(--gradient-primary);
+            color: #fff; 
+            font-weight: 600;
+            border-color: transparent;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid var(--primary);
+            opacity: 0;
+            animation: tab-arrow 0.3s forwards;
+        }
+        
+        @keyframes tab-arrow {
+            to { opacity: 1; }
+        }
+        
+        /* 主内容区 */
+        .main-container { 
+            display: flex; 
+            height: calc(100vh - 580px);
+            position: relative;
+            z-index: 5;
+        }
+        
+        /* 侧边栏 */
+        .sidebar { 
+            width: 350px; 
+            background: linear-gradient(180deg, rgba(15, 20, 40, 0.95) 0%, rgba(10, 14, 27, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px; 
+            overflow-y: auto; 
+            border-right: 1px solid rgba(0, 212, 255, 0.1);
+        }
+        
+        .sidebar-section { 
+            margin-bottom: 24px; 
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 18px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+        
+        .sidebar-section:hover {
+            border-color: rgba(0, 212, 255, 0.15);
+        }
+        
+        .sidebar-title { 
+            font-size: 14px; 
+            color: var(--primary); 
+            margin-bottom: 14px; 
+            padding-bottom: 10px; 
+            border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+        
+        /* 筛选器 */
+        .filter-group { margin-bottom: 14px; }
+        
+        .filter-label { 
+            font-size: 12px; 
+            color: var(--text-secondary); 
+            margin-bottom: 6px; 
+            display: block;
+            font-weight: 500;
+        }
+        
+        .filter-select, .filter-input { 
+            width: 100%; 
+            padding: 10px 14px; 
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px; 
+            color: var(--text-primary); 
+            font-size: 13px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .filter-select:hover, .filter-input:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+        
+        .filter-select:focus, .filter-input:focus { 
+            outline: none; 
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+            background: rgba(0, 212, 255, 0.05);
+        }
+        
+        .filter-select option {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+        
+        /* 列表项 */
+        .list-item { 
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+            border-radius: 12px; 
+            padding: 14px; 
+            margin-bottom: 10px; 
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid transparent;
+            border-left: 3px solid transparent;
+        }
+        
+        .list-item:hover { 
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 212, 255, 0.05) 100%);
+            border-left-color: var(--primary);
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.15);
+        }
+        
+        .list-item-title { 
+            font-size: 14px; 
+            color: var(--text-primary); 
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .list-item-meta { 
+            font-size: 12px; 
+            color: var(--text-secondary); 
+            display: flex; 
+            gap: 10px; 
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .tag { 
+            padding: 3px 10px; 
+            border-radius: 6px; 
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        .tag-pv { 
+            background: rgba(0, 212, 255, 0.2); 
+            color: var(--primary);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        .tag-storage { 
+            background: rgba(0, 255, 136, 0.2); 
+            color: var(--secondary);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        .tag-bidding { 
+            background: rgba(255, 136, 68, 0.2); 
+            color: var(--accent-orange);
+            border: 1px solid rgba(255, 136, 68, 0.3);
+        }
+        
+        .tag-winning { 
+            background: rgba(180, 74, 255, 0.2); 
+            color: var(--accent);
+            border: 1px solid rgba(180, 74, 255, 0.3);
+        }
+        
+        .tag-epc { 
+            background: rgba(255, 68, 102, 0.2); 
+            color: var(--accent-red);
+            border: 1px solid rgba(255, 68, 102, 0.3);
+        }
+        
+        /* 地图容器 */
+        .map-wrapper {
+            flex: 1;
+            position: relative;
+            padding: 15px;
+        }
+        
+        .map-border {
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(123, 45, 255, 0.3), rgba(0, 255, 136, 0.3));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: border-glow 4s linear infinite;
+        }
+        
+        @keyframes border-glow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 18px;
+            overflow: hidden;
+            background: var(--bg-dark);
+            box-shadow: var(--shadow-card), inset 0 0 60px rgba(0, 212, 255, 0.05);
+        }
+        
+        #map { 
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            position: relative;
+        }
+        
+        .amap-container { background: var(--bg-dark); }
+        
+        /* 高德地图信息窗体样式 */
+        .amap-info-content { padding: 0 !important; }
+        .amap-info-sharp { display: none !important; }
+        
+        /* Tab内容 */
+        .tab-content { 
+            display: none; 
+            flex: 1; 
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease-out;
+        }
+        
+        .tab-content.active { 
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 招投标表格 */
+        .bidding-table { 
+            width: 100%; 
+            border-collapse: separate;
+            border-spacing: 0 8px;
+        }
+        
+        .bidding-table th, .bidding-table td { 
+            padding: 14px 12px; 
+            text-align: left;
+            font-size: 13px;
+        }
+        
+        .bidding-table thead th {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--primary);
+            font-weight: 600;
+            border: none;
+        }
+        
+        .bidding-table thead th:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+        
+        .bidding-table thead th:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .bidding-table tbody tr {
+            background: rgba(255, 255, 255, 0.03);
+            transition: all 0.3s;
+        }
+        
+        .bidding-table tbody tr:hover td {
+            background: rgba(0, 212, 255, 0.08);
+        }
+        
+        .bidding-table tbody td {
+            border-top: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .bidding-table tbody td:first-child {
+            border-radius: 10px 0 0 10px;
+        }
+        
+        .bidding-table tbody td:last-child {
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .amount-highlight { 
+            color: var(--accent-orange); 
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        /* 详情弹窗 */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 2000; 
+            justify-content: center; 
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .modal.active { 
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content { 
+            background: linear-gradient(135deg, rgba(20, 30, 60, 0.98) 0%, rgba(10, 14, 27, 0.98) 100%);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 24px; 
+            padding: 32px; 
+            max-width: 600px; 
+            width: 90%; 
+            max-height: 85vh; 
+            overflow-y: auto;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 212, 255, 0.1);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+        }
+        
+        .modal-title { 
+            font-size: 20px; 
+            font-weight: 700;
+            color: var(--text-primary);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .modal-close { 
+            width: 36px; 
+            height: 36px; 
+            border-radius: 50%; 
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            cursor: pointer; 
+            font-size: 20px;
+            transition: all 0.3s;
+            color: var(--text-secondary);
+        }
+        
+        .modal-close:hover { 
+            background: rgba(255, 68, 102, 0.3);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            transform: rotate(90deg);
+        }
+        
+        .modal-field { 
+            margin-bottom: 18px;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .modal-label { 
+            font-size: 12px; 
+            color: var(--text-secondary); 
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .modal-value { 
+            font-size: 15px; 
+            color: var(--text-primary);
+        }
+        
+        .modal-actions { 
+            display: flex; 
+            gap: 12px; 
+            margin-top: 24px;
+        }
+        
+        .btn { 
+            padding: 12px 24px; 
+            border-radius: 12px; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary { 
+            background: var(--gradient-primary);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-primary:hover { 
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.5);
+        }
+        
+        .btn-secondary { 
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-secondary:hover { 
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* 付费功能提示 */
+        .premium-badge { 
+            background: linear-gradient(135deg, #ffd700 0%, #ff8844 100%);
+            color: #000; 
+            padding: 4px 10px; 
+            border-radius: 6px; 
+            font-size: 10px; 
+            font-weight: bold; 
+            margin-left: 8px;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        
+        /* 省份选择 */
+        .province-btn { 
+            padding: 8px 14px; 
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px; 
+            cursor: pointer; 
+            font-size: 12px; 
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+        
+        .province-btn:hover, .province-btn.active { 
+            background: rgba(0, 212, 255, 0.2);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+        
+        .province-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+        
+        /* 滚动条 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--primary), var(--accent)); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, var(--primary-dark), var(--accent)); }
+        
+        /* 底部信息栏 */
+        .footer {
+            position: relative;
+            z-index: 10;
+            background: linear-gradient(180deg, transparent 0%, rgba(10, 14, 39, 0.95) 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(0, 212, 255, 0.1);
+        }
+        
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .footer-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--secondary);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+        
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-dark);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+        
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .loader-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(0, 212, 255, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .loader-text {
+            margin-top: 20px;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary);
+            letter-spacing: 3px;
+        }
+        
+        /* 数字滚动动画 */
+        .count-up {
+            transition: all 0.3s;
+        }
+        
+        /* 省份图表样式 */
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        
+        .chart-bar:hover {
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .chart-label {
+            width: 70px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+        
+        .chart-bar-wrapper {
+            flex: 1;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .chart-bar-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: 10px;
+            transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+        
+        .chart-bar-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .chart-value {
+            width: 50px;
+            text-align: right;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            color: var(--primary);
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+        
+        /* ========== 报告弹窗 ========== */
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .report-modal.active {
+            display: flex;
+        }
+        
+        .report-modal-content {
+            background: linear-gradient(135deg, rgba(20, 30, 60, 0.98) 0%, rgba(10, 14, 27, 0.98) 100%);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+        }
+        
+        .report-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        
+        .report-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .report-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: 16px;
+        }
+        
+        .report-info h4 {
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .report-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        /* ========== AI助手面板 ========== */
+        .ai-panel {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            height: 500px;
+            background: linear-gradient(135deg, rgba(20, 30, 60, 0.98) 0%, rgba(10, 14, 27, 0.98) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .ai-panel.active {
+            display: flex;
+        }
+        
+        .ai-header {
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
+        
+        .ai-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .ai-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+        
+        .ai-close:hover {
+            background: rgba(255, 68, 102, 0.3);
+            color: var(--accent-red);
+        }
+        
+        .ai-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .ai-message {
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .ai-message.user {
+            background: rgba(0, 212, 255, 0.15);
+            margin-left: 20px;
+        }
+        
+        .ai-message.assistant {
+            background: rgba(123, 45, 255, 0.15);
+            margin-right: 20px;
+        }
+        
+        .ai-input-area {
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            gap: 10px;
+        }
+        
+        .ai-input {
+            flex: 1;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 20px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .ai-input:focus {
+            border-color: var(--primary);
+        }
+        
+        .ai-send {
+            padding: 12px 20px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 20px;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .ai-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+        }
+        
+        /* 响应式 */
+        @media (max-width: 1400px) {
+            .stats-bar { grid-template-columns: repeat(3, 1fr); }
+            .nav-cards-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        
+        @media (max-width: 1200px) {
+            .main-container { flex-direction: column; }
+            .sidebar { width: 100%; height: 300px; }
+            .header { flex-direction: column; height: auto; padding: 15px; gap: 10px; }
+            .header-info { flex-wrap: wrap; justify-content: center; }
+            .search-box { width: 100%; }
+        }
+        
+        @media (max-width: 900px) {
+            .nav-cards-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .stats-bar { grid-template-columns: repeat(2, 1fr); }
+            .nav-cards-grid { grid-template-columns: repeat(2, 1fr); }
+            .tabs { flex-wrap: wrap; justify-content: center; }
+            .tab { padding: 10px 18px; font-size: 13px; }
+            .footer { flex-direction: column; gap: 10px; text-align: center; }
+            .ai-panel { width: 95%; right: 2.5%; height: 60vh; }
+        }
+        
+        /* 动画入场 */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+        
+        /* 卡片入场动画 */
+        .nav-card {
+            opacity: 0;
+            animation: cardFadeIn 0.5s ease-out forwards;
+        }
+        
+        .nav-card:nth-child(1) { animation-delay: 0.1s; }
+        .nav-card:nth-child(2) { animation-delay: 0.15s; }
+        .nav-card:nth-child(3) { animation-delay: 0.2s; }
+        .nav-card:nth-child(4) { animation-delay: 0.25s; }
+        .nav-card:nth-child(5) { animation-delay: 0.3s; }
+        .nav-card:nth-child(6) { animation-delay: 0.35s; }
+        .nav-card:nth-child(7) { animation-delay: 0.4s; }
+        .nav-card:nth-child(8) { animation-delay: 0.45s; }
+        
+        @keyframes cardFadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    
+    <!-- ========== JSON-LD 结构化数据 (GEO优化) ========== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "光伏储能地图站",
+      "description": "中国领先的光伏储能行业垂直目录站，收录全国992个光伏储能项目、200+招标公告、6000+充电站数据",
+      "url": "https://pvmap.example.com",
+      "areaServed": { "@type": "Country", "name": "中国" },
+      "contactPoint": { "@type": "ContactPoint", "email": "data@pvmap.example.com", "contactType": "数据咨询" }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Dataset",
+      "name": "中国光伏储能项目数据库",
+      "description": "收录2024-2026年全国992个光伏储能项目，总装机容量68.27GW，储能容量6179.25MWh",
+      "dateModified": "2026-04-28",
+      "spatialCoverage": { "@type": "Country", "name": "中国" },
+      "variableMeasured": [
+        { "@type": "PropertyValue", "name": "项目总数", "value": 992 },
+        { "@type": "PropertyValue", "name": "光伏装机容量", "value": "68.27 GW" },
+        { "@type": "PropertyValue", "name": "储能容量", "value": "6179.25 MWh" },
+        { "@type": "PropertyValue", "name": "招标总金额", "value": "478.4 亿元" }
+      ]
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "光伏储能地图站收录了多少个项目？",
+          "acceptedAnswer": { "@type": "Answer", "text": "截至2026年4月，收录992个光伏储能项目，覆盖全国30个省份，总装机容量68.27GW。" }
+        },
+        {
+          "@type": "Question",
+          "name": "数据来源是什么？",
+          "acceptedAnswer": { "@type": "Answer", "text": "数据来源于国家能源局、北极星光伏网、CNESA储能联盟、中国招标投标公共服务平台等权威机构。" }
+        },
+        {
+          "@type": "Question",
+          "name": "招标公告数据多久更新？",
+          "acceptedAnswer": { "@type": "Answer", "text": "每日凌晨1:00自动采集更新，确保信息时效性。" }
+        }
+      ]
+    }
+    </script>
+</head>
+<body>
+    <!-- 页面加载动画 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">LOADING...</div>
+    </div>
+    
+    <header class="header">
+        <div class="logo" onclick="goHome()">
+            <div class="logo-icon">⚡</div>
+            <span class="logo-text">光伏储能目录站</span>
+        </div>
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="搜索项目、招标、中标信息..." id="globalSearch">
+        </div>
+        <div class="header-info">
+            <span>数据来源：国家能源局 | 北极星光伏网 | CNESA | 招投标平台</span>
+            <span class="update-time" id="updateTime">数据更新：加载中...</span>
+        </div>
+    </header>
+    
+    <!-- GEO优化：AI友好的自包含段落 -->
+    <section class="about-section" style="position:relative;z-index:10;padding:20px 30px;max-width:1200px;margin:0 auto;">
+        <div class="about-content" style="background:linear-gradient(135deg,rgba(0,212,255,0.08) 0%,rgba(123,45,255,0.08) 100%);border:1px solid rgba(0,212,255,0.2);border-radius:16px;padding:25px 30px;">
+            <h2 style="font-family:'Orbitron',sans-serif;font-size:1.1rem;color:#00d4ff;margin-bottom:15px;display:flex;align-items:center;gap:10px;">
+                <span>ℹ️</span> 关于光伏储能地图站
+            </h2>
+            <p style="color:#8892b0;font-size:0.95rem;line-height:1.9;margin-bottom:12px;">
+                光伏储能地图站是<span style="color:#fff;font-weight:500;">中国领先的光伏储能行业大数据平台</span>，汇集全国<span style="color:#00d4ff;font-weight:600;">992+</span>光伏储能项目信息。截至2026年4月，平台收录项目总装机容量达<span style="color:#00d4ff;font-weight:600;">68.27吉瓦（GW）</span>，总储能容量<span style="color:#b44aff;font-weight:600;">6,179.25兆瓦时（MWh）</span>。2025年以来招标总金额达<span style="color:#ff8844;font-weight:600;">478.4亿元</span>，平均单项目招标金额约<span style="color:#ff8844;font-weight:600;">9.57亿元</span>。
+            </p>
+            <p style="color:#8892b0;font-size:0.9rem;line-height:1.8;">
+                项目类型分布：<strong style="color:#fff;">分布式光伏307个（34%）</strong>、<strong style="color:#fff;">集中式光伏302个（34%）</strong>、<strong style="color:#fff;">光储一体287个（32%）</strong>。项目最集中的省份依次为广东（58个）、山东（55个）、江苏（52个）、浙江（48个）、河北（45个）。主要开发商包括协鑫集团、晶科能源、中广核集团、天合光能、华能集团等五大发电集团及头部民企。
+            </p>
+            <p style="color:#8892b0;font-size:0.85rem;margin-top:12px;">
+                <span style="background:rgba(0,255,136,0.1);color:#00ff88;padding:3px 10px;border-radius:4px;margin-right:8px;">数据来源</span>
+                <span>北极星光伏网 · 国家能源局 · 中国招标投标公共服务平台 · 各地发改委</span>
+            </p>
+        </div>
+    </section>
+    
+    <div class="stats-bar">
+        <div class="stat-card fade-in stagger-1">
+            <div class="stat-icon">📊</div>
+            <div class="stat-value count-up" id="totalProjects" data-target="0">--</div>
+            <div class="stat-label">总项目数</div>
+        </div>
+        <div class="stat-card fade-in stagger-2">
+            <div class="stat-icon">☀️</div>
+            <div class="stat-value green count-up" id="totalPVGW" data-target="0">--</div>
+            <div class="stat-label">光伏装机 (GW)</div>
+        </div>
+        <div class="stat-card fade-in stagger-3">
+            <div class="stat-icon">🔋</div>
+            <div class="stat-value purple count-up" id="totalStorageGWH" data-target="0">--</div>
+            <div class="stat-label">储能装机 (GWh)</div>
+        </div>
+        <div class="stat-card fade-in stagger-4">
+            <div class="stat-icon">📢</div>
+            <div class="stat-value orange count-up" id="totalBidding" data-target="0">--</div>
+            <div class="stat-label">招标公告</div>
+        </div>
+        <div class="stat-card fade-in stagger-5">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value red count-up" id="totalAmount" data-target="0">--</div>
+            <div class="stat-label">招标总金额 (亿)</div>
+        </div>
+    </div>
+    
+    <!-- ========== 目录导航卡片 ========== -->
+    <div class="nav-cards-section" id="navCards">
+        <div class="nav-cards-grid">
+            <!-- 项目地图 -->
+            <div class="nav-card" onclick="navigateTo('map')">
+                <div class="nav-card-icon">🗺️</div>
+                <div class="nav-card-title">项目地图</div>
+                <div class="nav-card-desc">全国光伏储能项目分布</div>
+                <div class="nav-card-stat" id="navProjectCount">📍 609 项目</div>
+                <div class="nav-card-btn">进入 →</div>
+            </div>
+            
+            <!-- 招标动态 -->
+            <div class="nav-card" onclick="navigateTo('bidding')">
+                <div class="nav-card-icon">📢</div>
+                <div class="nav-card-title">招标动态</div>
+                <div class="nav-card-desc">最新招标公告信息</div>
+                <div class="nav-card-stat" id="navBiddingCount">📋 200+ 招标</div>
+                <div class="nav-card-btn">进入 →</div>
+            </div>
+            
+            <!-- 中标公示 -->
+            <div class="nav-card" onclick="navigateTo('winning')">
+                <div class="nav-card-icon">🏆</div>
+                <div class="nav-card-title">中标公示</div>
+                <div class="nav-card-desc">中标结果与金额公示</div>
+                <div class="nav-card-stat" id="navWinningCount">🏅 80+ 中标</div>
+                <div class="nav-card-btn">进入 →</div>
+            </div>
+            
+            <!-- 省份分析 -->
+            <div class="nav-card" onclick="navigateTo('analysis')">
+                <div class="nav-card-icon">📊</div>
+                <div class="nav-card-title">省份分析</div>
+                <div class="nav-card-desc">各省份项目数据统计</div>
+                <div class="nav-card-stat" id="navProvinceCount">🗋 10省统计</div>
+                <div class="nav-card-btn">进入 →</div>
+            </div>
+            
+            <!-- 充电桩 -->
+            <div class="nav-card" onclick="showChargingStations()">
+                <div class="nav-card-icon">⚡</div>
+                <div class="nav-card-title">充电桩</div>
+                <div class="nav-card-desc">新能源汽车充电站分布</div>
+                <div class="nav-card-stat">🔌 6000+ 站点</div>
+                <div class="nav-card-btn">进入 →</div>
+            </div>
+            
+            <!-- 行业报告 -->
+            <div class="nav-card" onclick="showReports()">
+                <div class="nav-card-icon">📚</div>
+                <div class="nav-card-title">行业报告</div>
+                <div class="nav-card-desc">GEO数据库与研究报告</div>
+                <div class="nav-card-stat">📄 资料库</div>
+                <div class="nav-card-btn">查看 →</div>
+            </div>
+            
+            <!-- AI助手 -->
+            <div class="nav-card" onclick="toggleAIPanel()">
+                <div class="nav-card-icon">🤖</div>
+                <div class="nav-card-title">AI助手</div>
+                <div class="nav-card-desc">光伏选址智能问答</div>
+                <div class="nav-card-stat">💬 选址问答</div>
+                <div class="nav-card-btn">咨询 →</div>
+            </div>
+            
+            <!-- 管理后台 -->
+            <a href="admin/index.html" class="nav-card" style="text-decoration:none;color:inherit;display:block;">
+                <div class="nav-card-icon">⚙️</div>
+                <div class="nav-card-title">管理后台</div>
+                <div class="nav-card-desc">数据管理与系统配置</div>
+                <div class="nav-card-stat">🔧 系统</div>
+                <div class="nav-card-btn">管理 →</div>
+            </a>
+        </div>
+    </div>
+    
+    <!-- ========== 标签页区域（隐藏导航卡片时显示） ========== -->
+    <div class="tabs" id="tabsSection" style="display: none;">
+        <div class="tab active" data-tab="map">🗺️ 项目地图</div>
+        <div class="tab" data-tab="bidding">📢 招标动态</div>
+        <div class="tab" data-tab="winning">🏆 中标公示</div>
+        <div class="tab" data-tab="analysis">📊 省份分析</div>
+        <div class="tab" data-tab="charging">⚡ 充电桩</div>
+    </div>
+    
+    <div class="tab-content" id="map-tab">
+        <div class="main-container">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">🔍 筛选条件</div>
+                    <div class="filter-group">
+                        <label class="filter-label">项目类型</label>
+                        <select class="filter-select" id="filterType">
+                            <option value="">全部类型</option>
+                            <option value="集中式光伏">集中式光伏</option>
+                            <option value="分布式光伏">分布式光伏</option>
+                            <option value="光储一体">光储一体</option>
+                            <option value="储能电站">储能电站</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">项目状态</label>
+                        <select class="filter-select" id="filterStatus">
+                            <option value="">全部状态</option>
+                            <option value="在建">在建</option>
+                            <option value="已建成">已建成</option>
+                            <option value="规划中">规划中</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">省份</label>
+                        <select class="filter-select" id="filterProvince">
+                            <option value="">全部省份</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">数据来源</label>
+                        <select class="filter-select" id="filterSource">
+                            <option value="">全部来源</option>
+                            <option value="国家能源局">国家能源局</option>
+                            <option value="北极星光伏网">北极星光伏网</option>
+                            <option value="CNESA">CNESA储能</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">📍 省份快速跳转</div>
+                    <div class="province-grid" id="provinceBtns">
+                        <button class="province-btn" data-province="山东">山东</button>
+                        <button class="province-btn" data-province="江苏">江苏</button>
+                        <button class="province-btn" data-province="广东">广东</button>
+                        <button class="province-btn" data-province="浙江">浙江</button>
+                        <button class="province-btn" data-province="河南">河南</button>
+                        <button class="province-btn" data-province="河北">河北</button>
+                        <button class="province-btn" data-province="新疆">新疆</button>
+                        <button class="province-btn" data-province="四川">四川</button>
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">📋 项目列表 <span id="listCount">(0)</span></div>
+                    <div id="projectList"></div>
+                </div>
+            </div>
+            
+            <div class="map-wrapper">
+                <div class="map-border"></div>
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tab-content" id="bidding-tab">
+        <div class="main-container">
+            <div class="sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">🔍 招标筛选</div>
+                    <div class="filter-group">
+                        <label class="filter-label">招标类型</label>
+                        <select class="filter-select" id="biddingType">
+                            <option value="">全部类型</option>
+                            <option value="EPC">EPC总承包</option>
+                            <option value="设备采购">设备采购</option>
+                            <option value="施工">施工</option>
+                            <option value="监理">监理</option>
+                            <option value="运维">运维</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">项目类别</label>
+                        <select class="filter-select" id="biddingCategory">
+                            <option value="">全部类别</option>
+                            <option value="光伏">光伏</option>
+                            <option value="储能">储能</option>
+                            <option value="光储">光储</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">省份</label>
+                        <select class="filter-select" id="biddingProvince">
+                            <option value="">全部省份</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">金额范围 (万元)</label>
+                        <input type="number" class="filter-input" id="minAmount" placeholder="最低金额">
+                        <input type="number" class="filter-input" id="maxAmount" placeholder="最高金额" style="margin-top:8px">
+                    </div>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">💡 付费服务 <span class="premium-badge">PRO</span></div>
+                    <div style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">
+                        解锁高级功能，获取更多招标数据
+                    </div>
+                    <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" onclick="alert('请联系客服开通付费服务')">
+                        📧 招标订阅服务
+                    </button>
+                    <button class="btn btn-secondary" style="width:100%;" onclick="alert('请联系客服获取中标数据报告')">
+                        📊 中标数据报告
+                    </button>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">📈 招标统计</div>
+                    <div id="biddingStats" style="font-size:13px;color:var(--text-secondary);"></div>
+                </div>
+            </div>
+            
+            <div style="flex:1;overflow-y:auto;padding:20px;">
+                <h3 style="margin-bottom:20px;color:var(--accent-orange);display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:24px;">📢</span> 最新招标公告
+                </h3>
+                <table class="bidding-table" id="biddingTable">
+                    <thead>
+                        <tr>
+                            <th>项目名称</th>
+                            <th>类型</th>
+                            <th>省份</th>
+                            <th>金额(万)</th>
+                            <th>发布时间</th>
+                            <th>报名截止</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="biddingBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tab-content" id="winning-tab">
+        <div class="main-container">
+            <div class="sidebar">
+                <div class="sidebar-title">🏆 中标统计</div>
+                <div id="winningStats" style="padding:15px;font-size:13px;color:var(--text-secondary);"></div>
+            </div>
+            <div style="flex:1;overflow-y:auto;padding:20px;">
+                <h3 style="margin-bottom:20px;color:var(--accent);display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:24px;">🏆</span> 中标结果公示
+                </h3>
+                <table class="bidding-table" id="winningTable">
+                    <thead>
+                        <tr>
+                            <th>项目名称</th>
+                            <th>类别</th>
+                            <th>省份</th>
+                            <th>中标金额(万)</th>
+                            <th>规模(MW)</th>
+                            <th>中标单位</th>
+                            <th>中标日期</th>
+                        </tr>
+                    </thead>
+                    <tbody id="winningBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tab-content" id="analysis-tab">
+        <div class="main-container">
+            <div class="sidebar">
+                <div class="sidebar-title">📊 数据概览</div>
+                <div id="analysisOverview" style="padding:15px;"></div>
+            </div>
+            <div style="flex:1;padding:20px;overflow-y:auto;">
+                <h3 style="margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:24px;">📊</span> 各省项目分布
+                </h3>
+                <div id="provinceChart"></div>
+                <h4 style="margin:25px 0 15px 0;color:#00d4ff;">🗺️ 省份详情页面</h4>
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;" id="provinceLinks">
+                    <a href="province/guangdong.html" target="_blank" class="stat-card" style="cursor:pointer;display:block;text-decoration:none;color:inherit;">
+                        <div style="font-size:24px;margin-bottom:8px;">🏙️</div>
+                        <strong style="color:#00d4ff;">广东省</strong>
+                        <div style="font-size:12px;color:#8892b0;margin-top:4px;">光伏+储能项目</div>
+                    </a>
+                    <a href="province/zhejiang.html" target="_blank" class="stat-card" style="cursor:pointer;display:block;text-decoration:none;color:inherit;">
+                        <div style="font-size:24px;margin-bottom:8px;">🏯</div>
+                        <strong style="color:#ff8844;">浙江省</strong>
+                        <div style="font-size:12px;color:#8892b0;margin-top:4px;">分布式光伏</div>
+                    </a>
+                    <a href="province/jiangsu.html" target="_blank" class="stat-card" style="cursor:pointer;display:block;text-decoration:none;color:inherit;">
+                        <div style="font-size:24px;margin-bottom:8px;">🌆</div>
+                        <strong style="color:#b44aff;">江苏省</strong>
+                        <div style="font-size:12px;color:#8892b0;margin-top:4px;">工商业光伏</div>
+                    </a>
+                    <a href="province/shandong.html" target="_blank" class="stat-card" style="cursor:pointer;display:block;text-decoration:none;color:inherit;">
+                        <div style="font-size:24px;margin-bottom:8px;">🏭</div>
+                        <strong style="color:#00ff88;">山东省</strong>
+                        <div style="font-size:12px;color:#8892b0;margin-top:4px;">集中式光伏</div>
+                    </a>
+                    <a href="province/henan.html" target="_blank" class="stat-card" style="cursor:pointer;display:block;text-decoration:none;color:inherit;">
+                        <div style="font-size:24px;margin-bottom:8px;">🏔️</div>
+                        <strong style="color:#ffd700;">河南省</strong>
+                        <div style="font-size:12px;color:#8892b0;margin-top:4px;">农光互补</div>
+                    </a>
+                    <a href="province/sichuan.html" target="_blank" class="stat-card" style="cursor:pointer;display:block;text-decoration:none;color:inherit;">
+                        <div style="font-size:24px;margin-bottom:8px;">⛰️</div>
+                        <strong style="color:#7b2dff;">四川省</strong>
+                        <div style="font-size:12px;color:#8892b0;margin-top:4px;">水光互补</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 充电桩Tab -->
+    <div class="tab-content" id="charging-tab">
+        <div class="main-container">
+            <div class="sidebar">
+                <div class="sidebar-title">⚡ 充电桩筛选</div>
+                <div class="filter-group">
+                    <label class="filter-label">运营商</label>
+                    <select class="filter-select" id="chargerOperator">
+                        <option value="">全部运营商</option>
+                        <option value="特来电">特来电</option>
+                        <option value="星星充电">星星充电</option>
+                        <option value="国家电网">国家电网</option>
+                        <option value="云快充">云快充</option>
+                        <option value="小桔充电">小桔充电</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">充电类型</label>
+                    <select class="filter-select" id="chargerType">
+                        <option value="">全部类型</option>
+                        <option value="直流">直流快充</option>
+                        <option value="交流">交流慢充</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">功率范围</label>
+                    <select class="filter-select" id="chargerPower">
+                        <option value="">全部功率</option>
+                        <option value="7kW">7kW及以下</option>
+                        <option value="60kW">60kW及以上</option>
+                        <option value="120kW">120kW及以上</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label class="filter-label">省份</label>
+                    <select class="filter-select" id="chargerProvince">
+                        <option value="">全部省份</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="margin-top:15px;">
+                    <button class="btn btn-primary" onclick="filterChargers()">应用筛选</button>
+                </div>
+            </div>
+            <div style="flex:1;padding:20px;overflow-y:auto;">
+                <h3 style="margin-bottom:20px;display:flex;align-items:center;gap:10px;">
+                    <span style="font-size:24px;">⚡</span> 充电桩地图
+                    <span style="font-size:14px;color:#8892b0;margin-left:10px;">📍 <span id="chargerCount">0</span> 个站点</span>
+                </h3>
+                <div id="chargerMap" style="width:100%;height:600px;background:rgba(20,30,60,0.5);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#8892b0;">
+                    充电桩地图加载中...
+                </div>
+                <div style="margin-top:20px;">
+                    <h4 style="margin-bottom:15px;color:#00d4ff;">📋 附近充电站列表</h4>
+                    <div id="chargerList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:15px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 订阅入口区域 -->
+    <div class="subscribe-section">
+        <div class="subscribe-container">
+            <div class="subscribe-header">
+                <span class="subscribe-badge">🔥 限时免费订阅</span>
+                <h2 class="subscribe-title">获取最新光伏储能行业动态</h2>
+                <p class="subscribe-desc">专业团队实时爬取整理 | 满足GEO标准 | 精美排版即开即用</p>
+            </div>
+            <form class="subscribe-form" id="subscribeForm" onsubmit="handleSubscribe(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="company">🏢 公司名称</label>
+                        <input type="text" id="company" name="company" placeholder="请输入公司名称" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">📞 联系电话</label>
+                        <input type="tel" id="phone" name="phone" placeholder="请输入联系电话" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="email">📧 邮箱地址</label>
+                        <input type="email" id="email" name="email" placeholder="请输入邮箱地址" required>
+                    </div>
+                </div>
+                <div class="form-footer">
+                    <button type="submit" class="subscribe-btn" id="subscribeBtn">
+                        <span class="btn-text">立即免费订阅</span>
+                        <span class="btn-loading" style="display:none;">订阅中...</span>
+                    </button>
+                    <p class="subscribe-note">🔒 我们尊重您的隐私，不会向第三方透露您的信息</p>
+                </div>
+            </form>
+            <div class="subscribe-success" id="subscribeSuccess" style="display:none;">
+                <div class="success-icon">✅</div>
+                <h3>订阅成功！</h3>
+                <p>感谢您的信任，我们将定期发送最新行业动态到您的邮箱</p>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .subscribe-section {
+            position: relative;
+            z-index: 10;
+            padding: 60px 30px;
+            background: linear-gradient(180deg, rgba(10, 14, 39, 0.8) 0%, rgba(10, 14, 39, 0.95) 100%);
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        .subscribe-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: rgba(20, 30, 60, 0.8);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.15);
+        }
+        .subscribe-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .subscribe-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: #fff;
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+        .subscribe-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subscribe-desc {
+            font-size: 14px;
+            color: #8892b0;
+        }
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .form-row {
+            display: flex;
+            gap: 20px;
+        }
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .form-group.full-width {
+            flex: 1;
+        }
+        .form-group label {
+            font-size: 13px;
+            color: #8892b0;
+            font-weight: 500;
+        }
+        .form-group input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+            background: rgba(0, 212, 255, 0.05);
+        }
+        .form-group input::placeholder {
+            color: rgba(136, 146, 176, 0.5);
+        }
+        .form-footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .subscribe-btn {
+            background: linear-gradient(135deg, #00d4ff 0%, #7b2dff 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 14px 40px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        .subscribe-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+        .subscribe-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .subscribe-note {
+            font-size: 12px;
+            color: rgba(136, 146, 176, 0.6);
+        }
+        .subscribe-success {
+            text-align: center;
+            padding: 30px;
+        }
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+        .subscribe-success h3 {
+            font-size: 22px;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+        .subscribe-success p {
+            font-size: 14px;
+            color: #8892b0;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+            .subscribe-container {
+                padding: 25px;
+            }
+        }
+    </style>
+    
+    <script>
+        function handleSubscribe(event) {
+            event.preventDefault();
+            const form = document.getElementById('subscribeForm');
+            const btn = document.getElementById('subscribeBtn');
+            const btnText = btn.querySelector('.btn-text');
+            const btnLoading = btn.querySelector('.btn-loading');
+            
+            btn.disabled = true;
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'inline';
+            
+            const formData = {
+                company: document.getElementById('company').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                subscribeTime: new Date().toLocaleString('zh-CN')
+            };
+            
+            fetch('/api/subscribe', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(formData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    form.style.display = 'none';
+                    document.getElementById('subscribeSuccess').style.display = 'block';
+                } else {
+                    alert('订阅失败: ' + (data.message || '请稍后重试'));
+                    btn.disabled = false;
+                    btnText.style.display = 'inline';
+                    btnLoading.style.display = 'none';
+                }
+            })
+            .catch(err => {
+                console.error('订阅错误:', err);
+                alert('网络错误，请稍后重试');
+                btn.disabled = false;
+                btnText.style.display = 'inline';
+                btnLoading.style.display = 'none';
+            });
+        }
+    </style>
+
+    <!-- 底部信息栏 -->
+    <footer class="footer">
+        <div class="footer-left">
+            <span class="footer-logo">PV ENERGY MAP</span>
+            <div class="footer-links">
+                <a href="#">关于我们</a>
+                <a href="#">数据说明</a>
+                <a href="#">API接口</a>
+                <a href="#">联系我们</a>
+            </div>
+        </div>
+        <div class="footer-right">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>系统正常</span>
+            </div>
+            <span>📊 统计数据 | 🕐 更新于 <span id="footerUpdateTime">2026-04-27</span></span>
+        </div>
+    </footer>
+    
+    <!-- 详情弹窗 -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">项目详情</div>
+                <div class="modal-close" onclick="closeModal()">×</div>
+            </div>
+            <div id="modalBody"></div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="modalAction1">查看详情</button>
+                <button class="btn btn-secondary" onclick="closeModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 报告弹窗 -->
+    <div class="report-modal" id="reportModal">
+        <div class="report-modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📚 行业报告资料库</div>
+                <div class="modal-close" onclick="closeReportModal()">×</div>
+            </div>
+            <div id="reportList"></div>
+        </div>
+    </div>
+    
+    <!-- AI助手面板 -->
+    <div class="ai-panel" id="aiPanel">
+        <div class="ai-header">
+            <h3>🤖 AI选址助手</h3>
+            <button class="ai-close" onclick="toggleAIPanel()">×</button>
+        </div>
+        <div class="ai-messages" id="aiMessages">
+            <div class="ai-message assistant">
+                👋 您好！我是光伏储能选址AI助手，可以帮您分析：
+                <br>• 某地区光伏/储能项目可行性
+                <br>• 土地性质与政策要求
+                <br>• 投资回报预估
+                <br>• 产业链配套分析
+                <br><br>请描述您的选址需求或问题：
+            </div>
+        </div>
+        <div class="ai-input-area">
+            <input type="text" class="ai-input" id="aiInput" placeholder="输入您的选址问题..." onkeypress="handleAIInput(event)">
+            <button class="ai-send" onclick="sendAIMessage()">发送</button>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let map;
+        let allProjects = [];
+        let allBidding = [];
+        let allWinning = [];
+        let statistics = {};
+        let markers = [];
+        let currentFilter = {};
+        let currentView = 'home'; // home 或 detail
+        let currentTab = 'map';
+        
+        // 数字滚动动画
+        function animateValue(element, start, end, duration, decimals = 0) {
+            const startTime = performance.now();
+            const isFloat = decimals > 0;
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+                const current = start + (end - start) * easeOutQuart;
+                
+                if (isFloat) {
+                    element.textContent = current.toFixed(decimals);
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 隐藏加载动画
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 800);
+            
+            await loadData();
+            initMap();
+            initTabs();
+            initFilters();
+            updateStatistics();
+            updateNavCardStats();
+            renderProjectList();
+            renderBiddingList();
+            renderWinningList();
+            renderAnalysis();
+            renderReports();
+            
+            // 设置搜索功能
+            document.getElementById('globalSearch').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    performSearch(e.target.value);
+                }
+            });
+            
+            // 为导航卡片添加点击事件（从href中提取函数并执行）
+            document.querySelectorAll('.nav-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // 阻止默认行为
+                    e.preventDefault();
+                    
+                    // 从href中提取javascript代码
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('javascript:')) {
+                        const jsCode = href.replace('javascript:', '');
+                        // 提取函数名和参数
+                        const match = jsCode.match(/(\w+)\(['"]?([^'")]+)['"]?\)/);
+                        if (match) {
+                            const fn = match[1];
+                            const arg = match[2];
+                            if (typeof window[fn] === 'function') {
+                                window[fn](arg);
+                            }
+                        }
+                    }
+                });
+            });
+            
+
+        });
+        
+        // 加载数据
+        async function loadData() {
+            try {
+                const response = await fetch('./data/projects.json');
+                const data = await response.json();
+                allProjects = data.projects || [];
+                allBidding = data.bidding || [];
+                allWinning = data.winning || [];
+                statistics = data.statistics || {};
+                
+                document.getElementById('updateTime').textContent = `数据更新：${statistics.last_update || new Date().toLocaleString()}`;
+                document.getElementById('footerUpdateTime').textContent = new Date().toLocaleDateString();
+                
+                // 填充省份筛选
+                const provinces = [...new Set(allProjects.map(p => p.province))].sort();
+                const provinceSelect = document.getElementById('filterProvince');
+                const biddingProvinceSelect = document.getElementById('biddingProvince');
+                provinces.forEach(p => {
+                    provinceSelect.innerHTML += `<option value="${p}">${p}</option>`;
+                    biddingProvinceSelect.innerHTML += `<option value="${p}">${p}</option>`;
+                });
+            } catch (e) {
+                console.error('加载数据失败:', e);
+                // 使用内嵌示例数据
+                useSampleData();
+            }
+        }
+        
+        // 使用示例数据
+        function useSampleData() {
+            statistics = {
+                total_projects: 994,
+                total_pv_capacity_gw: 49.1,
+                total_storage_gwh: 19400,
+                total_bidding: 200,
+                total_bidding_amount_wan: 8307000,
+                last_update: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            };
+        }
+        
+        // 更新导航卡片统计
+        function updateNavCardStats() {
+            const uniqueProvinces = new Set(allProjects.map(p => p.province)).size || 10;
+            document.getElementById('navProjectCount').textContent = `📍 ${statistics.total_projects || 609} 项目`;
+            document.getElementById('navBiddingCount').textContent = `📋 ${statistics.total_bidding || 200}+ 招标`;
+            document.getElementById('navWinningCount').textContent = `🏅 ${allWinning.length || 80}+ 中标`;
+            document.getElementById('navProvinceCount').textContent = `🗋 ${uniqueProvinces}省统计`;
+        }
+        
+        // ========== 导航功能 ==========
+        
+        // 返回首页
+        function goHome() {
+            currentView = 'home';
+            document.getElementById('navCards').style.display = 'block';
+            document.getElementById('tabsSection').style.display = 'none';
+            
+            // 隐藏所有Tab内容
+            document.querySelectorAll('.tab-content').forEach(c => {
+                c.classList.remove('active');
+            });
+            
+            // 移除Tab激活状态
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        }
+        
+        // 导航到指定页面
+        function navigateTo(target) {
+            currentView = 'detail';
+            currentTab = target;
+            
+            // 隐藏导航卡片，显示Tab栏
+            document.getElementById('navCards').style.display = 'none';
+            document.getElementById('tabsSection').style.display = 'flex';
+            
+            // 切换Tab
+            document.querySelectorAll('.tab').forEach(t => {
+                t.classList.remove('active');
+                if (t.dataset.tab === target) {
+                    t.classList.add('active');
+                }
+            });
+            
+            // 切换内容
+            document.querySelectorAll('.tab-content').forEach(c => {
+                c.classList.remove('active');
+                c.style.opacity = '0';
+                c.style.transform = 'translateY(10px)';
+            });
+            
+            const targetContent = document.getElementById(target + '-tab');
+            setTimeout(() => {
+                targetContent.classList.add('active');
+                targetContent.style.opacity = '1';
+                targetContent.style.transform = 'translateY(0)';
+            }, 50);
+            
+            // 充电桩特殊处理
+            if (target === 'charging') {
+                showChargingStations();
+            }
+        }
+        
+        // 显示充电桩（真实数据）
+        function showChargingStations() {
+            // 导航到charging tab
+            navigateTo('charging');
+            // 初始化充电桩地图
+            initChargerMap();
+        }
+        
+        // 显示行业报告弹窗
+        function showReports() {
+            document.getElementById('reportModal').classList.add('active');
+        }
+        
+        // 关闭报告弹窗
+        function closeReportModal() {
+            document.getElementById('reportModal').classList.remove('active');
+        }
+        
+        // 渲染报告列表
+        function renderReports() {
+            const reports = [
+                { icon: '📊', title: '2024年中国光伏行业发展年度报告', desc: '全面分析光伏产业链现状与趋势' },
+                { icon: '🔋', title: '储能市场技术路线图白皮书', desc: '电化学储能技术发展与成本分析' },
+                { icon: '🗺️', title: '省份光伏项目投资热度分析', desc: '各省份项目分布与投资价值评估' },
+                { icon: '📈', title: 'EPC总承包商竞争力排名', desc: 'TOP50 EPC企业市场份额与业绩分析' },
+                { icon: '⚡', title: '充电基础设施产业发展报告', desc: '新能源汽车充电桩建设与运营分析' },
+                { icon: '💰', title: '光伏项目投资收益率测算模型', desc: '基于LCOE的IRR与回本周期分析工具' }
+            ];
+            
+            document.getElementById('reportList').innerHTML = reports.map(r => `
+                <div class="report-item">
+                    <div class="report-icon">${r.icon}</div>
+                    <div class="report-info">
+                        <h4>${r.title}</h4>
+                        <p>${r.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // AI助手面板
+        function toggleAIPanel() {
+            document.getElementById('aiPanel').classList.toggle('active');
+        }
+        
+        // 处理AI输入
+        function handleAIInput(e) {
+            if (e.key === 'Enter') {
+                sendAIMessage();
+            }
+        }
+        
+        // 发送AI消息
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            const messagesContainer = document.getElementById('aiMessages');
+            
+            // 添加用户消息
+            messagesContainer.innerHTML += `<div class="ai-message user">${message}</div>`;
+            input.value = '';
+            
+            // 模拟AI回复
+            setTimeout(() => {
+                const responses = [
+                    '根据您描述的需求，建议重点关注山东、江苏、广东等光伏装机大省，这些地区产业链配套成熟，政策支持力度大。',
+                    '对于储能项目选址，需要考虑当地峰谷电价差。一般建议选择峰谷价差超过0.6元/kWh的地区，如浙江、上海、广东等。',
+                    '光伏项目用地需注意土地性质，建议优先选择荒漠化土地、采煤沉陷区等不占用耕地的区域。',
+                    '从投资回报角度分析，当前集中式光伏项目IRR约8-12%，分布式光伏约10-15%，具体需结合当地光照资源与电价政策。'
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                messagesContainer.innerHTML += `<div class="ai-message assistant">${randomResponse}</div>`;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 800);
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // 跳转管理后台
+        function goToAdmin() {
+            window.location.href = 'admin/index.html';
+        }
+        
+        // 全局搜索
+        function performSearch(query) {
+            if (!query.trim()) return;
+            
+            // 简单搜索匹配
+            const projectMatch = allProjects.find(p => p.name.includes(query) || p.province.includes(query));
+            const biddingMatch = allBidding.find(b => b.title.includes(query));
+            
+            if (projectMatch) {
+                navigateTo('map');
+                setTimeout(() => locateProject(projectMatch.id), 100);
+            } else if (biddingMatch) {
+                navigateTo('bidding');
+                showBiddingDetail(biddingMatch);
+            } else {
+                alert(`未找到"${query}"相关结果，请尝试其他关键词。`);
+            }
+        }
+        
+        // 初始化地图 - 使用高德地图
+        function initMap() {
+            if (window.AMapModule) {
+                // 使用高德地图模块
+                window.AMapModule.init('map', {
+                    zoom: 5,
+                    center: [105, 36],
+                    mapStyle: 'amap://styles/darkblue',
+                    viewMode: '2D',
+                    pitch: 0
+                }).then(() => {
+                    console.log('✅ 高德地图初始化完成');
+                    updateMapMarkers();
+                }).catch(err => {
+                    console.error('高德地图初始化失败:', err);
+                    // 降级为简单提示
+                    document.getElementById('map').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#888;">地图加载中...</div>';
+                });
+            } else {
+                console.warn('高德地图模块未加载，使用降级方案');
+                document.getElementById('map').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#888;">地图模块加载中...</div>';
+            }
+        }
+        
+        // 更新地图标记 - 高德地图版本
+        function updateMapMarkers() {
+            if (!window.AMapModule) return;
+            
+            const filtered = getFilteredProjects();
+            
+            // 转换项目数据为高德地图格式
+            const amapProjects = filtered.map(p => ({
+                id: p.id,
+                name: p.name,
+                type: p.type.includes('储能') ? 'storage' : 'solar',
+                subtype: p.type,
+                capacity: p.capacity_mw || p.storage_mwh,
+                city: p.province,
+                location: p.province,
+                lat: p.lat,
+                lng: p.lng,
+                status: p.status === '已建成' ? 'operating' : p.status === '在建' ? 'constructing' : 'planning',
+                operator: p.developer,
+                completed: p.commissioning_date || '',
+                roi: p.roi || '--',
+                highlights: [],
+                policies: []
+            }));
+            
+            window.AMapModule.addMarkers(amapProjects, {});
+            document.getElementById('listCount').textContent = `(${filtered.length})`;
+        }
+        
+        // 跳转到项目位置
+        function panToProject(lat, lng, zoom) {
+            if (window.AMapModule) {
+                window.AMapModule.panTo(lng, lat, zoom);
+            }
+        }
+        
+        // 获取标记颜色
+        function getMarkerColor(type) {
+            if (type.includes('集中式')) return '#00d4ff';
+            if (type.includes('分布式')) return '#00ff88';
+            if (type.includes('储能')) return '#b44aff';
+            if (type.includes('光储')) return '#ff8844';
+            return '#ffffff';
+        }
+        
+        // 获取筛选后的项目
+        function getFilteredProjects() {
+            return allProjects.filter(p => {
+                if (currentFilter.type && !p.type.includes(currentFilter.type)) return false;
+                if (currentFilter.status && p.status !== currentFilter.status) return false;
+                if (currentFilter.province && p.province !== currentFilter.province) return false;
+                if (currentFilter.source && p.source !== currentFilter.source) return false;
+                return true;
+            });
+        }
+        
+        // 初始化标签页
+        function initTabs() {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    currentTab = tab.dataset.tab;
+                    
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => {
+                        c.classList.remove('active');
+                        c.style.opacity = '0';
+                        c.style.transform = 'translateY(10px)';
+                    });
+                    
+                    tab.classList.add('active');
+                    const targetContent = document.getElementById(tab.dataset.tab + '-tab');
+                    
+                    setTimeout(() => {
+                        targetContent.classList.add('active');
+                        targetContent.style.opacity = '1';
+                        targetContent.style.transform = 'translateY(0)';
+                    }, 50);
+                });
+            });
+        }
+        
+        // 初始化筛选器
+        function initFilters() {
+            ['filterType', 'filterStatus', 'filterProvince', 'filterSource'].forEach(id => {
+                document.getElementById(id).addEventListener('change', applyFilters);
+            });
+            
+            ['biddingType', 'biddingCategory', 'biddingProvince'].forEach(id => {
+                document.getElementById(id).addEventListener('change', renderBiddingList);
+            });
+            
+            document.getElementById('minAmount').addEventListener('input', renderBiddingList);
+            document.getElementById('maxAmount').addEventListener('input', renderBiddingList);
+            
+            // 省份按钮
+            document.querySelectorAll('.province-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const prov = btn.dataset.province;
+                    document.querySelectorAll('.province-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById('filterProvince').value = prov;
+                    applyFilters();
+                });
+            });
+        }
+        
+        // 应用筛选
+        function applyFilters() {
+            currentFilter = {
+                type: document.getElementById('filterType').value,
+                status: document.getElementById('filterStatus').value,
+                province: document.getElementById('filterProvince').value,
+                source: document.getElementById('filterSource').value
+            };
+            updateMapMarkers();
+            renderProjectList();
+        }
+        
+        // 更新统计
+        function updateStatistics() {
+            const totalProjects = statistics.total_projects || 0;
+            const totalPVGW = statistics.total_pv_capacity_gw || 0;
+            const totalStorageGWH = Math.round((statistics.total_storage_gwh || 0) / 100) / 10;
+            const totalBidding = statistics.total_bidding || 0;
+            const totalAmount = Math.round((statistics.total_bidding_amount_wan || 0) / 10000);
+            
+            // 使用数字滚动动画
+            animateValue(document.getElementById('totalProjects'), 0, totalProjects, 1500);
+            animateValue(document.getElementById('totalPVGW'), 0, totalPVGW, 1500, 1);
+            animateValue(document.getElementById('totalStorageGWH'), 0, totalStorageGWH, 1500, 1);
+            animateValue(document.getElementById('totalBidding'), 0, totalBidding, 1500);
+            animateValue(document.getElementById('totalAmount'), 0, totalAmount, 1500);
+        }
+        
+        // 渲染项目列表
+        function renderProjectList() {
+            const container = document.getElementById('projectList');
+            const filtered = getFilteredProjects().slice(0, 50);
+            
+            container.innerHTML = filtered.map(p => `
+                <div class="list-item" onclick="locateProject('${p.id}')">
+                    <div class="list-item-title">${p.name}</div>
+                    <div class="list-item-meta">
+                        <span class="tag ${p.type.includes('储能') ? 'tag-storage' : 'tag-pv'}">${p.type}</span>
+                        <span>${p.province}</span>
+                        <span>${p.capacity_mw || p.storage_mwh}${p.capacity_mw ? 'MW' : 'MWh'}</span>
+                        <span>${p.status}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 定位项目到地图中心
+        function locateProject(id) {
+            const project = allProjects.find(p => p.id === id);
+            if (project && project.lat && project.lng) {
+                panToProject(project.lat, project.lng, 10);
+                showProjectDetail(project);
+            } else {
+                showProjectDetail(project);
+            }
+        }
+        
+        // 渲染招标列表
+        function renderBiddingList() {
+            const type = document.getElementById('biddingType').value;
+            const category = document.getElementById('biddingCategory').value;
+            const province = document.getElementById('biddingProvince').value;
+            const minAmount = parseInt(document.getElementById('minAmount').value) || 0;
+            const maxAmount = parseInt(document.getElementById('maxAmount').value) || Infinity;
+            
+            const filtered = allBidding.filter(b => {
+                if (type && b.type !== type) return false;
+                if (category && b.category !== category) return false;
+                if (province && b.province !== province) return false;
+                if (b.amount_wan < minAmount || b.amount_wan > maxAmount) return false;
+                return true;
+            }).slice(0, 100);
+            
+            document.getElementById('biddingBody').innerHTML = filtered.map(b => `
+                <tr>
+                    <td><a href="#" onclick="showBiddingDetail(${JSON.stringify(b).replace(/"/g, '&quot;')});return false;">${b.title}</a></td>
+                    <td><span class="tag tag-epc">${b.type}</span></td>
+                    <td>${b.province}</td>
+                    <td class="amount-highlight">${b.amount_wan.toLocaleString()}</td>
+                    <td>${b.publish_date}</td>
+                    <td>${b.deadline}</td>
+                    <td><button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="showBiddingDetail(${JSON.stringify(b).replace(/"/g, '&quot;')})">详情</button></td>
+                </tr>
+            `).join('');
+            
+            // 更新统计
+            const totalAmount = filtered.reduce((s, b) => s + b.amount_wan, 0);
+            document.getElementById('biddingStats').innerHTML = `
+                <p style="margin-bottom:8px;">📋 共 <strong style="color:var(--primary);">${filtered.length}</strong> 条招标公告</p>
+                <p>💰 总金额：<strong style="color:var(--accent-orange);">${(totalAmount / 10000).toFixed(1)}</strong> 亿元</p>
+            `;
+        }
+        
+        // 渲染中标列表
+        function renderWinningList() {
+            const filtered = allWinning.slice(0, 50);
+            
+            document.getElementById('winningBody').innerHTML = filtered.map(w => `
+                <tr>
+                    <td>${w.title}</td>
+                    <td><span class="tag tag-winning">${w.category}</span></td>
+                    <td>${w.province}</td>
+                    <td class="amount-highlight">${w.amount_wan.toLocaleString()}</td>
+                    <td>${w.scale_mw}</td>
+                    <td><strong style="color:var(--secondary);">${w.winner}</strong></td>
+                    <td>${w.win_date}</td>
+                </tr>
+            `).join('');
+            
+            const totalAmount = allWinning.reduce((s, w) => s + w.amount_wan, 0);
+            const avgAmount = allWinning.length ? totalAmount / allWinning.length : 0;
+            
+            document.getElementById('winningStats').innerHTML = `
+                <p style="margin-bottom:8px;">🏆 共 <strong style="color:var(--accent);">${allWinning.length}</strong> 条中标公示</p>
+                <p style="margin-bottom:8px;">💰 总金额：<strong style="color:var(--accent-orange);">${(totalAmount / 10000).toFixed(1)}</strong> 亿元</p>
+                <p>📊 平均金额：<strong style="color:var(--primary);">${(avgAmount / 10000).toFixed(1)}</strong> 亿元</p>
+            `;
+        }
+        
+        // 渲染分析页面
+        function renderAnalysis() {
+            document.getElementById('analysisOverview').innerHTML = `
+                <p style="margin-bottom:12px;font-weight:600;">📊 数据统计概览</p>
+                <p style="margin-bottom:8px;">📁 总项目：<strong style="color:var(--primary);">${statistics.total_projects || 0}</strong></p>
+                <p style="margin-bottom:8px;">☀️ 光伏装机：<strong style="color:var(--secondary);">${statistics.total_pv_capacity_gw || 0} GW</strong></p>
+                <p style="margin-bottom:8px;">🔋 储能装机：<strong style="color:var(--accent);">${((statistics.total_storage_gwh || 0) / 1000).toFixed(1)} GWh</strong></p>
+                <p style="margin-bottom:8px;">📢 招标公告：<strong style="color:var(--accent-orange);">${statistics.total_bidding || 0}</strong> 条</p>
+                <p>🏆 中标公示：<strong style="color:var(--accent-red);">${statistics.total_winning || 0}</strong> 条</p>
+            `;
+            
+            // 省份柱状图
+            const provinceStats = {};
+            allProjects.forEach(p => {
+                provinceStats[p.province] = (provinceStats[p.province] || 0) + 1;
+            });
+            
+            const sorted = Object.entries(provinceStats).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            const maxVal = sorted[0]?.[1] || 1;
+            
+            document.getElementById('provinceChart').innerHTML = sorted.map(([prov, count]) => `
+                <div class="chart-bar">
+                    <div class="chart-label">${prov}</div>
+                    <div class="chart-bar-wrapper">
+                        <div class="chart-bar-fill" style="width: ${(count/maxVal*100)}%;"></div>
+                    </div>
+                    <div class="chart-value">${count}</div>
+                </div>
+            `).join('');
+        }
+        
+        // 显示项目详情
+        function showProjectDetail(project) {
+            if (!project) return;
+            document.getElementById('modalTitle').textContent = project.name;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="modal-field">
+                    <div class="modal-label">项目类型</div>
+                    <div class="modal-value"><span class="tag ${project.type.includes('储能') ? 'tag-storage' : 'tag-pv'}">${project.type}</span></div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">所在地区</div>
+                    <div class="modal-value">${project.province} ${project.city || ''}</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">${project.capacity_mw ? '装机容量' : '储能容量'}</div>
+                    <div class="modal-value">${project.capacity_mw || project.storage_mwh} ${project.capacity_mw ? 'MW' : 'MWh'}</div>
+                </div>
+                ${project.developer ? `<div class="modal-field"><div class="modal-label">开发商</div><div class="modal-value">${project.developer}</div></div>` : ''}
+                <div class="modal-field">
+                    <div class="modal-label">项目状态</div>
+                    <div class="modal-value">${project.status}</div>
+                </div>
+                ${project.commission_date ? `<div class="modal-field"><div class="modal-label">预计投产</div><div class="modal-value">${project.commission_date}</div></div>` : ''}
+                <div class="modal-field">
+                    <div class="modal-label">数据来源</div>
+                    <div class="modal-value">${project.source}</div>
+                </div>
+            `;
+            document.getElementById('modalAction1').textContent = project.source_url ? '访问来源' : '关闭';
+            document.getElementById('modalAction1').onclick = () => {
+                if (project.source_url) window.open(project.source_url, '_blank');
+                closeModal();
+            };
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        // ========== 充电桩功能 ==========
+        
+        let chargerMap = null;
+        let chargerMarkers = [];
+        let allChargers = [];
+        
+        // 初始化充电桩地图
+        function initChargerMap() {
+            const mapContainer = document.getElementById('chargerMap');
+            if (!mapContainer) return;
+            
+            if (typeof AMap === 'undefined') {
+                mapContainer.innerHTML = '<div style="text-align:center;color:#8892b0;">地图加载中...</div>';
+                setTimeout(initChargerMap, 500);
+                return;
+            }
+            
+            chargerMap = new AMap.Map('chargerMap', {
+                zoom: 5,
+                center: [105, 35],
+                viewMode: '3D'
+            });
+            
+            AMap.plugin(['AMap.ToolBar', 'AMap.Scale'], function() {
+                chargerMap.addControl(new AMap.ToolBar());
+                chargerMap.addControl(new AMap.Scale());
+            });
+            
+            loadChargerData();
+        }
+        
+        // 加载充电桩数据
+        function loadChargerData() {
+            fetch('data/chargers.json')
+                .then(r => r.json())
+                .then(data => {
+                    // 兼容数组和对象两种格式
+                    allChargers = Array.isArray(data) ? data : (data.stations || []);
+                    document.getElementById('chargerCount').textContent = allChargers.length;
+                    renderChargerMarkers(allChargers);
+                    renderChargerList(allChargers.slice(0, 20));
+                    populateChargerProvinces();
+                })
+                .catch(() => {
+                    document.getElementById('chargerMap').innerHTML = 
+                        '<div style="text-align:center;color:#ff4466;">充电桩数据加载失败</div>';
+                });
+        }
+        
+        // 渲染充电桩标记
+        function renderChargerMarkers(stations) {
+            chargerMarkers.forEach(m => chargerMap && chargerMap.remove(m));
+            chargerMarkers = [];
+            
+            stations.forEach(station => {
+                const lng = station.location?.lng || station.lng;
+                const lat = station.location?.lat || station.lat;
+                if (!lat || !lng) return;
+                
+                const marker = new AMap.Marker({
+                    position: [lng, lat],
+                    title: station.name,
+                    content: '<div style="background:#00d4ff;color:#fff;padding:5px 8px;border-radius:4px;font-size:12px;">⚡</div>',
+                    extData: station
+                });
+                
+                marker.on('click', () => showChargerDetail(station));
+                chargerMap && chargerMap.add(marker);
+                chargerMarkers.push(marker);
+            });
+            
+            if (chargerMarkers.length > 0 && chargerMap) {
+                chargerMap.setFitView();
+            }
+        }
+        
+        // 显示充电站详情
+        function showChargerDetail(station) {
+            const address = station.location?.address || station.address || '暂无地址';
+            const piles = station.chargers?.total || station.piles || 0;
+            const power = station.capacity_mw ? (station.capacity_mw * 1000) + 'kW' : (station.power || '未知');
+            
+            const info = new AMap.InfoWindow({
+                content: `
+                    <div style="padding:10px;min-width:200px;">
+                        <h4 style="margin:0 0 8px 0;color:#00d4ff;">${station.name}</h4>
+                        <p style="margin:4px 0;font-size:12px;">📍 ${address}</p>
+                        <p style="margin:4px 0;font-size:12px;">⚡ ${station.operator}</p>
+                        <p style="margin:4px 0;font-size:12px;">🔌 ${piles} 个充电桩</p>
+                        <p style="margin:4px 0;font-size:12px;">⚡ 容量: ${power}</p>
+                        ${station.price ? `<p style="margin:4px 0;font-size:12px;">💰 ${station.price.peak}元/kWh</p>` : ''}
+                    </div>
+                `,
+                offset: new AMap.Pixel(0, -25)
+            });
+            const lng = station.location?.lng || station.lng;
+            const lat = station.location?.lat || station.lat;
+            info.open(chargerMap, [lng, lat]);
+        }
+        
+        // 渲染充电站列表
+        function renderChargerList(stations) {
+            const container = document.getElementById('chargerList');
+            if (!container) return;
+            container.innerHTML = stations.map(s => {
+                const address = s.location?.address || s.address || '暂无地址';
+                const piles = s.chargers?.total || s.piles || 0;
+                const power = s.capacity_mw ? (s.capacity_mw * 1000) + 'kW' : (s.power || '未知');
+                const safeName = s.name.replace(/'/g, "\\'");
+                return `
+                <a href="javascript:focusCharger('${safeName}')" class="stat-card" style="cursor:pointer;display:block;text-decoration:none;color:inherit;">
+                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                        <span style="font-size:20px;">⚡</span>
+                        <strong style="color:#00d4ff;">${s.name}</strong>
+                    </div>
+                    <div style="font-size:12px;color:#8892b0;">
+                        <p>📍 ${address}</p>
+                        <p>🔌 ${piles}桩 | ⚡ ${power}</p>
+                        <p>🏢 ${s.operator}</p>
+                        ${s.price ? `<p>💰 峰值 ${s.price.peak}元/kWh</p>` : ''}
+                    </div>
+                </a>
+            `}).join('');
+        }
+        
+        // 聚焦充电站
+        function focusCharger(name) {
+            const station = allChargers.find(s => s.name === name);
+            if (station && chargerMap) {
+                const lng = station.location?.lng || station.lng;
+                const lat = station.location?.lat || station.lat;
+                chargerMap.setCenter([lng, lat]);
+                chargerMap.setZoom(15);
+                showChargerDetail(station);
+            }
+        }
+        
+        // 填充省份选项
+        function populateChargerProvinces() {
+            const provinces = [...new Set(allChargers.map(s => s.province))].filter(Boolean);
+            const select = document.getElementById('chargerProvince');
+            if (select) {
+                select.innerHTML = '<option value="">全部省份</option>' + 
+                    provinces.map(p => `<option value="${p}">${p}</option>`).join('');
+            }
+        }
+        
+        // 筛选充电桩
+        function filterChargers() {
+            const operator = document.getElementById('chargerOperator').value;
+            const type = document.getElementById('chargerType').value;
+            const power = document.getElementById('chargerPower').value;
+            const province = document.getElementById('chargerProvince').value;
+            
+            let filtered = allChargers;
+            
+            if (operator) filtered = filtered.filter(s => s.operator === operator);
+            if (province) filtered = filtered.filter(s => s.province === province);
+            if (type === '直流') filtered = filtered.filter(s => s.power && parseInt(s.power) >= 60);
+            if (type === '交流') filtered = filtered.filter(s => s.power && parseInt(s.power) < 60);
+            if (power === '7kW') filtered = filtered.filter(s => s.power && parseInt(s.power) <= 7);
+            if (power === '60kW') filtered = filtered.filter(s => s.power && parseInt(s.power) >= 60);
+            if (power === '120kW') filtered = filtered.filter(s => s.power && parseInt(s.power) >= 120);
+            
+            document.getElementById('chargerCount').textContent = filtered.length;
+            renderChargerMarkers(filtered);
+            renderChargerList(filtered.slice(0, 20));
+        }
+        
+        // 显示招标详情
+        function showBiddingDetail(bid) {
+            document.getElementById('modalTitle').textContent = bid.title;
+            document.getElementById('modalBody').innerHTML = `
+                <div class="modal-field">
+                    <div class="modal-label">招标类型</div>
+                    <div class="modal-value"><span class="tag tag-bidding">${bid.type}</span> <span class="tag tag-pv">${bid.category}</span></div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">招标单位</div>
+                    <div class="modal-value">${bid.publisher}</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">所在省份</div>
+                    <div class="modal-value">${bid.province}</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">招标金额</div>
+                    <div class="modal-value" style="color:var(--accent-orange);font-size:18px;font-weight:bold;font-family:'Orbitron',sans-serif;">${bid.amount_wan.toLocaleString()} 万元</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">发布时间</div>
+                    <div class="modal-value">${bid.publish_date}</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">报名截止</div>
+                    <div class="modal-value" style="color:var(--accent-red);">${bid.deadline}</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">项目描述</div>
+                    <div class="modal-value">${bid.description || '暂无描述'}</div>
+                </div>
+                <div class="modal-field">
+                    <div class="modal-label">信息来源</div>
+                    <div class="modal-value">${bid.source}</div>
+                </div>
+            `;
+            document.getElementById('modalAction1').textContent = '联系招标方';
+            document.getElementById('modalAction1').onclick = () => {
+                alert('付费功能：联系招标方/查看完整招标文件');
+            };
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+        
+        // 点击弹窗背景关闭
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('detailModal')) {
+                closeModal();
+            }
+        });
+        
+        // 点击报告弹窗背景关闭
+        document.getElementById('reportModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('reportModal')) {
+                closeReportModal();
+            }
+        });
+    </script>
+</body>
+</html>

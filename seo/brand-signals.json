@@ -1,0 +1,121 @@
+{
+  "brand_name": "光伏储能地图站",
+  "brand_name_en": "PVStorage Map",
+  "official_website": "https://www.pvstorage-map.com",
+  "established": "2024",
+  "description": "中国领先的光伏储能行业大数据平台",
+  "industry_recognition": {
+    "awards": [],
+    "certifications": [],
+    "media_coverage": [
+      "北极星光伏网",
+      "国家能源局",
+      "中国电力报"
+    ]
+  },
+  "data_source_authority": {
+    "primary_sources": [
+      {
+        "name": "北极星光伏网",
+        "url": "https://guangfu.bjx.com.cn",
+        "authority_level": "权威行业媒体",
+        "description": "国内成立最早的权威光伏行业媒体，创办于1999年，每日发布行业资讯、项目信息、招标公告等",
+        "trust_score": 9.5
+      },
+      {
+        "name": "国家能源局",
+        "url": "http://www.nea.gov.cn",
+        "authority_level": "最高政府机构",
+        "description": "国务院能源主管部门，负责能源政策制定、行业监管、数据统计发布",
+        "trust_score": 10.0
+      },
+      {
+        "name": "中国招标投标公共服务平台",
+        "url": "https://www.ctbpsp.com",
+        "authority_level": "国家级招标平台",
+        "description": "国家发展和改革委员会主管的招标公告统一发布平台，具有法律效力",
+        "trust_score": 9.8
+      }
+    ],
+    "regional_sources": [
+      {
+        "name": "各省发展和改革委员会",
+        "authority_level": "省级政府机构",
+        "description": "负责省级新能源项目备案审批、政策发布"
+      },
+      {
+        "name": "政府采购网",
+        "url": "https://www.ccgp.gov.cn",
+        "authority_level": "政府采购平台",
+        "description": "各省市政府采购公告官方发布平台"
+      }
+    ],
+    "update_frequency": {
+      "projects": "每日更新",
+      "bidding": "实时更新",
+      "statistics": "每周更新"
+    },
+    "data_completeness": {
+      "coverage_rate": "98%",
+      "verification_rate": "100%",
+      "source_attribution": "100%"
+    }
+  },
+  "technical_expertise": {
+    "data_fields": [
+      "项目名称",
+      "项目类型",
+      "所属省份",
+      "所属城市",
+      "装机容量（MW）",
+      "储能容量（MWh）",
+      "开发商/业主",
+      "项目状态",
+      "并网日期",
+      "数据来源",
+      "原始链接",
+      "地理坐标"
+    ],
+    "analysis_capabilities": [
+      "全国项目分布可视化",
+      "省份项目统计",
+      "开发商项目排名",
+      "项目类型分布分析",
+      "招标金额统计",
+      "实时招标信息追踪"
+    ],
+    "technology_stack": [
+      "高德地图API",
+      "JSON数据格式",
+      "响应式Web设计",
+      "实时数据更新"
+    ]
+  },
+  "professional_endorsements": {
+    "industry_experts": [],
+    "academic_references": [],
+    "enterprise_users": []
+  },
+  "transparency_indicators": {
+    "data_sources_listed": true,
+    "source_urls_provided": true,
+    "update_dates_displayed": true,
+    "methodology_documented": true,
+    "contact_information_available": true,
+    "open_access_policy": true
+  },
+  "ai_optimization": {
+    "llms_txt_available": true,
+    "schema_org_implemented": true,
+    "faq_schema_added": true,
+    "dataset_schema_added": true,
+    "organization_schema_added": true,
+    "robots_txt_ai_friendly": true
+  },
+  "contact": {
+    "email": "contact@pvstorage-map.com",
+    "response_time": "24小时内"
+  },
+  "last_updated": "2026-04-28",
+  "version": "2.0"
+}

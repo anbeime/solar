@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>浙江省光伏储能项目地图 - 浙江太阳能发电储能分布查询</title>
+  <meta name="description" content="浙江省光伏储能项目分布地图，展示杭州、宁波、温州、嘉兴等地光伏发电、储能项目位置、装机容量等信息。">
+  <meta name="keywords" content="浙江光伏,浙江储能,杭州光伏,宁波太阳能,温州储能项目,嘉兴新能源">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.pvstorage-map.com/province/zhejiang.html">
+  <meta property="og:title" content="浙江省光伏储能项目地图">
+  <meta property="og:type" content="website">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; }
+    .header { background: linear-gradient(135deg, #43a047, #1b5e20); color: white; padding: 2rem; text-align: center; }
+    .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
+    .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .stat-card .value { font-size: 1.8rem; font-weight: bold; color: #43a047; }
+    .stat-card .unit { color: #999; font-size: 0.85rem; }
+    .map-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 1rem 0; }
+    #map { height: 500px; width: 100%; }
+    .project-list { background: white; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+    .project-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee; }
+    .project-info h4 { color: #333; margin-bottom: 0.3rem; }
+    .project-info p { color: #666; font-size: 0.85rem; }
+    .project-capacity { text-align: right; }
+    .project-capacity .value { font-size: 1.2rem; font-weight: bold; color: #43a047; }
+    .project-capacity .type { font-size: 0.8rem; color: #4caf50; }
+    .breadcrumb { padding: 1rem; color: #666; }
+    .breadcrumb a { color: #43a047; text-decoration: none; }
+  </style>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "浙江省光伏储能项目地图",
+    "url": "https://www.pvstorage-map.com/province/zhejiang.html"
+  }
+  </script>
+</head>
+<body>
+  <header class="header">
+    <h1>📍 浙江省光伏储能项目地图</h1>
+    <p>查看浙江省光伏发电、储能项目分布与装机容量</p>
+  </header>
+  
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">首页</a> &gt; <a href="/province/">省份</a> &gt; 浙江省
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>项目总数</h3>
+        <div class="value">285</div>
+        <div class="unit">个</div>
+      </div>
+      <div class="stat-card">
+        <h3>光伏装机</h3>
+        <div class="value">12,450</div>
+        <div class="unit">MW</div>
+      </div>
+      <div class="stat-card">
+        <h3>储能容量</h3>
+        <div class="value">3,890</div>
+        <div class="unit">MWh</div>
+      </div>
+      <div class="stat-card">
+        <h3>覆盖城市</h3>
+        <div class="value">11</div>
+        <div class="unit">个</div>
+      </div>
+    </div>
+    
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+    
+    <div class="project-list">
+      <h2>📋 重点项目列表</h2>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>杭州阿里云数据中心光伏项目</h4>
+          <p>杭州市余杭区 | 2024-02</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">480 MW</div>
+          <div class="type">光伏+储能</div>
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>宁波港渔光互补项目</h4>
+          <p>宁波市北仑区 | 2024-01</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">350 MW</div>
+          <div class="type">光伏</div>
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>嘉兴丝绸小镇屋顶光伏</h4>
+          <p>嘉兴市南湖区 | 2023-11</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">200 MW</div>
+          <div class="type">光伏</div>
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>温州正泰储能电站</h4>
+          <p>温州市乐清市 | 2024-03</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">300 MWh</div>
+          <div class="type">储能</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const map = L.map('map').setView([30.287459, 120.153576], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    const projects = [
+      { name: '杭州阿里云项目', lat: 30.2741, lng: 120.1551, capacity: '480MW' },
+      { name: '宁波港项目', lat: 29.8683, lng: 121.5440, capacity: '350MW' },
+      { name: '嘉兴丝绸小镇', lat: 30.7522, lng: 120.7550, capacity: '200MW' },
+      { name: '温州正泰储能', lat: 28.0006, lng: 120.6993, capacity: '300MWh' }
+    ];
+    
+    projects.forEach(p => {
+      L.marker([p.lat, p.lng]).addTo(map)
+        .bindPopup(`<b>${p.name}</b><br>装机: ${p.capacity}`);
+    });
+  </script>
+</body>
+</html>

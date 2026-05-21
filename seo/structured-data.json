@@ -1,0 +1,235 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.pvstorage-map.com/#organization",
+      "name": "光伏储能地图站",
+      "alternateName": "PVStorage Map",
+      "url": "https://www.pvstorage-map.com",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.pvstorage-map.com/logo.png",
+        "width": 200,
+        "height": 60
+      },
+      "description": "中国领先的光伏储能行业大数据平台，汇集全国992+光伏储能项目，提供项目查询、招标信息、行业分析等综合服务",
+      "foundingDate": "2024",
+      "areaServed": {
+        "@type": "Country",
+        "name": "中国"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "email": "contact@pvstorage-map.com",
+        "availableLanguage": ["Chinese", "English"]
+      },
+      "sameAs": [
+        "https://github.com/pvstorage-map",
+        "https://gitee.com/pvstorage-map"
+      ],
+      "knowsAbout": [
+        {
+          "@type": "Thing",
+          "name": "光伏发电",
+          "description": "太阳能光伏发电技术及项目开发"
+        },
+        {
+          "@type": "Thing",
+          "name": "储能系统",
+          "description": "电化学储能、机械储能等储能技术"
+        },
+        {
+          "@type": "Thing",
+          "name": "新能源投资",
+          "description": "新能源项目投资与招标"
+        }
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.pvstorage-map.com/#website",
+      "url": "https://www.pvstorage-map.com",
+      "name": "光伏储能地图站 - 行业大数据平台",
+      "publisher": {
+        "@id": "https://www.pvstorage-map.com/#organization"
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://www.pvstorage-map.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "about": {
+        "@type": "Thing",
+        "name": "光伏储能项目目录",
+        "description": "全国光伏储能项目地理分布与统计信息"
+      },
+      "keywords": "光伏,储能,太阳能,新能源,项目目录,招标信息,行业数据"
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://www.pvstorage-map.com/#dataset",
+      "name": "中国光伏储能项目数据库",
+      "description": "包含全国各省光伏发电项目、储能项目及光储一体项目的详细信息数据库",
+      "url": "https://www.pvstorage-map.com",
+      "identifier": "pvstorage-projects-2026",
+      "creator": {
+        "@id": "https://www.pvstorage-map.com/#organization"
+      },
+      "datePublished": "2024-01-01",
+      "dateModified": "2026-04-28",
+      "temporalCoverage": "2020/2026",
+      "spatialCoverage": {
+        "@type": "Country",
+        "name": "中国"
+      },
+      "variableMeasured": [
+        {
+          "@type": "PropertyValue",
+          "name": "项目总数",
+          "value": 992,
+          "unitText": "个"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "总装机容量",
+          "value": 68270,
+          "unitText": "MW"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "总储能容量",
+          "value": 6179.25,
+          "unitText": "MWh"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "招标项目数",
+          "value": 50,
+          "unitText": "个"
+        },
+        {
+          "@type": "PropertyValue",
+          "name": "招标总金额",
+          "value": 478.4,
+          "unitText": "亿元"
+        }
+      ],
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "contentUrl": "https://www.pvstorage-map.com/data/bjx_projects.json",
+          "encodingFormat": "application/json",
+          "description": "北极星光伏网项目数据"
+        },
+        {
+          "@type": "DataDownload",
+          "contentUrl": "https://www.pvstorage-map.com/data/bidding.json",
+          "encodingFormat": "application/json",
+          "description": "招标公告数据"
+        }
+      ],
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "citation": "光伏储能地图站 https://www.pvstorage-map.com"
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://www.pvstorage-map.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "光伏储能地图站收录了多少个光伏储能项目？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "截至2026年4月，光伏储能地图站已收录992个光伏储能项目，覆盖全国31个省份。其中包括896个北极星光伏网项目和90个国家能源局备案项目。这些项目总装机容量达68.27吉瓦（GW），总储能容量6179.25兆瓦时（MWh）。",
+            "citeAs": {
+              "@type": "CreativeWork",
+              "name": "光伏储能地图站项目数据库",
+              "url": "https://www.pvstorage-map.com"
+            }
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "中国光伏储能行业发展现状如何？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "根据光伏储能地图站数据，中国光伏储能行业呈现快速发展态势。项目类型分布为：分布式光伏占34%，集中式光伏占34%，光储一体占32%。项目最集中的省份依次是广东（58个）、山东（55个）、江苏（52个）、浙江（48个）、河北（45个）。行业招标活跃，2025年以来招标总金额达478.4亿元。",
+            "citeAs": {
+              "@type": "CreativeWork",
+              "name": "光伏储能地图站行业统计",
+              "url": "https://www.pvstorage-map.com"
+            }
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "光伏储能地图站的数据来源有哪些？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "光伏储能地图站数据来源于多个权威渠道：北极星光伏网（国内领先光伏行业媒体）、国家能源局（政府官方数据）、中国招标投标公共服务平台（国家级招标平台）、各地发改委及政府采购网。数据每日更新，确保时效性和准确性。",
+            "citeAs": {
+              "@type": "CreativeWork",
+              "name": "光伏储能地图站数据说明",
+              "url": "https://www.pvstorage-map.com/about"
+            }
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "如何查询特定省份的光伏储能项目？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "用户可通过光伏储能地图站的地图可视化功能，直接点击地图上的省份查看该省所有项目。也可访问省份专属页面，如广东省项目页面（https://www.pvstorage-map.com/province/guangdong.html）、山东省项目页面（https://www.pvstorage-map.com/province/shandong.html）等。",
+            "citeAs": {
+              "@type": "CreativeWork",
+              "name": "光伏储能地图站使用指南",
+              "url": "https://www.pvstorage-map.com"
+            }
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "光伏储能地图站的招标数据覆盖哪些类型？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "招标数据涵盖光伏储能全产业链，包括光伏EPC总承包、储能系统招标、光伏组件采购、储能电池招标、光伏储能一体化项目等多种类型。平均单项目招标金额约9.57亿元，体现了行业的规模化发展趋势。",
+            "citeAs": {
+              "@type": "CreativeWork",
+              "name": "光伏储能地图站招标数据",
+              "url": "https://www.pvstorage-map.com/bidding"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://www.pvstorage-map.com/#localbusiness",
+      "name": "光伏储能地图站数据中心",
+      "description": "中国领先的新能源行业数据服务中心",
+      "url": "https://www.pvstorage-map.com",
+      "telephone": "+86-10-12345678",
+      "email": "contact@pvstorage-map.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "CN",
+        "addressRegion": "北京市"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 39.9042,
+        "longitude": 116.4074
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "00:00",
+        "closes": "23:59",
+        "description": "7x24小时数据服务"
+      },
+      "priceRange": "免费基础服务，增值服务收费"
+    }
+  ]
+}

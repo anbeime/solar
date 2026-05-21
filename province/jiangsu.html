@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>江苏省光伏储能项目地图 - 江苏太阳能发电储能分布查询</title>
+  <meta name="description" content="江苏省光伏储能项目分布地图，展示南京、苏州、无锡、常州等地光伏发电、储能项目位置、装机容量信息。">
+  <meta name="keywords" content="江苏光伏,江苏储能,南京光伏,苏州太阳能,无锡储能项目,常州新能源">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.pvstorage-map.com/province/jiangsu.html">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; }
+    .header { background: linear-gradient(135deg, #e53935, #b71c1c); color: white; padding: 2rem; text-align: center; }
+    .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
+    .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .stat-card .value { font-size: 1.8rem; font-weight: bold; color: #e53935; }
+    .stat-card .unit { color: #999; font-size: 0.85rem; }
+    .map-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 1rem 0; }
+    #map { height: 500px; width: 100%; }
+    .project-list { background: white; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+    .project-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee; }
+    .project-info h4 { color: #333; margin-bottom: 0.3rem; }
+    .project-info p { color: #666; font-size: 0.85rem; }
+    .project-capacity { text-align: right; }
+    .project-capacity .value { font-size: 1.2rem; font-weight: bold; color: #e53935; }
+    .project-capacity .type { font-size: 0.8rem; color: #4caf50; }
+    .breadcrumb { padding: 1rem; color: #666; }
+    .breadcrumb a { color: #e53935; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>📍 江苏省光伏储能项目地图</h1>
+    <p>查看江苏省光伏发电、储能项目分布与装机容量</p>
+  </header>
+  
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">首页</a> &gt; <a href="/province/">省份</a> &gt; 江苏省
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>项目总数</h3>
+        <div class="value">412</div>
+        <div class="unit">个</div>
+      </div>
+      <div class="stat-card">
+        <h3>光伏装机</h3>
+        <div class="value">18,920</div>
+        <div class="unit">MW</div>
+      </div>
+      <div class="stat-card">
+        <h3>储能容量</h3>
+        <div class="value">5,680</div>
+        <div class="unit">MWh</div>
+      </div>
+      <div class="stat-card">
+        <h3>覆盖城市</h3>
+        <div class="value">13</div>
+        <div class="unit">个</div>
+      </div>
+    </div>
+    
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+    
+    <div class="project-list">
+      <h2>📋 重点项目列表</h2>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>苏州协鑫光伏产业基地</h4>
+          <p>苏州市工业园区 | 2024-01</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">650 MW</div>
+          <div class="type">光伏+储能</div>
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>无锡先导智能光伏项目</h4>
+          <p>无锡市新吴区 | 2024-02</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">380 MW</div>
+          <div class="type">光伏</div>
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>常州天合光能总部项目</h4>
+          <p>常州市新北区 | 2023-12</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">280 MW</div>
+          <div class="type">光伏</div>
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>南京金龙储能电站</h4>
+          <p>南京市江宁区 | 2024-03</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">450 MWh</div>
+          <div class="type">储能</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const map = L.map('map').setView([32.041544, 118.767413], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    const projects = [
+      { name: '苏州协鑫项目', lat: 31.2989, lng: 120.6853, capacity: '650MW' },
+      { name: '无锡先导项目', lat: 31.4912, lng: 120.3119, capacity: '380MW' },
+      { name: '常州天合光能', lat: 31.8106, lng: 119.9741, capacity: '280MW' },
+      { name: '南京金龙储能', lat: 31.9544, lng: 118.8498, capacity: '450MWh' }
+    ];
+    
+    projects.forEach(p => {
+      L.marker([p.lat, p.lng]).addTo(map)
+        .bindPopup(`<b>${p.name}</b><br>装机: ${p.capacity}`);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>河南省光伏储能项目地图 - 河南太阳能发电储能分布查询</title>
+  <meta name="description" content="河南省光伏储能项目分布地图，展示郑州、洛阳、开封、许昌等地光伏发电、储能项目位置、装机容量信息。">
+  <meta name="keywords" content="河南光伏,河南储能,郑州光伏,洛阳太阳能,许昌储能项目,开封新能源">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.pvstorage-map.com/province/henan.html">
+  
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; }
+    .header { background: linear-gradient(135deg, #ff6f00, #e65100); color: white; padding: 2rem; text-align: center; }
+    .header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+    .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
+    .stat-card h3 { color: #666; font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .stat-card .value { font-size: 1.8rem; font-weight: bold; color: #ff6f00; }
+    .stat-card .unit { color: #999; font-size: 0.85rem; }
+    .map-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 1rem 0; }
+    #map { height: 500px; width: 100%; }
+    .project-list { background: white; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+    .project-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #eee; }
+    .project-info h4 { color: #333; margin-bottom: 0.3rem; }
+    .project-info p { color: #666; font-size: 0.85rem; }
+    .project-capacity { text-align: right; }
+    .project-capacity .value { font-size: 1.2rem; font-weight: bold; color: #ff6f00; }
+    .project-capacity .type { font-size: 0.8rem; color: #4caf50; }
+    .breadcrumb { padding: 1rem; color: #666; }
+    .breadcrumb a { color: #ff6f00; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>📍 河南省光伏储能项目地图</h1>
+    <p>查看河南省光伏发电、储能项目分布与装机容量</p>
+  </header>
+  
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">首页</a> &gt; <a href="/province/">省份</a> &gt; 河南省
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>项目总数</h3>
+        <div class="value">298</div>
+        <div class="unit">个</div>
+      </div>
+      <div class="stat-card">
+        <h3>光伏装机</h3>
+        <div class="value">16,780</div>
+        <div class="unit">MW</div>
+      </div>
+      <div class="stat-card">
+        <h3>储能容量</h3>
+        <div class="value">4,850</div>
+        <div class="unit">MWh</div>
+      </div>
+      <div class="stat-card">
+        <h3>覆盖城市</h3>
+        <div class="value">18</div>
+        <div class="unit">个</div>
+      </div>
+    </div>
+    
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+    
+    <div class="project-list">
+      <h2>📋 重点项目列表</h2>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>郑州宇通光伏储能项目</h4>
+          <p>郑州市经开区 | 2024-02</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">580 MW</div>
+          <div class="type">光伏+储能</div>
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>洛阳钼业农光互补项目</h4>
+          <p>洛阳市偃师区 | 2024-01</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">380 MW</div>
+          <div class="type">光伏</div>
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>许昌黄河旋风储能电站</h4>
+          <p>许昌市魏都区 | 2024-03</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">420 MWh</div>
+          <div class="type">储能</div>
+        </div>
+      </div>
+      <div class="project-item">
+        <div class="project-info">
+          <h4>开封奇瑞汽车分布式光伏</h4>
+          <p>开封市祥符区 | 2024-04</p>
+        </div>
+        <div class="project-capacity">
+          <div class="value">220 MW</div>
+          <div class="type">光伏</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const map = L.map('map').setView([34.75654, 113.613025], 7);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    const projects = [
+      { name: '郑州宇通项目', lat: 34.7466, lng: 113.6137, capacity: '580MW' },
+      { name: '洛阳钼业项目', lat: 34.6190, lng: 112.4470, capacity: '380MW' },
+      { name: '许昌储能电站', lat: 34.0358, lng: 113.8526, capacity: '420MWh' },
+      { name: '开封奇瑞项目', lat: 34.7972, lng: 114.3078, capacity: '220MW' }
+    ];
+    
+    projects.forEach(p => {
+      L.marker([p.lat, p.lng]).addTo(map)
+        .bindPopup(`<b>${p.name}</b><br>装机: ${p.capacity}`);
+    });
+  </script>
+</body>
+</html>

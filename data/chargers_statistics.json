@@ -1,0 +1,274 @@
+{
+  "total_stations": 5800,
+  "total_chargers": 101754,
+  "total_capacity_mw": 5057.79,
+  "avg_stations_per_city": 200.0,
+  "city_statistics": {
+    "广州": {
+      "station_count": 200,
+      "total_capacity_mw": 176.11000000000004,
+      "total_chargers": 3486,
+      "total_orders": 5446677,
+      "avg_rating": 4.4
+    },
+    "深圳": {
+      "station_count": 200,
+      "total_capacity_mw": 184.76,
+      "total_chargers": 3581,
+      "total_orders": 4983388,
+      "avg_rating": 4.4
+    },
+    "上海": {
+      "station_count": 200,
+      "total_capacity_mw": 164.09999999999994,
+      "total_chargers": 3487,
+      "total_orders": 5119218,
+      "avg_rating": 4.4
+    },
+    "北京": {
+      "station_count": 200,
+      "total_capacity_mw": 179.34999999999994,
+      "total_chargers": 3479,
+      "total_orders": 5279457,
+      "avg_rating": 4.4
+    },
+    "杭州": {
+      "station_count": 200,
+      "total_capacity_mw": 172.00000000000009,
+      "total_chargers": 3539,
+      "total_orders": 5245084,
+      "avg_rating": 4.4
+    },
+    "成都": {
+      "station_count": 200,
+      "total_capacity_mw": 174.50000000000003,
+      "total_chargers": 3386,
+      "total_orders": 4840628,
+      "avg_rating": 4.4
+    },
+    "武汉": {
+      "station_count": 200,
+      "total_capacity_mw": 178.79000000000008,
+      "total_chargers": 3400,
+      "total_orders": 5346217,
+      "avg_rating": 4.4
+    },
+    "西安": {
+      "station_count": 200,
+      "total_capacity_mw": 174.45,
+      "total_chargers": 3572,
+      "total_orders": 5219745,
+      "avg_rating": 4.4
+    },
+    "南京": {
+      "station_count": 200,
+      "total_capacity_mw": 171.57000000000002,
+      "total_chargers": 3456,
+      "total_orders": 4461907,
+      "avg_rating": 4.4
+    },
+    "苏州": {
+      "station_count": 200,
+      "total_capacity_mw": 164.97000000000006,
+      "total_chargers": 3509,
+      "total_orders": 4566130,
+      "avg_rating": 4.4
+    },
+    "东莞": {
+      "station_count": 200,
+      "total_capacity_mw": 177.29000000000005,
+      "total_chargers": 3377,
+      "total_orders": 4967307,
+      "avg_rating": 4.4
+    },
+    "佛山": {
+      "station_count": 200,
+      "total_capacity_mw": 182.9900000000001,
+      "total_chargers": 3707,
+      "total_orders": 5092734,
+      "avg_rating": 4.4
+    },
+    "珠海": {
+      "station_count": 200,
+      "total_capacity_mw": 165.58999999999997,
+      "total_chargers": 3479,
+      "total_orders": 4837296,
+      "avg_rating": 4.4
+    },
+    "中山": {
+      "station_count": 200,
+      "total_capacity_mw": 167.41000000000005,
+      "total_chargers": 3433,
+      "total_orders": 4789838,
+      "avg_rating": 4.4
+    },
+    "惠州": {
+      "station_count": 200,
+      "total_capacity_mw": 171.14000000000004,
+      "total_chargers": 3555,
+      "total_orders": 4672669,
+      "avg_rating": 4.4
+    },
+    "长沙": {
+      "station_count": 200,
+      "total_capacity_mw": 162.76000000000005,
+      "total_chargers": 3378,
+      "total_orders": 5241682,
+      "avg_rating": 4.4
+    },
+    "郑州": {
+      "station_count": 200,
+      "total_capacity_mw": 188.35000000000014,
+      "total_chargers": 3763,
+      "total_orders": 4745840,
+      "avg_rating": 4.4
+    },
+    "合肥": {
+      "station_count": 200,
+      "total_capacity_mw": 178.73,
+      "total_chargers": 3530,
+      "total_orders": 5273764,
+      "avg_rating": 4.4
+    },
+    "济南": {
+      "station_count": 200,
+      "total_capacity_mw": 173.47000000000003,
+      "total_chargers": 3741,
+      "total_orders": 4983090,
+      "avg_rating": 4.4
+    },
+    "青岛": {
+      "station_count": 200,
+      "total_capacity_mw": 173.08000000000007,
+      "total_chargers": 3483,
+      "total_orders": 5499763,
+      "avg_rating": 4.4
+    },
+    "大连": {
+      "station_count": 200,
+      "total_capacity_mw": 168.20000000000007,
+      "total_chargers": 3499,
+      "total_orders": 4748541,
+      "avg_rating": 4.4
+    },
+    "沈阳": {
+      "station_count": 200,
+      "total_capacity_mw": 180.8099999999998,
+      "total_chargers": 3516,
+      "total_orders": 5180057,
+      "avg_rating": 4.4
+    },
+    "天津": {
+      "station_count": 200,
+      "total_capacity_mw": 175.61000000000004,
+      "total_chargers": 3474,
+      "total_orders": 5154865,
+      "avg_rating": 4.4
+    },
+    "重庆": {
+      "station_count": 200,
+      "total_capacity_mw": 177.97999999999993,
+      "total_chargers": 3462,
+      "total_orders": 4825125,
+      "avg_rating": 4.4
+    },
+    "昆明": {
+      "station_count": 200,
+      "total_capacity_mw": 164.5199999999999,
+      "total_chargers": 3389,
+      "total_orders": 5233256,
+      "avg_rating": 4.4
+    },
+    "贵阳": {
+      "station_count": 200,
+      "total_capacity_mw": 182.34999999999994,
+      "total_chargers": 3545,
+      "total_orders": 5042858,
+      "avg_rating": 4.4
+    },
+    "南昌": {
+      "station_count": 200,
+      "total_capacity_mw": 170.08999999999995,
+      "total_chargers": 3430,
+      "total_orders": 5188463,
+      "avg_rating": 4.4
+    },
+    "福州": {
+      "station_count": 200,
+      "total_capacity_mw": 178.03999999999996,
+      "total_chargers": 3523,
+      "total_orders": 5211007,
+      "avg_rating": 4.4
+    },
+    "厦门": {
+      "station_count": 200,
+      "total_capacity_mw": 178.7800000000001,
+      "total_chargers": 3575,
+      "total_orders": 5237477,
+      "avg_rating": 4.4
+    }
+  },
+  "operator_statistics": {
+    "星星充电": {
+      "station_count": 357,
+      "total_capacity_mw": 305.5300000000001
+    },
+    "云快充": {
+      "station_count": 399,
+      "total_capacity_mw": 344.75000000000034
+    },
+    "特来电": {
+      "station_count": 386,
+      "total_capacity_mw": 343.3900000000002
+    },
+    "汇充电": {
+      "station_count": 388,
+      "total_capacity_mw": 326.72
+    },
+    "小桔充电": {
+      "station_count": 357,
+      "total_capacity_mw": 306.21999999999997
+    },
+    "闪充": {
+      "station_count": 418,
+      "total_capacity_mw": 360.8500000000002
+    },
+    "南方电网": {
+      "station_count": 403,
+      "total_capacity_mw": 342.32000000000005
+    },
+    "地上铁": {
+      "station_count": 366,
+      "total_capacity_mw": 310.65999999999997
+    },
+    "普天新能源": {
+      "station_count": 380,
+      "total_capacity_mw": 335.66000000000014
+    },
+    "万马爱充": {
+      "station_count": 387,
+      "total_capacity_mw": 338.66999999999996
+    },
+    "新电途": {
+      "station_count": 406,
+      "total_capacity_mw": 367.1400000000006
+    },
+    "国家电网": {
+      "station_count": 370,
+      "total_capacity_mw": 320.56000000000006
+    },
+    "智充科技": {
+      "station_count": 416,
+      "total_capacity_mw": 382.7000000000001
+    },
+    "依威能源": {
+      "station_count": 380,
+      "total_capacity_mw": 324.0599999999998
+    },
+    "小蓝充电": {
+      "station_count": 387,
+      "total_capacity_mw": 348.56
+    }
+  },
+  "generate_time": "2026-04-27 23:51:40"
+}

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI选址助手</title>
+    <style>
+        /* AI Panel 样式 */
+        .ai-panel {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            background: linear-gradient(135deg, #0f1724 0%, #1a2332 100%);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* 头部 */
+        .ai-header {
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ai-header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ai-header-title h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #4ade80;
+        }
+
+        .ai-status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .ai-clear-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: none;
+            color: #ef4444;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ai-clear-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        /* 消息区域 */
+        .ai-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .ai-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .ai-messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .ai-messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+
+        /* 欢迎页 */
+        .ai-welcome {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .welcome-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .ai-welcome h3 {
+            color: #fff;
+            font-size: 18px;
+            margin: 0 0 8px;
+        }
+
+        .ai-welcome p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* 消息样式 */
+        .ai-message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ai-message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .ai-message.user .message-avatar {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+        }
+
+        .ai-message.assistant .message-avatar {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+
+        .message-content {
+            max-width: 75%;
+        }
+
+        .message-text {
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .ai-message.user .message-text {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message.assistant .message-text {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-bottom-left-radius: 4px;
+        }
+
+        .ai-message.error .message-text {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 4px;
+            padding: 0 8px;
+        }
+
+        .ai-message.user .message-time {
+            text-align: right;
+        }
+
+        /* 打字指示器 */
+        .typing-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typingBounce 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
+        /* 预设问题 */
+        .ai-presets {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .presets-title {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 10px;
+        }
+
+        .preset-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .preset-question {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-question:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(59, 130, 246, 0.5);
+            color: #fff;
+        }
+
+        .preset-question:active {
+            transform: scale(0.98);
+        }
+
+        .preset-question .icon {
+            font-size: 14px;
+        }
+
+        /* 输入区域 */
+        .ai-input-area {
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ai-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .ai-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 14px;
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        .ai-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .ai-input:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.6);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .ai-send-btn {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .ai-send-btn:active {
+            transform: scale(0.98);
+        }
+
+        .ai-send-btn:disabled {
+            background: rgba(255, 255, 255, 0.2);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 流式输出光标 */
+        .ai-message.streaming .message-text::after {
+            content: '▊';
+            animation: blink 0.8s infinite;
+            color: #3b82f6;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="ai-panel" id="aiPanel">
+        <!-- 头部 -->
+        <div class="ai-header">
+            <div class="ai-header-title">
+                <span>🤖</span>
+                <h3>AI选址助手</h3>
+                <div class="ai-status">
+                    <span class="ai-status-dot"></span>
+                    <span>在线</span>
+                </div>
+            </div>
+            <button class="ai-clear-btn" onclick="clearChatHistory()">🗑️ 清空对话</button>
+        </div>
+
+        <!-- 消息区域 -->
+        <div class="ai-messages">
+            <div class="ai-welcome">
+                <div class="welcome-icon">🌞</div>
+                <h3>光伏储能AI选址助手</h3>
+                <p>点击下方快捷问题开始咨询，或输入您的问题</p>
+            </div>
+        </div>
+
+        <!-- 预设问题 -->
+        <div class="ai-presets">
+            <div class="presets-title">💡 快捷问题</div>
+            <div class="preset-buttons">
+                <button class="preset-question" data-question="推荐浙江适合安装光伏的地点">
+                    <span class="icon">📍</span>
+                    <span>推荐安装地点</span>
+                </button>
+                <button class="preset-question" data-question="估算100kW系统投资回报周期">
+                    <span class="icon">💰</span>
+                    <span>投资回报计算</span>
+                </button>
+                <button class="preset-question" data-question="储能系统配置建议">
+                    <span class="icon">🔋</span>
+                    <span>储能配置</span>
+                </button>
+                <button class="preset-question" data-question="当地电价补贴政策查询">
+                    <span class="icon">📊</span>
+                    <span>政策补贴</span>
+                </button>
+                <button class="preset-question" data-question="装机容量与发电量计算">
+                    <span class="icon">⚡</span>
+                    <span>容量计算</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="ai-input-area">
+            <div class="ai-input-wrapper">
+                <textarea 
+                    class="ai-input" 
+                    placeholder="输入您的问题，按Enter发送..."
+                    rows="1"
+                    id="aiInput"
+                ></textarea>
+                <button class="ai-send-btn" id="sendBtn" onclick="sendMessage()">
+                    ➤
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后初始化AI助手
+        document.addEventListener('DOMContentLoaded', function() {
+            // 自动调整textarea高度
+            const input = document.getElementById('aiInput');
+            input.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+
+            // Enter键发送
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // 初始化历史记录
+            loadChatHistory();
+        });
+
+        // 聊天历史
+        let chatHistory = [];
+
+        // 加载历史
+        function loadChatHistory() {
+            const saved = localStorage.getItem('ai_chat_history');
+            if (saved) {
+                chatHistory = JSON.parse(saved);
+                renderMessages();
+            }
+        }
+
+        // 清空历史
+        function clearChatHistory() {
+            if (confirm('确定要清空所有对话记录吗？')) {
+                chatHistory = [];
+                localStorage.removeItem('ai_chat_history');
+                renderMessages();
+            }
+        }
+
+        // 发送消息
+        async function sendMessage(customMessage = null) {
+            const input = document.getElementById('aiInput');
+            const message = customMessage || input.value.trim();
+            
+            if (!message) return;
+
+            // 如果不是自定义消息，清空输入框
+            if (!customMessage) {
+                input.value = '';
+                input.style.height = 'auto';
+            }
+
+            // 添加用户消息
+            addMessage('user', message);
+            
+            // 显示加载状态
+            showTypingIndicator();
+
+            // 调用Coze API
+            await callCozeAPI(message);
+        }
+
+        // 添加消息
+        function addMessage(role, content) {
+            chatHistory.push({
+                role,
+                content,
+                time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+            });
+            saveHistory();
+            renderMessages();
+        }
+
+        // 保存历史
+        function saveHistory() {
+            if (chatHistory.length > 20) {
+                chatHistory = chatHistory.slice(-20);
+            }
+            localStorage.setItem('ai_chat_history', JSON.stringify(chatHistory));
+        }
+
+        // 渲染消息
+        function renderMessages() {
+            const messagesEl = document.querySelector('.ai-messages');
+            
+            if (chatHistory.length === 0) {
+                messagesEl.innerHTML = `
+                    <div class="ai-welcome">
+                        <div class="welcome-icon">🌞</div>
+                        <h3>光伏储能AI选址助手</h3>
+                        <p>点击下方快捷问题开始咨询，或输入您的问题</p>
+                    </div>
+                `;
+                return;
+            }
+
+            messagesEl.innerHTML = chatHistory.map(msg => `
+                <div class="ai-message ${msg.role}">
+                    <div class="message-avatar">${msg.role === 'user' ? '👤' : '🤖'}</div>
+                    <div class="message-content">
+                        <div class="message-text">${escapeHtml(msg.content)}</div>
+                        <div class="message-time">${msg.time}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 显示打字指示器
+        function showTypingIndicator() {
+            const messagesEl = document.querySelector('.ai-messages');
+            const indicator = document.createElement('div');
+            indicator.id = 'typing-indicator';
+            indicator.className = 'ai-message assistant';
+            indicator.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="message-text">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                    </div>
+                </div>
+            `;
+            messagesEl.appendChild(indicator);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        // 移除打字指示器
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        // 调用Coze API
+        async function callCozeAPI(userMessage) {
+            const API_TOKEN = 'pat_53WOClLJSHBvmnUoB8toK8du8v1rX98PwbNwylpB1UqC5ce6duiEtpGmt5S88i7U';
+            const WORKFLOW_ID = '7580370589329080383';
+            const API_BASE = 'https://api.coze.cn/v1/workflow/runs';
+            
+            let fullResponse = '';
+
+            try {
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        workflow_id: WORKFLOW_ID,
+                        parameters: {
+                            query: userMessage
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API请求失败: ${response.status}`);
+                }
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                // 移除打字指示器
+                removeTypingIndicator();
+
+                // 创建AI消息元素
+                const messagesEl = document.querySelector('.ai-messages');
+                const aiMessage = document.createElement('div');
+                aiMessage.className = 'ai-message assistant streaming';
+                aiMessage.innerHTML = `
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <div class="message-text"></div>
+                        <div class="message-time">${new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                `;
+                messagesEl.appendChild(aiMessage);
+                const textEl = aiMessage.querySelector('.message-text');
+
+                // 流式读取
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value);
+                    try {
+                        const lines = chunk.split('\n');
+                        for (const line of lines) {
+                            if (line.startsWith('data: ')) {
+                                const data = JSON.parse(line.slice(6));
+                                if (data.content) {
+                                    fullResponse += data.content;
+                                    textEl.textContent = fullResponse;
+                                    messagesEl.scrollTop = messagesEl.scrollHeight;
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        fullResponse += chunk;
+                        textEl.textContent = fullResponse;
+                    }
+                }
+
+                aiMessage.classList.remove('streaming');
+
+                // 保存到历史
+                chatHistory.push({
+                    role: 'assistant',
+                    content: fullResponse,
+                    time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+                });
+                saveHistory();
+
+            } catch (error) {
+                console.error('Coze API调用失败:', error);
+                removeTypingIndicator();
+
+                const messagesEl = document.querySelector('.ai-messages');
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'ai-message assistant error';
+                errorMessage.innerHTML = `
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <div class="message-text">抱歉，服务暂时不可用，请稍后再试。错误: ${error.message}</div>
+                        <div class="message-time">${new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                `;
+                messagesEl.appendChild(errorMessage);
+            }
+        }
+    </script>
+</body>
+</html>
