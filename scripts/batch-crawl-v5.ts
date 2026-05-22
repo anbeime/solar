@@ -1287,8 +1287,9 @@ async function getESCNLinks(): Promise<string[]> {
     const linkRegex = /href="(\/[^"]*\/[^"]*\.html)"/g;
     let m: RegExpExecArray | null;
     while ((m = linkRegex.exec(html)) !== null) {
-      const fullUrl = `https://www.escn.com.cn${m[1]}`;
-      if (ENERGY_KW.some((kw) => m[0].includes(kw))) {
+      const match = m;
+      const fullUrl = `https://www.escn.com.cn${match[1]}`;
+      if (ENERGY_KW.some((kw) => match[0].includes(kw))) {
         links.add(fullUrl);
       }
     }
@@ -1395,8 +1396,9 @@ async function getSinaFinanceLinks(): Promise<string[]> {
     const linkRegex = /href="(https?:\/\/finance\.sina\.com\.cn\/[^"]*)"/g;
     let m: RegExpExecArray | null;
     while ((m = linkRegex.exec(html)) !== null) {
-      if (ENERGY_KW.some((kw) => m[1].includes(kw))) {
-        links.add(m[1]);
+      const match = m;
+      if (ENERGY_KW.some((kw) => match[1].includes(kw))) {
+        links.add(match[1]);
       }
     }
   } catch {
@@ -1492,8 +1494,9 @@ async function getNDRCLinks(): Promise<string[]> {
     const linkRegex = /href="(https?:\/\/www\.ndrc\.gov\.cn\/[^"]*)"/g;
     let m: RegExpExecArray | null;
     while ((m = linkRegex.exec(html)) !== null) {
-      if (ENERGY_KW.some((kw) => m[1].includes(kw))) {
-        links.add(m[1]);
+      const match = m;
+      if (ENERGY_KW.some((kw) => match[1].includes(kw))) {
+        links.add(match[1]);
       }
     }
   } catch {
@@ -1542,8 +1545,9 @@ async function getTenderInfoLinks(): Promise<string[]> {
     const linkRegex = /href="(https?:\/\/www\.cebpubservice\.com\/[^"]*)"/g;
     let m: RegExpExecArray | null;
     while ((m = linkRegex.exec(html)) !== null) {
-      if (ENERGY_KW.some((kw) => m[1].includes(kw))) {
-        links.add(m[1]);
+      const match = m;
+      if (ENERGY_KW.some((kw) => match[1].includes(kw))) {
+        links.add(match[1]);
       }
     }
   } catch {
