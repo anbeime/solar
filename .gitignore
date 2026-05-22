@@ -48,4 +48,5 @@ drizzle/meta/
 __pycache__/
 *.pyc
 
-# GitHub workflows
+# GitHub workflows (only on GitHub, not tracked in Gitee)
+.github/
