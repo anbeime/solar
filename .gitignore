@@ -49,4 +49,8 @@ __pycache__/
 *.pyc
 
 # GitHub workflows (only on GitHub, not tracked in Gitee)
-.github/
+# Use wildcard approach to allow specific files
+.github/*
+!.github/workflows/
+!.github/workflows/daily-crawl.yml
+!.github/workflows/Sync from Gitee.yml

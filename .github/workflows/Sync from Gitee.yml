@@ -39,10 +39,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Add Gitee Remote and Fetch
         run: |
           git remote add gitee ${{ env.GITEE_REPO }} || git remote set-url gitee ${{ env.GITEE_REPO }}
           git fetch gitee ${{ env.GITEE_BRANCH }}
+
       - name: Check for Updates
         id: check_updates
         run: |
@@ -58,15 +60,23 @@ jobs:
             echo "has_updates=true" >> "$GITHUB_OUTPUT"
             echo "gitee_commit=$GITEE_COMMIT" >> "$GITHUB_OUTPUT"
           fi
-      - name: Sync from Gitee (force reset)
+
+      - name: Sync from Gitee (merge only, preserve GitHub files)
         if: steps.check_updates.outputs.has_updates == 'true'
         run: |
-          git reset --hard gitee/${{ env.GITEE_BRANCH }}
+          # Stash GitHub-specific files first
+          git stash push -- .github/ .gitee/ || true
+          # Merge Gitee changes (prefer Gitee for common files)
+          git merge gitee/${{ env.GITEE_BRANCH }} --no-edit || true
+          # Restore GitHub-specific files
+          git stash pop || true
+
       - name: Push to GitHub
         if: steps.check_updates.outputs.has_updates == 'true'
         run: |
           git push origin HEAD:${{ env.GITHUB_BRANCH }}
           echo "Successfully synced from Gitee to GitHub!"
+
       - name: Create Sync Summary
         if: steps.check_updates.outputs.has_updates == 'true'
         run: |
@@ -78,6 +88,7 @@ jobs:
           echo "**Target:** GitHub (${{ github.server_url }}/${{ github.repository }}, branch: \`${{ env.GITHUB_BRANCH }}\`)" >> "$GITHUB_STEP_SUMMARY"
           echo "**Latest Commit:** \`${{ steps.check_updates.outputs.gitee_commit }}\`" >> "$GITHUB_STEP_SUMMARY"
           echo "**Sync Time:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_STEP_SUMMARY"
+
       - name: No Updates Summary
         if: steps.check_updates.outputs.has_updates == 'false'
         run: |
