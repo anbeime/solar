@@ -529,7 +529,7 @@ export default function Home() {
                   title: "马斯克高调庆祝特斯拉能源成为全球最大储能供应商",
                   tag: "指南",
                   date: "2026-03-15",
-                  source: "国家能源局",
+                  source: "微信文章",
                   url: "https://mp.weixin.qq.com/s/Z_pEg_D_aOFDIvma6wDq1Q",
                 },
               ].map((r, i) => (
