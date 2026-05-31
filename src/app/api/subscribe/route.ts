@@ -1,7 +1,48 @@
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/lib/db/client";
-import { subscribers } from "@/lib/db";
-import { eq } from "drizzle-orm";
+import { writeFile, readFile } from "fs/promises";
+import { existsSync } from "fs";
+import path from "path";
+
+const DATA_DIR = path.join(process.cwd(), "data");
+const SUBSCRIBERS_FILE = path.join(DATA_DIR, "subscribers.json");
+
+interface Subscriber {
+  id: number;
+  company: string;
+  phone: string;
+  email: string;
+  subscribeTime: string;
+  status: string;
+}
+
+async function ensureDataDir() {
+  if (!existsSync(DATA_DIR)) {
+    await import("fs/promises").then((fs) =>
+      fs.mkdir(DATA_DIR, { recursive: true }),
+    );
+  }
+}
+
+async function getSubscribers(): Promise<Subscriber[]> {
+  try {
+    if (existsSync(SUBSCRIBERS_FILE)) {
+      const data = await readFile(SUBSCRIBERS_FILE, "utf-8");
+      return JSON.parse(data);
+    }
+  } catch (e) {
+    console.error("读取订阅者失败:", e);
+  }
+  return [];
+}
+
+async function saveSubscribers(subscribers: Subscriber[]): Promise<void> {
+  await ensureDataDir();
+  await writeFile(
+    SUBSCRIBERS_FILE,
+    JSON.stringify(subscribers, null, 2),
+    "utf-8",
+  );
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,35 +72,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existing = await db
-      .select()
-      .from(subscribers)
-      .where(eq(subscribers.email, email.trim().toLowerCase()))
-      .limit(1);
+    const subscribers = await getSubscribers();
+    const emailLower = email.trim().toLowerCase();
 
-    if (existing.length > 0) {
+    const exists = subscribers.find((s) => s.email === emailLower);
+    if (exists) {
       return NextResponse.json(
         { success: false, message: "该邮箱已订阅" },
         { status: 400 },
       );
     }
 
-    const result = await db
-      .insert(subscribers)
-      .values({
-        company: company.trim(),
-        phone: phone.trim(),
-        email: email.trim().toLowerCase(),
-        status: "active",
-      })
-      .returning();
+    const newSubscriber: Subscriber = {
+      id: Date.now(),
+      company: company.trim(),
+      phone: phone.trim(),
+      email: emailLower,
+      subscribeTime: new Date().toISOString(),
+      status: "active",
+    };
 
-    console.log("📧 新订阅:", result[0]);
+    subscribers.push(newSubscriber);
+    await saveSubscribers(subscribers);
+
+    console.log("📧 新订阅:", newSubscriber);
 
     return NextResponse.json({
       success: true,
       message: "订阅成功！",
-      subscriberId: result[0].id,
+      subscriberId: newSubscriber.id,
     });
   } catch (error) {
     console.error("订阅错误:", error);
