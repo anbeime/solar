@@ -512,25 +512,25 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {[
                 {
-                  title: "2026年Q1光伏储能市场报告",
-                  tag: "季报",
-                  date: "2026-04-01",
-                  source: "中国电力网",
-                  url: "http://www.chinapower.com.cn/",
-                },
-                {
-                  title: "全国储能电站布局白皮书",
+                  title: "充电桩云平台开发之一：充电桩和云平台的通信协议全貌",
                   tag: "白皮书",
-                  date: "2026-03-15",
-                  source: "中国电力网",
-                  url: "http://www.chinapower.com.cn/chuneng/",
+                  date: "2026-04-01",
+                  source: "微信文章",
+                  url: "https://mp.weixin.qq.com/s/U3NR74LWsowMoawOCQuQBg",
                 },
                 {
-                  title: "GEO优化实战：新能源站点引流指南",
+                  title: "当AI遇上新能源：10家改变能源行业的创新公司",
+                  tag: "季报",
+                  date: "2026-03-20",
+                  source: "微信文章",
+                  url: "https://mp.weixin.qq.com/s/zaP-ZoJx0i6kwnCFmzlQOQ",
+                },
+                {
+                  title: "马斯克高调庆祝特斯拉能源成为全球最大储能供应商",
                   tag: "指南",
-                  date: "2026-02-28",
+                  date: "2026-03-15",
                   source: "国家能源局",
-                  url: "http://www.nea.gov.cn/",
+                  url: "https://mp.weixin.qq.com/s/Z_pEg_D_aOFDIvma6wDq1Q",
                 },
               ].map((r, i) => (
                 <div
