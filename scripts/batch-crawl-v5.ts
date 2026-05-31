@@ -183,43 +183,45 @@ function extractDate(text: string): string {
 
 // ===== 自动分类 =====
 
+// 负面过滤词 - 包含这些词的条目直接丢弃（非光伏储能相关）
+const BLOCK_KW = [
+  // 金融证券无关内容
+  "股票", "基金", "期货", "美股", "港股", "外汇", "黄金", "债券",
+  "行情中心", "主力净流入", "新股申购", "中签查询", "数据中心_",
+  "沪深两市", "资金流向", "龙虎榜", "融资融券", "交易提示",
+  "涨停板", "跌停板", "K线图", "技术分析", "均线系统",
+  // 广告和无关页面
+  "广告", "推广", "诚聘", "招聘", "加盟", "代理",
+  "联系我们", "关于我们", "网站地图", "免责声明",
+  // 其他无关
+  "BAIDU_CLB", "百度统计", "Google Analytics", "window.",
+];
+
+/**
+ * 检查是否应该过滤掉该条目
+ * 返回 true 表示应该过滤掉
+ */
+function shouldBlock(title: string, summary: string): boolean {
+  const text = `${title} ${summary}`;
+  return BLOCK_KW.some((kw) => text.includes(kw));
+}
+
 const PROJECT_KW = [
-  "项目",
-  "电站",
-  "基地",
-  "装机",
-  "光伏",
-  "风电",
-  "储能",
-  "充电站",
-  "并网",
-  "投产",
-  "开工",
-  "建设",
-  "落地",
-  "签约",
-  "发电",
-  "组件",
-  "逆变器",
-  "新能源",
-  "清洁能源",
-  "绿色能源",
-  "碳中和",
-  "碳达峰",
-  "可再生",
-  "绿电",
-  "氢能",
-  "制氢",
-  "核电",
-  "水电",
-  "抽蓄",
-  "锂电池",
-  "源网荷储",
-  "虚拟电厂",
-  "微电网",
-  "综合能源",
-  "智慧能源",
-  "零碳",
+  "光伏项目", "风电项目", "储能项目", "电站项目", "发电项目",
+  "光伏电站", "风力发电站", "储能电站", "分布式光伏",
+  "集中式光伏", "光伏基地", "风电基地", "新能源基地",
+  "光伏并网", "风电并网", "并网发电", "并网运行",
+  "光伏投产", "风电投产", "投产运营", "投产发电",
+  "光伏开工", "风电开工", "开工建设", "正式启动",
+  "光伏组件", "光伏逆变器", "风机叶片", "塔筒",
+  "源网荷储", "虚拟电厂", "微电网", "综合能源站",
+  "零碳园区", "零碳工厂", "绿色供电", "绿电交易",
+  "光伏装机", "风电装机", "新增装机", "装机容量",
+  "光储一体", "风光储", "风储", "光储充",
+  "锂电池储能", "电化学储能", "抽水蓄能", "压缩空气储能",
+  "制氢项目", "氢能产业", "加氢站",
+  "充电桩建设", "充电站建设", "换电站建设",
+  "碳中和项目", "碳达峰行动", "可再生能源",
 ];
 const BIDDING_KW = [
   "招标",
@@ -263,13 +265,17 @@ const CHARGER_KW = [
 function classifyArticle(
   title: string,
   summary: string,
-): "project" | "bidding" | "award" | "charger" {
+): "project" | "bidding" | "award" | "charger" | "blocked" {
+  // 先检查负面过滤
+  if (shouldBlock(title, summary)) return "blocked";
+
   const text = `${title} ${summary}`;
   if (CHARGER_KW.some((kw) => text.includes(kw))) return "charger";
   if (AWARD_KW.some((kw) => text.includes(kw))) return "award";
   if (BIDDING_KW.some((kw) => text.includes(kw))) return "bidding";
   if (PROJECT_KW.some((kw) => text.includes(kw))) return "project";
-  return "project";
+  // 默认不归类为 project，避免垃圾数据混入
+  return "blocked";
 }
 
 function determineType(title: string, summary: string): string {
@@ -2157,10 +2163,18 @@ async function main() {
   const bidding: any[] = [];
   const awards: any[] = [];
   const chargers: any[] = [];
+  let blockedCount = 0;
 
   let idCounter = 1;
   for (const item of uniqueItems) {
     const category = classifyArticle(item.title, item.summary || "");
+
+    // 过滤掉无关内容
+    if (category === "blocked") {
+      blockedCount++;
+      continue;
+    }
+
     const text = `${item.title} ${item.summary || ""}`;
     const province = extractProvince(text);
     const capacity = extractCapacity(text);
@@ -2172,7 +2186,7 @@ async function main() {
       id: String(idCounter++),
       title: item.title,
       province,
-      summary: (item.summary || "").slice(0, 300),
+      summary: (item.summary || "").slice(0, 500),
       capacity,
       amount,
       company,
@@ -2214,6 +2228,13 @@ async function main() {
   console.log(`  招标: ${bidding.length}`);
   console.log(`  中标: ${awards.length}`);
   console.log(`  充电桩: ${chargers.length}`);
+  console.log(`  已过滤无关内容: ${blockedCount} 条`);
+
+  console.log(`\n分类结果 (过滤前):`);
+  console.log(`  项目: ${projects.length}`);
+  console.log(`  招标: ${bidding.length}`);
+  console.log(`  中标: ${awards.length}`);
+  console.log(`  充电桩: ${chargers.length}`);
 
   // 按时间过滤和排序
   const filteredProjects = filterByDate(projects);
@@ -2245,6 +2266,9 @@ async function main() {
     JSON.stringify(filteredChargers, null, 2),
   );
 
+  // ===== 生成问答式知识库 =====
+  generateQAKnowledgeBase(filteredProjects, filteredBidding, filteredAwards, filteredChargers);
+
   // 保存爬取状态
   state.lastRun = new Date().toISOString();
   state.crawledUrls = [...crawledUrls, ...uniqueItems.map((i) => i.sourceUrl)];
@@ -2264,6 +2288,174 @@ async function main() {
   console.log(
     `数据来源: ${[...new Set(uniqueItems.map((i) => i.sourceName))].join(", ")}`,
   );
+}
+
+// ===== 问答式知识库生成 =====
+
+interface QAEntry {
+  question: string;
+  answer: string;
+  category: "project" | "bidding" | "award" | "charger" | "industry";
+  tags: string[];
+  source: string;
+  date: string;
+}
+
+/**
+ * 从结构化数据生成问答式知识库
+ * AI 助手可以直接搜索和引用这些 Q&A 对
+ */
+function generateQAKnowledgeBase(
+  projects: any[],
+  bidding: any[],
+  awards: any[],
+  chargers: any[]
+): void {
+  const qaList: QAEntry[] = [];
+
+  // --- 项目类问答 ---
+  for (const p of projects.slice(0, 100)) {
+    const type = p.type || "综合能源";
+    const prov = p.province ? `（${p.province}）` : "";
+    const cap = p.capacity ? `，规模：${p.capacity}` : "";
+    const comp = p.company ? `，投资/建设单位：${p.company}` : "";
+    const date = p.date ? `（${p.date}）` : "";
+
+    qaList.push({
+      question: `${type}${prov}有哪些最新项目？`,
+      answer: `【${p.title}】${date}${cap}${comp}。${p.summary || ""}`,
+      category: "project",
+      tags: [type, p.province].filter(Boolean),
+      source: p.sourceName || "",
+      date: p.date || "",
+    });
+  }
+
+  // --- 招标类问答 ---
+  for (const b of bidding.slice(0, 80)) {
+    const cat = b.category || "综合能源";
+    const status = b.status || "";
+    const prov = b.province ? `（${b.province}）` : "";
+    const amt = b.amount ? `，预算金额：${b.amount}` : "";
+    const date = b.date ? `（${b.date}）` : "";
+
+    qaList.push({
+      question: `最近${cat}方面有什么招标信息？`,
+      answer: `【${b.title}】${date} 状态：${status}${prov}${amt}。${b.summary || ""}`,
+      category: "bidding",
+      tags: [cat, b.status, b.province].filter(Boolean),
+      source: b.sourceName || "",
+      date: b.date || "",
+    });
+
+    // 额外生成具体问题
+    if (b.title.length > 10) {
+      qaList.push({
+        question: `${b.title.slice(0, 30)}的招标详情是什么？`,
+        answer: `项目名称：${b.title}\n发布时间：${b.date || "未知"}\n省份：${b.province || "全国"}\n状态：${status}\n${amt ? `预算：${b.amount}\n` : ""}摘要：${b.summary || "暂无详细信息"}\n来源：${b.sourceUrl || b.sourceName || ""}`,
+        category: "bidding",
+        tags: [cat, b.province],
+        source: b.sourceName || "",
+        date: b.date || "",
+      });
+    }
+  }
+
+  // --- 中标类问答 ---
+  for (const a of awards.slice(0, 80)) {
+    const cat = a.category || "综合能源";
+    const prov = a.province ? `（${a.province}）` : "";
+    const comp = a.company ? `，中标单位：${a.company}` : "";
+    const amt = a.amount ? `，中标金额：${a.amount}` : "";
+    const date = a.date ? `（${a.date}）` : "";
+
+    qaList.push({
+      question: `最近${cat}领域有哪些中标公告？`,
+      answer: `【${a.title}】${date}${prov}${comp}${amt}。${a.summary || ""}`,
+      category: "award",
+      tags: [cat, a.province].filter(Boolean),
+      source: a.sourceName || "",
+      date: a.date || "",
+    });
+  }
+
+  // --- 充电桩类问答 ---
+  for (const c of chargers.slice(0, 50)) {
+    const prov = c.province ? `（${c.province}）` : "";
+    const date = c.date ? `（${c.date}）` : "";
+
+    qaList.push({
+      question: `最近充电桩/充电站建设有哪些动态？`,
+      answer: `【${c.title}】${date}${prov}。${c.summary || ""}`,
+      category: "charger",
+      tags: ["充电桩", c.province].filter(Boolean),
+      source: c.sourceName || "",
+      date: c.date || "",
+    });
+  }
+
+  // --- 行业综合问答（从所有数据中提炼热点话题） ---
+  const allItems = [
+    ...projects.map((p) => ({ text: p.title + " " + p.summary, date: p.date, src: p.sourceName })),
+    ...bidding.map((b) => ({ text: b.title + " " + b.summary, date: b.date, src: b.sourceName })),
+    ...awards.map((a) => ({ text: a.title + " " + a.summary, date: a.date, src: a.sourceName })),
+  ];
+
+  // 按省份统计
+  const provinceCount: Record<string, number> = {};
+  for (const item of allItems) {
+    const prov = extractProvince(item.text);
+    if (prov) {
+      provinceCount[prov] = (provinceCount[prov] || 0) + 1;
+    }
+  }
+  const topProvinces = Object.entries(provinceCount)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  if (topProvinces.length > 0) {
+    qaList.push({
+      question: "哪些省份的光伏储能项目最活跃？",
+      answer: `根据最新数据，光伏储能项目最活跃的省份依次为：\n${topProvinces.map(([p, c], i) => `${i + 1}. ${p}（${c}条信息）`).join("\n")}\n\n数据更新时间：${new Date().toISOString().slice(0, 10)}`,
+      category: "industry",
+      tags: ["省份排行", "行业概览"],
+      source: "自动统计",
+      date: new Date().toISOString().slice(0, 10),
+    });
+  }
+
+  // 按类型统计
+  const typeCount: Record<string, number> = {};
+  for (const p of projects) {
+    const t = p.type || "其他";
+    typeCount[t] = (typeCount[t] || 0) + 1;
+  }
+  const typeEntries = Object.entries(typeCount).sort((a, b) => b[1] - a[1]);
+  if (typeEntries.length > 0) {
+    qaList.push({
+      question: "目前各类新能源项目的分布情况如何？",
+      answer: `当前项目类型分布：\n${typeEntries.map(([t, c]) => `- ${t}：${c}个项目`).join("\n")}\n\n招标信息：${bidding.length}条\n中标公告：${awards.length}条\n充电桩动态：${chargers.length}条`,
+      category: "industry",
+      tags: ["类型分布", "行业概览"],
+      source: "自动统计",
+      date: new Date().toISOString().slice(0, 10),
+    });
+  }
+
+  // 保存知识库
+  fs.writeFileSync(
+    path.join(DATA_DIR, "qa-knowledge.json"),
+    JSON.stringify(qaList, null, 2)
+  );
+
+  console.log(`\n=== 问答式知识库已生成 ===`);
+  console.log(`  总 QA 条目数: ${qaList.length}`);
+  console.log(`  项目问答: ${qaList.filter(q => q.category === "project").length}`);
+  console.log(`  招标问答: ${qaList.filter(q => q.category === "bidding").length}`);
+  console.log(`  中标问答: ${qaList.filter(q => q.category === "award").length}`);
+  console.log(`  充电桩问答: ${qaList.filter(q => q.category === "charger").length}`);
+  console.log(`  行业综合: ${qaList.filter(q => q.category === "industry").length}`);
+  console.log(`  保存路径: public/data/qa-knowledge.json`);
 }
 
 main().catch(console.error);

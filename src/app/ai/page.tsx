@@ -18,8 +18,8 @@ interface ChatMessage {
 }
 
 const PROVIDER_OPTIONS: { value: AIProvider; label: string; desc: string }[] = [
-  { value: 'nvidia', label: 'NVIDIA NIM', desc: 'MiniMax M2.7' },
-  { value: 'zhipuai', label: '智谱AI (GLM)', desc: 'GLM-4.7-Flash' },
+  { value: 'zhipuai', label: '智谱AI (推荐)', desc: 'GLM-4-Flash - 稳定快速' },
+  { value: 'nvidia', label: 'NVIDIA NIM', desc: 'Llama-3.1-70B' },
 ];
 
 const PRESET_QUESTIONS = [
@@ -32,7 +32,7 @@ const PRESET_QUESTIONS = [
 export default function AIPage() {
   const [inputContent, setInputContent] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [provider, setProvider] = useState<AIProvider>('nvidia');
+  const [provider, setProvider] = useState<AIProvider>('zhipuai');
   const [providerOpen, setProviderOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -157,7 +157,15 @@ export default function AIPage() {
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm whitespace-pre-wrap">{m.content}</p>
+                    <div className="text-sm whitespace-pre-wrap leading-relaxed">
+                      {m.content ? (
+                        m.content.split('\n').map((line, i) => (
+                          <p key={i} className={i === 0 ? '' : 'mt-2'}>{line || '\u00A0'}</p>
+                        ))
+                      ) : (
+                        <p className="text-slate-400 italic">(无回复内容)</p>
+                      )}
+                    </div>
                     {m.sources && m.sources.length > 0 && (
                       <div className="mt-2 pt-2 border-t border-slate-200">
                         <p className="text-xs text-slate-500">参考：{m.sources.join(', ')}</p>
