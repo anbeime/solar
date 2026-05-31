@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - '!**/.github/workflows/**'
 
 jobs:
   sync:
@@ -16,9 +14,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Push to GitHub
+      - name: Push to GitHub (source files only, preserve GitHub workflows)
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
+          # 只推送源代码和配置，不推送 .github/ 和 .gitee/ 目录
           git remote add github https://x-access-token:$GH_TOKEN@github.com/anbeime/solar.git
-          git push github master --force
+
+          # 先stash GitHub特有的文件
+          git stash push -- .github/ .gitee/ || true
+
+          # 添加并提交源代码
+          git add src/ public/ package.json package-lock.json pnpm-lock.yaml tsconfig.json next.config.js drizzle.config.ts .env.example .gitignore README.md AGENTS.md seo/ scripts/ --force
+
+          # 检查是否有要推送的内容
+          if git diff --cached --quiet; then
+            echo "No source code changes to sync"
+          else
+            git commit -m "sync: update source code from Gitee $(date '+%Y-%m-%d %H:%M')"
+            git push github main
+            echo "Successfully synced source code to GitHub"
+          fi
+
+          # 恢复GitHub特有文件（本地保留）
+          git stash pop || true

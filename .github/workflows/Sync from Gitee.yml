@@ -61,20 +61,16 @@ jobs:
             echo "gitee_commit=$GITEE_COMMIT" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Sync from Gitee (merge only, preserve GitHub files)
+      - name: Sync from Gitee (force reset to Gitee state)
         if: steps.check_updates.outputs.has_updates == 'true'
         run: |
-          # Stash GitHub-specific files first
-          git stash push -- .github/ .gitee/ || true
-          # Merge Gitee changes (prefer Gitee for common files)
-          git merge gitee/${{ env.GITEE_BRANCH }} --no-edit || true
-          # Restore GitHub-specific files
-          git stash pop || true
+          # Force reset to Gitee's state - this is intentional for sync
+          git reset --hard gitee/${{ env.GITEE_BRANCH }}
 
       - name: Push to GitHub
         if: steps.check_updates.outputs.has_updates == 'true'
         run: |
-          git push origin HEAD:${{ env.GITHUB_BRANCH }}
+          git push --force origin HEAD:${{ env.GITHUB_BRANCH }}
           echo "Successfully synced from Gitee to GitHub!"
 
       - name: Create Sync Summary
