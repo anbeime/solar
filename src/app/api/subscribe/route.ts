@@ -109,8 +109,8 @@ export async function POST(request: NextRequest) {
       success: true,
       message: "订阅成功！",
     });
-  } catch (error) {
-    console.error("订阅错误:", error);
+  } catch (error: any) {
+    console.error("订阅错误:", error?.message || error?.code || error);
     return NextResponse.json(
       { success: false, message: "服务器错误，请稍后重试" },
       { status: 500 },
