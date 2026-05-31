@@ -1,13 +1,16 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.2925.com",
+  host: process.env.SMTP_HOST || "smtp.2925.com",
   port: 465,
   secure: true,
   auth: {
     user: process.env.SMTP_USER || "wasonbeer@2925.com",
     pass: process.env.SMTP_PASS,
   },
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
 });
 
 interface Subscriber {
@@ -20,15 +23,16 @@ interface Subscriber {
 
 export async function sendEmail(to: string, subject: string, html: string) {
   try {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: '"TOPGO SOLAR" <wasonbeer@2925.com>',
       to,
       subject,
       html,
     });
+    console.log("邮件发送成功:", info.messageId);
     return true;
-  } catch (e) {
-    console.error("发送邮件失败:", e);
+  } catch (e: any) {
+    console.error("发送邮件失败:", e?.message || e);
     return false;
   }
 }
