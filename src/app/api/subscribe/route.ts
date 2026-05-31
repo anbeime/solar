@@ -96,9 +96,14 @@ export async function POST(request: NextRequest) {
     subscribers.push(newSubscriber);
     await saveSubscribers(subscribers);
 
-    await sendWelcomeEmail(newSubscriber);
-
-    console.log("📧 新订阅:", newSubscriber);
+    // 发邮件不阻塞订阅流程
+    try {
+      await sendWelcomeEmail(newSubscriber);
+      console.log("📧 新订阅并已发送欢迎邮件:", newSubscriber);
+    } catch (emailError) {
+      console.error("📧 邮件发送失败，但订阅已保存:", emailError);
+      // 邮件失败不影响订阅成功
+    }
 
     return NextResponse.json({
       success: true,
