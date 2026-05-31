@@ -61,22 +61,22 @@ export function SubscribeSection() {
   }
 
   return (
-    <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 shadow-xl">
+    <section className="w-full">
+      <Card className="bg-gradient-to-br from-slate-900 to-slate-800 border-slate-700 shadow-xl rounded-xl">
         <CardHeader className="text-center pb-2">
-          <Badge className="bg-gradient-to-r from-rose-500 to-orange-500 text-white text-xs mb-3">
+          <Badge className="bg-gradient-to-r from-rose-500 to-orange-500 text-white text-xs mb-2">
             🔥 限时免费订阅
           </Badge>
-          <CardTitle className="text-2xl font-bold text-white mb-2">
+          <CardTitle className="text-lg font-bold text-white mb-1">
             获取最新光伏储能行业动态
           </CardTitle>
-          <p className="text-slate-400 text-sm">
+          <p className="text-slate-400 text-xs">
             专业团队实时爬取整理 | 满足GEO标准 | 精美排版即开即用
           </p>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="space-y-2">
                 <label className="text-sm text-slate-200 font-medium flex items-center gap-1">
                   🏢 公司名称
