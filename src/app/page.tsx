@@ -62,7 +62,7 @@ const navCards = [
     icon: MapPin,
     color: "from-blue-500 to-cyan-500",
     iconBg: "bg-blue-100 text-blue-600",
-    href: "/#projects",
+    href: "/map",
   },
   {
     title: "招标动态",

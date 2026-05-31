@@ -48,7 +48,9 @@ export function SubscribeSection() {
         <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200">
           <CardContent className="text-center py-12">
             <div className="text-6xl mb-4">✅</div>
-            <h3 className="text-2xl font-bold text-emerald-700 mb-2">订阅成功！</h3>
+            <h3 className="text-2xl font-bold text-emerald-700 mb-2">
+              订阅成功！
+            </h3>
             <p className="text-slate-600">
               感谢您的信任，我们将定期发送最新光伏储能行业动态到您的邮箱
             </p>
@@ -76,7 +78,7 @@ export function SubscribeSection() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm text-slate-300 font-medium flex items-center gap-1">
+                <label className="text-sm text-slate-200 font-medium flex items-center gap-1">
                   🏢 公司名称
                 </label>
                 <Input
@@ -87,11 +89,11 @@ export function SubscribeSection() {
                     setFormData({ ...formData, company: e.target.value })
                   }
                   required
-                  className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-cyan-500 focus:ring-cyan-500"
+                  className="bg-slate-700/80 border-slate-500 text-white placeholder:text-slate-300 focus:border-cyan-400 focus:ring-cyan-400 h-11 px-4 rounded-lg"
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm text-slate-300 font-medium flex items-center gap-1">
+                <label className="text-sm text-slate-200 font-medium flex items-center gap-1">
                   📞 联系电话
                 </label>
                 <Input
@@ -102,12 +104,12 @@ export function SubscribeSection() {
                     setFormData({ ...formData, phone: e.target.value })
                   }
                   required
-                  className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-cyan-500 focus:ring-cyan-500"
+                  className="bg-slate-700/80 border-slate-500 text-white placeholder:text-slate-300 focus:border-cyan-400 focus:ring-cyan-400 h-11 px-4 rounded-lg"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-sm text-slate-300 font-medium flex items-center gap-1">
+              <label className="text-sm text-slate-200 font-medium flex items-center gap-1">
                 📧 邮箱地址
               </label>
               <Input
@@ -118,10 +120,10 @@ export function SubscribeSection() {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 required
-                className="bg-slate-800/50 border-slate-600 text-white placeholder:text-slate-500 focus:border-cyan-500 focus:ring-cyan-500"
+                className="bg-slate-700/80 border-slate-500 text-white placeholder:text-slate-300 focus:border-cyan-400 focus:ring-cyan-400 h-11 px-4 rounded-lg"
               />
             </div>
-            
+
             {error && (
               <div className="text-red-400 text-sm text-center bg-red-500/10 rounded-lg py-2">
                 {error}
