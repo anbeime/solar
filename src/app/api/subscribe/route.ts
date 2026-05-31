@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { writeFile, readFile } from "fs/promises";
+import { existsSync } from "fs";
+import path from "path";
+import { sendWelcomeEmail } from "@/lib/email";
 
-const JSONBIN_API_KEY = process.env.JSONBIN_API_KEY;
-const JSONBIN_BIN_ID = process.env.JSONBIN_BIN_ID;
-const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`;
+const DATA_DIR = path.join(process.cwd(), "data");
+const SUBSCRIBERS_FILE = path.join(DATA_DIR, "subscribers.json");
 
 interface Subscriber {
   id: number;
@@ -13,49 +16,37 @@ interface Subscriber {
   status: string;
 }
 
-async function getSubscribers(): Promise<Subscriber[]> {
-  try {
-    const res = await fetch(JSONBIN_URL, {
-      headers: {
-        "X-Master-Key": JSONBIN_API_KEY!,
-        "Content-Type": "application/json",
-      },
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.record || [];
-  } catch (e) {
-    console.error("获取订阅失败:", e);
-    return [];
+async function ensureDataDir() {
+  if (!existsSync(DATA_DIR)) {
+    await import("fs/promises").then((fs) =>
+      fs.mkdir(DATA_DIR, { recursive: true }),
+    );
   }
 }
 
-async function saveSubscribers(subscribers: Subscriber[]): Promise<boolean> {
+async function getSubscribers(): Promise<Subscriber[]> {
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-      method: "PUT",
-      headers: {
-        "X-Master-Key": JSONBIN_API_KEY!,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(subscribers),
-    });
-    return res.ok;
+    if (existsSync(SUBSCRIBERS_FILE)) {
+      const data = await readFile(SUBSCRIBERS_FILE, "utf-8");
+      return JSON.parse(data);
+    }
   } catch (e) {
-    console.error("保存订阅失败:", e);
-    return false;
+    console.error("读取订阅者失败:", e);
   }
+  return [];
+}
+
+async function saveSubscribers(subscribers: Subscriber[]): Promise<void> {
+  await ensureDataDir();
+  await writeFile(
+    SUBSCRIBERS_FILE,
+    JSON.stringify(subscribers, null, 2),
+    "utf-8",
+  );
 }
 
 export async function POST(request: NextRequest) {
   try {
-    if (!JSONBIN_API_KEY || !JSONBIN_BIN_ID) {
-      return NextResponse.json(
-        { success: false, message: "服务配置错误，请稍后重试" },
-        { status: 500 },
-      );
-    }
-
     const body = await request.json();
     const { company, phone, email } = body;
 
@@ -103,21 +94,15 @@ export async function POST(request: NextRequest) {
     };
 
     subscribers.push(newSubscriber);
-    const saved = await saveSubscribers(subscribers);
+    await saveSubscribers(subscribers);
 
-    if (!saved) {
-      return NextResponse.json(
-        { success: false, message: "保存失败，请稍后重试" },
-        { status: 500 },
-      );
-    }
+    await sendWelcomeEmail(newSubscriber);
 
     console.log("📧 新订阅:", newSubscriber);
 
     return NextResponse.json({
       success: true,
       message: "订阅成功！",
-      subscriberId: newSubscriber.id,
     });
   } catch (error) {
     console.error("订阅错误:", error);
