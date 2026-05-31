@@ -11,8 +11,9 @@ import { AI_PROVIDERS } from './ai-providers';
 import type { Project, BiddingItem, AwardItem } from './types';
 
 // 默认优先使用智谱AI (更稳定)，NVIDIA作为备选
-const DEFAULT_PROVIDER = 'zhipuai';
-const FALLBACK_PROVIDER = 'nvidia';
+// 默认使用 NVIDIA (用户已配置 API Key)，智谱AI 作为备选
+const DEFAULT_PROVIDER = 'nvidia';
+const FALLBACK_PROVIDER = 'zhipuai';
 
 // 日志辅助
 function log(level: 'info' | 'warn' | 'error', msg: string, data?: unknown) {

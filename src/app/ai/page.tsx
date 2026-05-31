@@ -18,8 +18,8 @@ interface ChatMessage {
 }
 
 const PROVIDER_OPTIONS: { value: AIProvider; label: string; desc: string }[] = [
-  { value: 'zhipuai', label: '智谱AI (推荐)', desc: 'GLM-4-Flash - 稳定快速' },
-  { value: 'nvidia', label: 'NVIDIA NIM', desc: 'Llama-3.1-70B' },
+  { value: 'nvidia', label: 'NVIDIA NIM (默认)', desc: 'Llama-3.1-70B' },
+  { value: 'zhipuai', label: '智谱AI', desc: 'GLM-4-Flash - 备选' },
 ];
 
 const PRESET_QUESTIONS = [
@@ -32,7 +32,7 @@ const PRESET_QUESTIONS = [
 export default function AIPage() {
   const [inputContent, setInputContent] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [provider, setProvider] = useState<AIProvider>('zhipuai');
+  const [provider, setProvider] = useState<AIProvider>('nvidia');
   const [providerOpen, setProviderOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
