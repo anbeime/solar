@@ -186,15 +186,45 @@ function extractDate(text: string): string {
 // 负面过滤词 - 包含这些词的条目直接丢弃（非光伏储能相关）
 const BLOCK_KW = [
   // 金融证券无关内容
-  "股票", "基金", "期货", "美股", "港股", "外汇", "黄金", "债券",
-  "行情中心", "主力净流入", "新股申购", "中签查询", "数据中心_",
-  "沪深两市", "资金流向", "龙虎榜", "融资融券", "交易提示",
-  "涨停板", "跌停板", "K线图", "技术分析", "均线系统",
+  "股票",
+  "基金",
+  "期货",
+  "美股",
+  "港股",
+  "外汇",
+  "黄金",
+  "债券",
+  "行情中心",
+  "主力净流入",
+  "新股申购",
+  "中签查询",
+  "数据中心_",
+  "沪深两市",
+  "资金流向",
+  "龙虎榜",
+  "融资融券",
+  "交易提示",
+  "涨停板",
+  "跌停板",
+  "K线图",
+  "技术分析",
+  "均线系统",
   // 广告和无关页面
-  "广告", "推广", "诚聘", "招聘", "加盟", "代理",
-  "联系我们", "关于我们", "网站地图", "免责声明",
+  "广告",
+  "推广",
+  "诚聘",
+  "招聘",
+  "加盟",
+  "代理",
+  "联系我们",
+  "关于我们",
+  "网站地图",
+  "免责声明",
   // 其他无关
-  "BAIDU_CLB", "百度统计", "Google Analytics", "window.",
+  "BAIDU_CLB",
+  "百度统计",
+  "Google Analytics",
+  "window.",
 ];
 
 /**
@@ -207,21 +237,64 @@ function shouldBlock(title: string, summary: string): boolean {
 }
 
 const PROJECT_KW = [
-  "光伏项目", "风电项目", "储能项目", "电站项目", "发电项目",
-  "光伏电站", "风力发电站", "储能电站", "分布式光伏",
-  "集中式光伏", "光伏基地", "风电基地", "新能源基地",
-  "光伏并网", "风电并网", "并网发电", "并网运行",
-  "光伏投产", "风电投产", "投产运营", "投产发电",
-  "光伏开工", "风电开工", "开工建设", "正式启动",
-  "光伏组件", "光伏逆变器", "风机叶片", "塔筒",
-  "源网荷储", "虚拟电厂", "微电网", "综合能源站",
-  "零碳园区", "零碳工厂", "绿色供电", "绿电交易",
-  "光伏装机", "风电装机", "新增装机", "装机容量",
-  "光储一体", "风光储", "风储", "光储充",
-  "锂电池储能", "电化学储能", "抽水蓄能", "压缩空气储能",
-  "制氢项目", "氢能产业", "加氢站",
-  "充电桩建设", "充电站建设", "换电站建设",
-  "碳中和项目", "碳达峰行动", "可再生能源",
+  "光伏项目",
+  "风电项目",
+  "储能项目",
+  "电站项目",
+  "发电项目",
+  "光伏电站",
+  "风力发电站",
+  "储能电站",
+  "分布式光伏",
+  "集中式光伏",
+  "光伏基地",
+  "风电基地",
+  "新能源基地",
+  "光伏并网",
+  "风电并网",
+  "并网发电",
+  "并网运行",
+  "光伏投产",
+  "风电投产",
+  "投产运营",
+  "投产发电",
+  "光伏开工",
+  "风电开工",
+  "开工建设",
+  "正式启动",
+  "光伏组件",
+  "光伏逆变器",
+  "风机叶片",
+  "塔筒",
+  "源网荷储",
+  "虚拟电厂",
+  "微电网",
+  "综合能源站",
+  "零碳园区",
+  "零碳工厂",
+  "绿色供电",
+  "绿电交易",
+  "光伏装机",
+  "风电装机",
+  "新增装机",
+  "装机容量",
+  "光储一体",
+  "风光储",
+  "风储",
+  "光储充",
+  "锂电池储能",
+  "电化学储能",
+  "抽水蓄能",
+  "压缩空气储能",
+  "制氢项目",
+  "氢能产业",
+  "加氢站",
+  "充电桩建设",
+  "充电站建设",
+  "换电站建设",
+  "碳中和项目",
+  "碳达峰行动",
+  "可再生能源",
 ];
 const BIDDING_KW = [
   "招标",
@@ -1592,7 +1665,15 @@ async function crawlTenderDetail(
 // 使用 search.ccgp.gov.cn/bxsearch 搜索接口，支持关键词检索
 
 const CCGP_SEARCH_URL = "http://search.ccgp.gov.cn/bxsearch";
-const CCGP_KEYWORDS = ["光伏", "储能", "新能源", "风电", "太阳能", "充电桩", "光储"];
+const CCGP_KEYWORDS = [
+  "光伏",
+  "储能",
+  "新能源",
+  "风电",
+  "太阳能",
+  "充电桩",
+  "光储",
+];
 
 async function getCCGPLinks(): Promise<string[]> {
   const links = new Set<string>();
@@ -1609,7 +1690,8 @@ async function getCCGPLinks(): Promise<string[]> {
           headers: {
             "User-Agent":
               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            Accept:
+              "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
             "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
           },
           signal: AbortSignal.timeout(15000),
@@ -1628,7 +1710,8 @@ async function getCCGPLinks(): Promise<string[]> {
           let m: RegExpExecArray | null;
           while ((m = linkRegex.exec(html)) !== null) {
             let href = m[1];
-            if (!href || href.startsWith("javascript") || href.startsWith("#")) continue;
+            if (!href || href.startsWith("javascript") || href.startsWith("#"))
+              continue;
             if (href.startsWith("/")) href = `http://www.ccgp.gov.cn${href}`;
             links.add(href);
           }
@@ -1658,7 +1741,9 @@ async function getCCGPLinks(): Promise<string[]> {
     console.log(`  [CCGP] ${filtered.length} 条新能源相关（搜索API）`);
     return filtered;
   } catch (e) {
-    console.log(`  [CCGP] Error: ${e instanceof Error ? e.message : String(e)}`);
+    console.log(
+      `  [CCGP] Error: ${e instanceof Error ? e.message : String(e)}`,
+    );
     return [];
   }
 }
@@ -1679,8 +1764,7 @@ async function crawlCCGPTitle(
 
     // 标题匹配：优先 h1/title
     const titleM =
-      html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) ||
-      html.match(/<title>([^<]+)/);
+      html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) || html.match(/<title>([^<]+)/);
     const title = titleM ? titleM[1].replace(/<[^>]+>/g, "").trim() : "";
     if (!title) return null;
 
@@ -1695,16 +1779,25 @@ async function crawlCCGPTitle(
     for (const p of datePatterns) {
       const dm = html.match(p);
       if (dm) {
-        date = dm[1].replace(/[年\/]/g, "-").replace("月", "-").replace("日", "");
+        date = dm[1]
+          .replace(/[年\/]/g, "-")
+          .replace("月", "-")
+          .replace("日", "");
         break;
       }
     }
 
     // 简要内容摘要
-    const contentMatch = html.match(/<div[^>]*class="[^"]*vT-sdetail-content[^"]*"[^>]*>([\s\S]{50,500})<\/div>/i)
-      || html.match(/<div[^>]*class="[^"]*content[^"]*"[^>]*>([\s\S]{50,500})/i);
+    const contentMatch =
+      html.match(
+        /<div[^>]*class="[^"]*vT-sdetail-content[^"]*"[^>]*>([\s\S]{50,500})<\/div>/i,
+      ) ||
+      html.match(/<div[^>]*class="[^"]*content[^"]*"[^>]*>([\s\S]{50,500})/i);
     const summary = contentMatch
-      ? contentMatch[1].replace(/<[^>]+>/g, "").trim().slice(0, 300)
+      ? contentMatch[1]
+          .replace(/<[^>]+>/g, "")
+          .trim()
+          .slice(0, 300)
       : "";
 
     return { title, summary, date };
@@ -2267,7 +2360,12 @@ async function main() {
   );
 
   // ===== 生成问答式知识库 =====
-  generateQAKnowledgeBase(filteredProjects, filteredBidding, filteredAwards, filteredChargers);
+  generateQAKnowledgeBase(
+    filteredProjects,
+    filteredBidding,
+    filteredAwards,
+    filteredChargers,
+  );
 
   // 保存爬取状态
   state.lastRun = new Date().toISOString();
@@ -2309,7 +2407,7 @@ function generateQAKnowledgeBase(
   projects: any[],
   bidding: any[],
   awards: any[],
-  chargers: any[]
+  chargers: any[],
 ): void {
   const qaList: QAEntry[] = [];
 
@@ -2396,9 +2494,21 @@ function generateQAKnowledgeBase(
 
   // --- 行业综合问答（从所有数据中提炼热点话题） ---
   const allItems = [
-    ...projects.map((p) => ({ text: p.title + " " + p.summary, date: p.date, src: p.sourceName })),
-    ...bidding.map((b) => ({ text: b.title + " " + b.summary, date: b.date, src: b.sourceName })),
-    ...awards.map((a) => ({ text: a.title + " " + a.summary, date: a.date, src: a.sourceName })),
+    ...projects.map((p) => ({
+      text: p.title + " " + p.summary,
+      date: p.date,
+      src: p.sourceName,
+    })),
+    ...bidding.map((b) => ({
+      text: b.title + " " + b.summary,
+      date: b.date,
+      src: b.sourceName,
+    })),
+    ...awards.map((a) => ({
+      text: a.title + " " + a.summary,
+      date: a.date,
+      src: a.sourceName,
+    })),
   ];
 
   // 按省份统计
@@ -2445,17 +2555,138 @@ function generateQAKnowledgeBase(
   // 保存知识库
   fs.writeFileSync(
     path.join(DATA_DIR, "qa-knowledge.json"),
-    JSON.stringify(qaList, null, 2)
+    JSON.stringify(qaList, null, 2),
   );
 
   console.log(`\n=== 问答式知识库已生成 ===`);
   console.log(`  总 QA 条目数: ${qaList.length}`);
-  console.log(`  项目问答: ${qaList.filter(q => q.category === "project").length}`);
-  console.log(`  招标问答: ${qaList.filter(q => q.category === "bidding").length}`);
-  console.log(`  中标问答: ${qaList.filter(q => q.category === "award").length}`);
-  console.log(`  充电桩问答: ${qaList.filter(q => q.category === "charger").length}`);
-  console.log(`  行业综合: ${qaList.filter(q => q.category === "industry").length}`);
+  console.log(
+    `  项目问答: ${qaList.filter((q) => q.category === "project").length}`,
+  );
+  console.log(
+    `  招标问答: ${qaList.filter((q) => q.category === "bidding").length}`,
+  );
+  console.log(
+    `  中标问答: ${qaList.filter((q) => q.category === "award").length}`,
+  );
+  console.log(
+    `  充电桩问答: ${qaList.filter((q) => q.category === "charger").length}`,
+  );
+  console.log(
+    `  行业综合: ${qaList.filter((q) => q.category === "industry").length}`,
+  );
   console.log(`  保存路径: public/data/qa-knowledge.json`);
+
+  // ===== 发送订阅更新通知 =====
+  await sendUpdateNotification();
+}
+
+// ===== 订阅更新通知 =====
+async function sendUpdateNotification() {
+  const subscribersFile = path.join(process.cwd(), "data", "subscribers.json");
+
+  try {
+    if (!fs.existsSync(subscribersFile)) {
+      console.log("\n📧 无订阅者，跳过通知");
+      return;
+    }
+
+    const subscribersData = fs.readFileSync(subscribersFile, "utf-8");
+    const subscribers = JSON.parse(subscribersData);
+
+    if (!subscribers || subscribers.length === 0) {
+      console.log("\n📧 无订阅者，跳过通知");
+      return;
+    }
+
+    console.log(`\n📧 准备发送更新通知给 ${subscribers.length} 位订阅者`);
+
+    // 动态导入 nodemailer
+    const nodemailer = await import("nodemailer");
+
+    const transporter = nodemailer.default.createTransport({
+      host: process.env.SMTP_HOST || "smtp.2925.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER || "wasonbeer@2925.com",
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    const updateDate = new Date().toLocaleString("zh-CN", {
+      timeZone: "Asia/Shanghai",
+    });
+
+    const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Microsoft YaHei', Arial, sans-serif; background-color: #f5f5f5;">
+      <div style="max-width: 600px; margin: 30px auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        
+        <div style="background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 30px; text-align: center;">
+          <h2 style="color: #ffffff; margin: 0; font-size: 24px;">📊 数据更新通知</h2>
+        </div>
+        
+        <div style="padding: 30px;">
+          <p style="color: #1f2937; font-size: 16px; margin: 0 0 20px;">
+            亲爱的订阅用户，TOPGO SOLAR 数据已更新：
+          </p>
+          
+          <div style="background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 20px 0;">
+            <p style="margin: 0; color: #1f2937; font-size: 14px;">
+              <strong>更新时间：</strong>${updateDate}
+            </p>
+            <p style="margin: 10px 0 0; color: #6b7280; font-size: 13px;">
+              最新的招标公告、中标公示、项目数据已更新
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="https://solar.miyucaicai.cn" style="display: inline-block; background: #2563eb; color: #ffffff; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: bold;">
+              查看最新数据 →
+            </a>
+          </div>
+          
+          <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 15px 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
+            <p style="margin: 0; color: #1e40af; font-size: 14px;">
+              <strong>包含数据：</strong>
+            </p>
+            <ul style="margin: 10px 0 0; padding-left: 20px; color: #6b7280; font-size: 13px;">
+              <li>光伏/储能/风电项目</li>
+              <li>招标公告</li>
+              <li>中标公示</li>
+              <li>充电桩动态</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div style="background: #f9fafb; padding: 20px 30px; text-align: center; border-top: 1px solid #e5e7eb;">
+          <p style="color: #9ca3af; font-size: 11px; margin: 0;">
+            TOPGO SOLAR 光伏储能数据平台 · solar.miyucaicai.cn
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
+    `;
+
+    const recipients = subscribers.map((s: any) => s.email).join(",");
+
+    await transporter.sendMail({
+      from: '"TOPGO SOLAR" <wasonbeer@2925.com>',
+      to: recipients,
+      subject: "📊 TOPGO SOLAR 数据已更新",
+      html,
+    });
+
+    console.log(`📧 更新通知已发送给 ${subscribers.length} 位订阅者`);
+  } catch (e) {
+    console.error("📧 发送更新通知失败:", e);
+  }
 }
 
 main().catch(console.error);
