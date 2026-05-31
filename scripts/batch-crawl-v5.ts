@@ -1582,53 +1582,79 @@ async function crawlTenderDetail(
   }
 }
 
-// ===== 数据源8: 中国政府采购网-国家级 (增强) =====
+// ===== 数据源6: 中国政府采购网-国家级 (搜索API版) =====
+// 使用 search.ccgp.gov.cn/bxsearch 搜索接口，支持关键词检索
+
+const CCGP_SEARCH_URL = "http://search.ccgp.gov.cn/bxsearch";
+const CCGP_KEYWORDS = ["光伏", "储能", "新能源", "风电", "太阳能", "充电桩", "光储"];
 
 async function getCCGPLinks(): Promise<string[]> {
   const links = new Set<string>();
   try {
-    const sections = [
-      "http://www.ccgp.gov.cn/cggg/zygg/gkzb/",
-      "http://www.ccgp.gov.cn/cggg/dfcg/cgxx/",
-    ];
-    for (const sectionUrl of sections) {
+    // 对每个关键词搜索，获取最近7天的数据
+    const now = new Date();
+    const startTime = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const startStr = `${startTime.getFullYear()}-${String(startTime.getMonth() + 1).padStart(2, "0")}-${String(startTime.getDate()).padStart(2, "0")}`;
+
+    for (const kw of CCGP_KEYWORDS) {
       try {
-        const resp = await fetch(sectionUrl, {
+        const searchUrl = `${CCGP_SEARCH_URL}?searchtype=1&page_index=1&start_time=${startStr}&end_time=&timeType=6&kw=${encodeURIComponent(kw)}`;
+        const resp = await fetch(searchUrl, {
           headers: {
             "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "zh-CN,zh;q=0.9,en;q=0.8",
           },
-          signal: AbortSignal.timeout(12000),
+          signal: AbortSignal.timeout(15000),
         });
         if (!resp.ok) continue;
         const html = await resp.text();
 
-        // 匹配链接
-        const linkRegex = /href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
-        let m: RegExpExecArray | null;
-        while ((m = linkRegex.exec(html)) !== null) {
-          const title = m[2].replace(/<[^>]+>/g, "").trim();
-          if (
-            title.length > 8 &&
-            ENERGY_KEYWORDS.some((kw) => title.includes(kw))
-          ) {
+        // 搜索结果页中的链接格式
+        const linkPatterns = [
+          /href="(https?:\/\/[^"]*ccgp\.gov\.cn[^"]*)"/gi,
+          /data-url="(https?:\/\/[^"]*)"/gi,
+        ];
+
+        for (const pattern of linkPatterns) {
+          const linkRegex = RegExp(pattern.source, pattern.flags);
+          let m: RegExpExecArray | null;
+          while ((m = linkRegex.exec(html)) !== null) {
             let href = m[1];
+            if (!href || href.startsWith("javascript") || href.startsWith("#")) continue;
             if (href.startsWith("/")) href = `http://www.ccgp.gov.cn${href}`;
-            else if (!href.startsWith("http") && href.startsWith("."))
-              href = `http://www.ccgp.gov.cn/cggg/zygg/gkzb/${href.replace(/^\.\//, "")}`;
+            links.add(href);
+          }
+        }
+
+        // 备用：匹配搜索结果列表下的所有链接
+        const ulRegex = /<a[^>]+href="([^"]+)"[^>]*>/gi;
+        let um: RegExpExecArray | null;
+        while ((um = ulRegex.exec(html)) !== null) {
+          const href = um[1];
+          if (href.startsWith("/") && !links.has(href)) {
+            links.add(`http://www.ccgp.gov.cn${href}`);
+          } else if (href.startsWith("http") && !links.has(href)) {
             links.add(href);
           }
         }
       } catch {
         continue;
       }
-      await sleep(200);
+      await sleep(300); // 避免请求过快
     }
-    console.log(`  [CCGP] ${links.size} 条新能源相关`);
-  } catch {
-    console.log(`  [CCGP] Failed`);
+
+    // 去重并过滤非 ccgp 域名的链接
+    const filtered = Array.from(links).filter(
+      (l) => l.includes("ccgp.gov.cn") || l.includes("search.ccgp.gov.cn"),
+    );
+    console.log(`  [CCGP] ${filtered.length} 条新能源相关（搜索API）`);
+    return filtered;
+  } catch (e) {
+    console.log(`  [CCGP] Error: ${e instanceof Error ? e.message : String(e)}`);
+    return [];
   }
-  return Array.from(links);
 }
 
 async function crawlCCGPTitle(
@@ -1636,20 +1662,46 @@ async function crawlCCGPTitle(
 ): Promise<{ title: string; summary: string; date: string } | null> {
   try {
     const resp = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0" },
-      signal: AbortSignal.timeout(8000),
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      },
+      signal: AbortSignal.timeout(10000),
     });
     if (!resp.ok) return null;
     const html = await resp.text();
+
+    // 标题匹配：优先 h1/title
     const titleM =
-      html.match(/<title>([^<]+)/) || html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/);
+      html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/) ||
+      html.match(/<title>([^<]+)/);
     const title = titleM ? titleM[1].replace(/<[^>]+>/g, "").trim() : "";
     if (!title) return null;
-    const dateM = html.match(/(\d{4}[年\-\/]\d{1,2}[月\-\/]\d{1,2})/);
-    const date = dateM
-      ? dateM[1].replace(/[年\/]/g, "-").replace("月", "-")
+
+    // 日期匹配：多种格式
+    const datePatterns = [
+      /(\d{4}年\d{1,2}月\d{1,2}日)/,
+      /(\d{4}-\d{2}-\d{2})/,
+      /发布时间[：:]\s*(\d{4}[^\s]*)/,
+      /(\d{4}\/\d{1,2}\/\d{1,2})/,
+    ];
+    let date = "";
+    for (const p of datePatterns) {
+      const dm = html.match(p);
+      if (dm) {
+        date = dm[1].replace(/[年\/]/g, "-").replace("月", "-").replace("日", "");
+        break;
+      }
+    }
+
+    // 简要内容摘要
+    const contentMatch = html.match(/<div[^>]*class="[^"]*vT-sdetail-content[^"]*"[^>]*>([\s\S]{50,500})<\/div>/i)
+      || html.match(/<div[^>]*class="[^"]*content[^"]*"[^>]*>([\s\S]{50,500})/i);
+    const summary = contentMatch
+      ? contentMatch[1].replace(/<[^>]+>/g, "").trim().slice(0, 300)
       : "";
-    return { title, summary: "", date };
+
+    return { title, summary, date };
   } catch {
     return null;
   }
