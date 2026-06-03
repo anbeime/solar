@@ -2360,7 +2360,7 @@ async function main() {
   );
 
   // ===== 生成问答式知识库 =====
-  generateQAKnowledgeBase(
+  await generateQAKnowledgeBase(
     filteredProjects,
     filteredBidding,
     filteredAwards,
@@ -2403,7 +2403,7 @@ interface QAEntry {
  * 从结构化数据生成问答式知识库
  * AI 助手可以直接搜索和引用这些 Q&A 对
  */
-function generateQAKnowledgeBase(
+async function generateQAKnowledgeBase(
   projects: any[],
   bidding: any[],
   awards: any[],
