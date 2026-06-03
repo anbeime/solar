@@ -1,0 +1,158 @@
+{
+  "update_date": "2026-06-02",
+  "total_projects": 982,
+  "nea_count": 91,
+  "bjx_count": 896,
+  "pv_count": 629,
+  "storage_count": 353,
+  "total_capacity_mw": 88470,
+  "total_storage_mwh": 8780.131800680027,
+  "province_stats": {
+    "河北省": 45,
+    "山西省": 42,
+    "内蒙古": 35,
+    "山东省": 58,
+    "河南省": 46,
+    "江苏省": 57,
+    "浙江省": 51,
+    "安徽省": 40,
+    "福建省": 35,
+    "江西省": 32,
+    "湖北省": 38,
+    "湖南省": 33,
+    "广东省": 61,
+    "广西": 29,
+    "海南省": 20,
+    "四川省": 43,
+    "云南省": 25,
+    "陕西省": 34,
+    "甘肃省": 30,
+    "青海省": 19,
+    "宁夏": 15,
+    "新疆": 26,
+    "辽宁省": 28,
+    "吉林省": 22,
+    "黑龙江省": 25,
+    "贵州省": 22,
+    "北京市": 18,
+    "天津市": 15,
+    "上海市": 20,
+    "重庆市": 18
+  },
+  "top10_provinces": [
+    {
+      "province": "广东省",
+      "count": 61
+    },
+    {
+      "province": "山东省",
+      "count": 58
+    },
+    {
+      "province": "江苏省",
+      "count": 57
+    },
+    {
+      "province": "浙江省",
+      "count": 51
+    },
+    {
+      "province": "河南省",
+      "count": 46
+    },
+    {
+      "province": "河北省",
+      "count": 45
+    },
+    {
+      "province": "四川省",
+      "count": 43
+    },
+    {
+      "province": "山西省",
+      "count": 42
+    },
+    {
+      "province": "安徽省",
+      "count": 40
+    },
+    {
+      "province": "湖北省",
+      "count": 38
+    }
+  ],
+  "bid_count": 50,
+  "win_count": 0,
+  "latest_bids": [
+    {
+      "id": "BID20250001",
+      "project_name": "北京2025年屋顶分布式光伏发电项目",
+      "type": "光伏组件采购",
+      "amount": 244751.00000000003,
+      "amount_text": "244751.00000000003万元",
+      "province": "北京",
+      "publish_time": "2026-05-18",
+      "deadline": "2026-06-14",
+      "tender_unit": "国家电网北京省分公司",
+      "status": "招标中",
+      "source": "中国招标投标公共服务平台",
+      "url": "https://example.com/bidding/1"
+    },
+    {
+      "id": "BID20250002",
+      "project_name": "上海渔光互补光伏发电项目",
+      "type": "光伏EPC总承包",
+      "amount": 219992.0,
+      "amount_text": "219992.0万元",
+      "province": "上海",
+      "publish_time": "2026-05-30",
+      "deadline": "2026-06-20",
+      "tender_unit": "华能上海省分公司",
+      "status": "招标中",
+      "source": "上海政府采购网",
+      "url": "https://example.com/bidding/2"
+    },
+    {
+      "id": "BID20250003",
+      "project_name": "广东农光互补光伏项目",
+      "type": "储能系统招标",
+      "amount": 486726.0,
+      "amount_text": "486726.0万元",
+      "province": "广东",
+      "publish_time": "2026-05-24",
+      "deadline": "2026-06-12",
+      "tender_unit": "华电广东省分公司",
+      "status": "招标中",
+      "source": "广东政府采购网",
+      "url": "https://example.com/bidding/3"
+    },
+    {
+      "id": "BID20250004",
+      "project_name": "浙江光伏储能一体化示范项目",
+      "type": "光伏逆变器招标",
+      "amount": 222162.0,
+      "amount_text": "222162.0万元",
+      "province": "浙江",
+      "publish_time": "2026-05-30",
+      "deadline": "2026-07-03",
+      "tender_unit": "大唐浙江省分公司",
+      "status": "招标中",
+      "source": "能源招采网",
+      "url": "https://example.com/bidding/4"
+    },
+    {
+      "id": "BID20250005",
+      "project_name": "江苏工商业分布式光伏项目",
+      "type": "光伏支架采购",
+      "amount": 96335.0,
+      "amount_text": "96335.0万元",
+      "province": "江苏",
+      "publish_time": "2026-05-11",
+      "deadline": "2026-07-12",
+      "tender_unit": "中广核江苏省公司",
+      "status": "招标中",
+      "source": "江苏政府采购网",
+      "url": "https://example.com/bidding/5"
+    }
+  ]
+}

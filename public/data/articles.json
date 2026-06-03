@@ -8,9 +8,53 @@
       "category": "政策解读",
       "excerpt": "虚拟电厂、电力交易、预测性运维——从"硬件内卷"到"智能运营"的价值重构",
       "cover": "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800",
-      "tags": ["AI+储能", "虚拟电厂VPP", "电力交易", "预测性运维"],
-      "content": "..."
+      "tags": ["AI+储能", "虚拟电厂VPP", "电力交易", "预测性运维", "GEO"],
+      "source": "公众号首发"
+    },
+    {
+      "id": "snec-20260603",
+      "title": "SNEC 2026首日观察：储能馆数量首超光伏，行业格局生变",
+      "slug": "snec-20260603-day1",
+      "date": "2026-06-03",
+      "category": "展会观察",
+      "excerpt": "晶科/隆基/协鑫领衔，光储融合从概念走向规模化落地",
+      "cover": "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800",
+      "tags": ["SNEC 2026", "光储融合", "储能", "华为", "宁德时代"],
+      "source": "公众号首发"
+    },
+    {
+      "id": "snec-preview-20260602",
+      "title": "SNEC明日开幕！储能馆数量首超光伏馆，华为/宁德/比亚迪抢C位",
+      "slug": "snec-preview-20260602",
+      "date": "2026-06-02",
+      "category": "展会预览",
+      "excerpt": "全球最大光伏储能盛会即将启幕，储能主题馆规模创历史新高",
+      "cover": "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=800",
+      "tags": ["SNEC 2026", "储能馆", "华为", "宁德时代", "比亚迪"],
+      "source": "公众号首发"
+    },
+    {
+      "id": "snec-outlook-20260601",
+      "title": "SNEC 2026来了！光伏储能赛道6月迎重磅催化",
+      "slug": "snec-outlook-20260601",
+      "date": "2026-06-01",
+      "category": "行业前瞻",
+      "excerpt": "6月3日-5日，全球光伏盛会SNEC即将在上海开幕，隆基、天合、通威等头部企业蓄势待发",
+      "cover": "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=800",
+      "tags": ["SNEC 2026", "光伏储能", "隆基", "天合", "通威"],
+      "source": "公众号首发"
+    },
+    {
+      "id": "catt-battery-20260531",
+      "title": "宁德时代钠电池Q4量产！外资4倍认购绿债涌入储能赛道",
+      "slug": "catt-sodium-battery-20260531",
+      "date": "2026-05-31",
+      "category": "热点追踪",
+      "excerpt": "钠离子电池商业化加速，储能成本有望进一步下探",
+      "cover": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
+      "tags": ["宁德时代", "钠电池", "储能", "绿债"],
+      "source": "公众号首发"
     }
   ],
-  "lastUpdate": "2026-06-03T08:20:00+08:00"
+  "lastUpdate": "2026-06-03T08:25:00+08:00"
 }
