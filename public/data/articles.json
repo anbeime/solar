@@ -1,0 +1,16 @@
+{
+  "articles": [
+    {
+      "id": "ai-storage-20260603",
+      "title": "国家能源局重磅发布！51个AI+能源场景催生储能三大核心赛道",
+      "slug": "ai-storage-51-scenes",
+      "date": "2026-06-03",
+      "category": "政策解读",
+      "excerpt": "虚拟电厂、电力交易、预测性运维——从"硬件内卷"到"智能运营"的价值重构",
+      "cover": "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800",
+      "tags": ["AI+储能", "虚拟电厂VPP", "电力交易", "预测性运维"],
+      "content": "..."
+    }
+  ],
+  "lastUpdate": "2026-06-03T08:20:00+08:00"
+}

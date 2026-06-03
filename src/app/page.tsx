@@ -97,6 +97,14 @@ const navCards = [
     href: "/chargers",
   },
   {
+    title: "行业资讯",
+    desc: "最新政策解读、项目追踪",
+    icon: BookOpen,
+    color: "from-rose-500 to-pink-500",
+    iconBg: "bg-rose-100 text-rose-600",
+    href: "/news",
+  },
+  {
     title: "数据看板",
     desc: `${BRAND_NAME}可视化数据分析仪表盘`,
     icon: LayoutDashboard,
