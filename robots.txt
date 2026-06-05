@@ -1,11 +1,11 @@
 # robots.txt for 光伏储能地图站
-# https://www.pvstorage-map.com
+# https://solar.miyucaicai.cn
 
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://www.pvstorage-map.com/sitemap.xml
+Sitemap: https://solar.miyucaicai.cn/sitemap.xml
 
 # Crawl-delay
 Crawl-delay: 1

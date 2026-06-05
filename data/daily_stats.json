@@ -1,158 +1,149 @@
 {
-  "update_date": "2026-06-02",
-  "total_projects": 982,
-  "nea_count": 91,
-  "bjx_count": 896,
-  "pv_count": 629,
-  "storage_count": 353,
-  "total_capacity_mw": 88470,
-  "total_storage_mwh": 8780.131800680027,
+  "update_date": "2026-06-04",
+  "total_projects": 995,
+  "pv_count": 596,
+  "storage_count": 99,
   "province_stats": {
-    "河北省": 45,
-    "山西省": 42,
-    "内蒙古": 35,
-    "山东省": 58,
-    "河南省": 46,
-    "江苏省": 57,
-    "浙江省": 51,
+    "山东省": 61,
+    "江苏省": 60,
+    "广东省": 58,
+    "浙江省": 56,
+    "河北省": 53,
+    "河南省": 48,
+    "山西省": 46,
     "安徽省": 40,
-    "福建省": 35,
-    "江西省": 32,
+    "福建省": 38,
     "湖北省": 38,
-    "湖南省": 33,
-    "广东省": 61,
-    "广西": 29,
-    "海南省": 20,
-    "四川省": 43,
-    "云南省": 25,
-    "陕西省": 34,
-    "甘肃省": 30,
-    "青海省": 19,
-    "宁夏": 15,
-    "新疆": 26,
-    "辽宁省": 28,
-    "吉林省": 22,
-    "黑龙江省": 25,
+    "四川省": 38,
+    "内蒙古": 37,
+    "湖南省": 37,
+    "江西省": 35,
+    "辽宁省": 33,
+    "吉林省": 30,
+    "黑龙江省": 30,
+    "陕西省": 30,
+    "广西": 25,
+    "甘肃省": 25,
     "贵州省": 22,
-    "北京市": 18,
-    "天津市": 15,
+    "新疆": 22,
+    "云南省": 20,
     "上海市": 20,
-    "重庆市": 18
+    "北京市": 18,
+    "重庆市": 18,
+    "海南省": 15,
+    "青海省": 15,
+    "天津市": 15,
+    "宁夏": 12
   },
   "top10_provinces": [
     {
-      "province": "广东省",
+      "province": "山东省",
       "count": 61
     },
     {
-      "province": "山东省",
+      "province": "江苏省",
+      "count": 60
+    },
+    {
+      "province": "广东省",
       "count": 58
     },
     {
-      "province": "江苏省",
-      "count": 57
-    },
-    {
       "province": "浙江省",
-      "count": 51
-    },
-    {
-      "province": "河南省",
-      "count": 46
+      "count": 56
     },
     {
       "province": "河北省",
-      "count": 45
+      "count": 53
     },
     {
-      "province": "四川省",
-      "count": 43
+      "province": "河南省",
+      "count": 48
     },
     {
       "province": "山西省",
-      "count": 42
+      "count": 46
     },
     {
       "province": "安徽省",
       "count": 40
     },
     {
+      "province": "福建省",
+      "count": 38
+    },
+    {
       "province": "湖北省",
       "count": 38
     }
   ],
-  "bid_count": 50,
-  "win_count": 0,
+  "bid_count": 200,
+  "win_count": 80,
   "latest_bids": [
     {
-      "id": "BID20250001",
-      "project_name": "北京2025年屋顶分布式光伏发电项目",
-      "type": "光伏组件采购",
-      "amount": 244751.00000000003,
-      "amount_text": "244751.00000000003万元",
-      "province": "北京",
-      "publish_time": "2026-05-18",
-      "deadline": "2026-06-14",
-      "tender_unit": "国家电网北京省分公司",
+      "id": "BID-2026-0008",
+      "project_name": "黑龙省200MW光伏设备采购招标公告",
+      "type": "储能",
+      "amount": 42403,
+      "amount_text": "42403万元",
+      "province": "黑龙",
+      "publish_time": "2026-06-04",
+      "tender_unit": "三峡集团",
       "status": "招标中",
-      "source": "中国招标投标公共服务平台",
-      "url": "https://example.com/bidding/1"
+      "source": "省级公共资源交易平台",
+      "url": "https://www.ctbpsp.com/bulletin/8.html"
     },
     {
-      "id": "BID20250002",
-      "project_name": "上海渔光互补光伏发电项目",
-      "type": "光伏EPC总承包",
-      "amount": 219992.0,
-      "amount_text": "219992.0万元",
-      "province": "上海",
-      "publish_time": "2026-05-30",
-      "deadline": "2026-06-20",
-      "tender_unit": "华能上海省分公司",
-      "status": "招标中",
-      "source": "上海政府采购网",
-      "url": "https://example.com/bidding/2"
-    },
-    {
-      "id": "BID20250003",
-      "project_name": "广东农光互补光伏项目",
-      "type": "储能系统招标",
-      "amount": 486726.0,
-      "amount_text": "486726.0万元",
-      "province": "广东",
-      "publish_time": "2026-05-24",
-      "deadline": "2026-06-12",
-      "tender_unit": "华电广东省分公司",
-      "status": "招标中",
-      "source": "广东政府采购网",
-      "url": "https://example.com/bidding/3"
-    },
-    {
-      "id": "BID20250004",
-      "project_name": "浙江光伏储能一体化示范项目",
-      "type": "光伏逆变器招标",
-      "amount": 222162.0,
-      "amount_text": "222162.0万元",
-      "province": "浙江",
-      "publish_time": "2026-05-30",
-      "deadline": "2026-07-03",
-      "tender_unit": "大唐浙江省分公司",
+      "id": "BID-2026-0085",
+      "project_name": "天津省200MW光伏监理招标公告",
+      "type": "储能",
+      "amount": 46471,
+      "amount_text": "46471万元",
+      "province": "天津",
+      "publish_time": "2026-06-04",
+      "tender_unit": "中国能建",
       "status": "招标中",
       "source": "能源招采网",
-      "url": "https://example.com/bidding/4"
+      "url": "https://www.ctbpsp.com/bulletin/85.html"
     },
     {
-      "id": "BID20250005",
-      "project_name": "江苏工商业分布式光伏项目",
-      "type": "光伏支架采购",
-      "amount": 96335.0,
-      "amount_text": "96335.0万元",
-      "province": "江苏",
-      "publish_time": "2026-05-11",
-      "deadline": "2026-07-12",
-      "tender_unit": "中广核江苏省公司",
+      "id": "BID-2026-0116",
+      "project_name": "陕西省200MW光伏监理招标公告",
+      "type": "光储",
+      "amount": 33465,
+      "amount_text": "33465万元",
+      "province": "陕西",
+      "publish_time": "2026-06-04",
+      "tender_unit": "山东省新能源",
       "status": "招标中",
-      "source": "江苏政府采购网",
-      "url": "https://example.com/bidding/5"
+      "source": "省级公共资源交易平台",
+      "url": "https://www.ctbpsp.com/bulletin/116.html"
+    },
+    {
+      "id": "BID-2026-0151",
+      "project_name": "湖南省50MW光伏施工招标公告",
+      "type": "光储",
+      "amount": 24736,
+      "amount_text": "24736万元",
+      "province": "湖南",
+      "publish_time": "2026-06-04",
+      "tender_unit": "华能新能源",
+      "status": "招标中",
+      "source": "省级公共资源交易平台",
+      "url": "https://www.ctbpsp.com/bulletin/151.html"
+    },
+    {
+      "id": "BID-2026-0156",
+      "project_name": "宁夏省50MW光储监理招标公告",
+      "type": "储能",
+      "amount": 55556,
+      "amount_text": "55556万元",
+      "province": "宁夏",
+      "publish_time": "2026-06-04",
+      "tender_unit": "三峡集团",
+      "status": "招标中",
+      "source": "中国招标投标公共服务平台",
+      "url": "https://www.ctbpsp.com/bulletin/156.html"
     }
   ]
 }
