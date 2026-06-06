@@ -133,3 +133,13 @@
 2026-06-05 08:08:47,441 - INFO - 已保存到: /app/data/所有对话/主对话/光伏储能地图站/crawler/../data/bjx_projects.json
 2026-06-05 08:08:47,651 - INFO - 生成 99 个NEA项目数据
 2026-06-05 08:08:47,745 - INFO - 已保存到: /app/data/所有对话/主对话/光伏储能地图站/crawler/../data/nea_projects.json
+2026-06-06 01:24:29,250 - INFO - 生成 88 个NEA项目数据
+2026-06-06 01:24:29,367 - INFO - 已保存到: /app/data/所有对话/主对话/光伏储能地图站/crawler/../data/nea_projects.json
+2026-06-06 01:24:29,476 - INFO - 生成627个BJX示例项目数据...
+2026-06-06 01:24:29,498 - INFO - 生成 896 个项目，总容量约 72.8 GW
+2026-06-06 01:24:29,595 - INFO - 已保存到: /app/data/所有对话/主对话/光伏储能地图站/crawler/../data/bjx_projects.json
+2026-06-06 08:08:48,235 - INFO - 生成 85 个NEA项目数据
+2026-06-06 08:08:48,241 - INFO - 生成627个BJX示例项目数据...
+2026-06-06 08:08:48,246 - INFO - 生成 896 个项目，总容量约 73.7 GW
+2026-06-06 08:08:48,345 - INFO - 已保存到: /app/data/所有对话/主对话/光伏储能地图站/crawler/../data/nea_projects.json
+2026-06-06 08:08:48,451 - INFO - 已保存到: /app/data/所有对话/主对话/光伏储能地图站/crawler/../data/bjx_projects.json
