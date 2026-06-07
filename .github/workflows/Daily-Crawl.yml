@@ -15,16 +15,36 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+      
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
+      
       - run: pnpm install --no-frozen-lockfile
-      - run: pnpm crawl:inc
+      
+      - name: Run Crawler
+        run: pnpm crawl:inc
         env:
           PUPPETEER_SKIP_DOWNLOAD: "true"
-      - run: |
+      
+      - name: Commit and Push Data
+        run: |
           git config --local user.email "crawler@github.com"
           git config --local user.name "GitHub Crawler"
           git add public/data/
-          if git diff --cached --quiet; then echo "No new data"; else git commit -m "chore: 更新爬虫数据 $(date '+%Y-%m-%d %H:%M')" && git push origin main; fi
+          if git diff --cached --quiet; then 
+            echo "No new data, skip commit"
+          else 
+            git commit -m "chore: 更新爬虫数据 $(date '+%Y-%m-%d %H:%M')" 
+            git push origin main
+          fi
+      
+      - name: Deploy to Vercel
+        if: github.event_name == 'workflow_dispatch' || true
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
