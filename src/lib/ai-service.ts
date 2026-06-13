@@ -9,6 +9,8 @@
 
 import { AI_PROVIDERS } from './ai-providers';
 import type { Project, BiddingItem, AwardItem } from './types';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
 // 默认优先使用智谱AI (更稳定)，NVIDIA作为备选
 // 默认使用 NVIDIA (用户已配置 API Key)，智谱AI 作为备选
@@ -166,29 +168,30 @@ interface QAItem {
 }
 
 async function loadData() {
+  const dataDir = join(process.cwd(), 'public', 'data');
   if (projectsCache.length === 0) {
     try {
-      const res = await fetch('/data/projects.json');
-      projectsCache = await res.json();
+      const raw = await readFile(join(dataDir, 'projects.json'), 'utf-8');
+      projectsCache = JSON.parse(raw);
     } catch { projectsCache = []; }
   }
   if (biddingCache.length === 0) {
     try {
-      const res = await fetch('/data/bidding.json');
-      biddingCache = await res.json();
+      const raw = await readFile(join(dataDir, 'bidding.json'), 'utf-8');
+      biddingCache = JSON.parse(raw);
     } catch { biddingCache = []; }
   }
   if (awardsCache.length === 0) {
     try {
-      const res = await fetch('/data/awards.json');
-      awardsCache = await res.json();
+      const raw = await readFile(join(dataDir, 'awards.json'), 'utf-8');
+      awardsCache = JSON.parse(raw);
     } catch { awardsCache = []; }
   }
   // 加载问答知识库
   if (qaCache.length === 0) {
     try {
-      const res = await fetch('/data/qa-knowledge.json');
-      qaCache = await res.json();
+      const raw = await readFile(join(dataDir, 'qa-knowledge.json'), 'utf-8');
+      qaCache = JSON.parse(raw);
     } catch { qaCache = []; }
   }
 }
