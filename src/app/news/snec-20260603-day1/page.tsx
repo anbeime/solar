@@ -39,7 +39,7 @@ export default function Page() {
 
       {/* 四、AI储能 */}
       <h2 style={{fontSize:'18px',fontWeight:'600',margin:'24px 0 12px',color:'#1a1a1a',paddingLeft:'12px',borderLeft:'3px solid #8b5cf6'}}>四、AI深度赋能：数智化储能成新风口</h2>
-      <p style={{fontSize:'14px',margin:'0 0 16px',textAlign:'justify'>本届SNEC最显著的趋势之一，是<strong>AI与储能深度融合</strong>全面落地。华为、阳光电源、思格新能源、晶科储能、海尔新能源等多家企业已发布搭载AI智能系统的储能产品。</p>
+      <p style={{fontSize:'14px',margin:'0 0 16px',textAlign:'justify'}}>本届SNEC最显著的趋势之一，是<strong>AI与储能深度融合</strong>全面落地。华为、阳光电源、思格新能源、晶科储能、海尔新能源等多家企业已发布搭载AI智能系统的储能产品。</p>
 
       {/* 五、项目动态 */}
       <h2 style={{fontSize:'18px',fontWeight:'600',margin:'24px 0 12px',color:'#1a1a1a',paddingLeft:'12px',borderLeft:'3px solid #e74c3c'}}>五、项目快讯：近期招标与投运动态</h2>
