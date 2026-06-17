@@ -1,17 +1,113 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /_next/
 
 Sitemap: https://solar.miyucaicai.cn/sitemap.xml
 
-# AI Crawler Access
+# === AI 引擎爬虫白名单 ===
+
+# OpenAI ChatGPT / GPT 训练 / GPT 搜索
 User-agent: GPTBot
 Allow: /
 
 User-agent: ChatGPT-User
 Allow: /
 
+User-agent: OAI-SearchBot
+Allow: /
+
+# Anthropic Claude
+User-agent: ClaudeBot
+Allow: /
+
 User-agent: Claude-Web
 Allow: /
 
+User-agent: anthropic-ai
+Allow: /
+
+# Google Gemini / 训练
 User-agent: Google-Extended
 Allow: /
+
+# Perplexity AI 搜索
+User-agent: PerplexityBot
+Allow: /
+
+# Common Crawl（多家 AI 模型训练源）
+User-agent: CCBot
+Allow: /
+
+# 字节豆包 / 抖音搜索 / 抖音 AI
+User-agent: Bytespider
+Allow: /
+
+# 百度文心一言 / 百度搜索
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Baiduspider-render
+Allow: /
+
+# 阿里通义千问 / 夸克搜索
+User-agent: YisouSpider
+Allow: /
+
+# 360 智脑 / 360 搜索
+User-agent: 360Spider
+Allow: /
+
+User-agent: HaosouSpider
+Allow: /
+
+# 搜狗（腾讯系）
+User-agent: Sogou web spider
+Allow: /
+
+User-agent: Sogou inst spider
+Allow: /
+
+# Apple 智能搜索
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# 必应 / Copilot
+User-agent: bingbot
+Allow: /
+
+# Mistral AI
+User-agent: MistralAI-User
+Allow: /
+
+# DuckDuckGo Assist
+User-agent: DuckAssistBot
+Allow: /
+
+# Diffbot（用于 AI 知识抽取）
+User-agent: Diffbot
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# Amazon AI
+User-agent: Amazonbot
+Allow: /
+
+# Meta AI
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# === 资源指引 ===
+# 站点 AI 友好说明: /llms.txt
+# 全量数据精简文本: /llms-full.txt
+# 项目全量 JSON: /data/projects.json
+# 招标全量 JSON: /data/bidding.json

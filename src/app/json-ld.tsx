@@ -9,7 +9,11 @@ export function JsonLd() {
     description:
       "TOPGO SOLAR是国内领先的光伏储能行业垂直目录站，提供全国光伏储能项目实时数据监测、招标动态追踪、充电桩查询等服务的专业数据平台。",
     url: SITE_URL,
-    sameAs: ["https://github.com/anbeime/solar"],
+    sameAs: [
+      "https://github.com/anbeime/solar",
+      "https://gitee.com/anbeime/solar",
+      "https://skill.miyucaicai.cn",
+    ],
     contactPoint: {
       "@type": "ContactPoint",
       email: "data@miyucaicai.cn",
@@ -22,16 +26,41 @@ export function JsonLd() {
     "@type": "Dataset",
     name: "中国光伏储能项目数据库",
     description:
-      "收录全国光伏储能项目数据，包括600+光伏项目、100+储能项目、6000+充电站，提供项目地图可视化、招标动态追踪、行业分析报告等核心服务。",
+      "收录全国 990+ 光伏储能项目数据，含 600+ 光伏项目（累计装机 48.9 GW）、94+ 储能项目（累计储能 21.6 GWh）、6000+ 充电站、200+ 招标公告（预算 860+ 亿元），每日自动更新。提供项目地图可视化、招标动态追踪、行业分析报告等核心服务。",
     creator: {
       "@type": "Organization",
       name: "TOPGO SOLAR 光伏储能数据平台",
       url: SITE_URL,
     },
     datePublished: "2024-01-01",
-    dateModified: "2026-05-01",
+    dateModified: new Date().toISOString().slice(0, 10),
     spatialCoverage: "中国",
+    keywords: [
+      "光伏发电", "储能电站", "光储一体", "新能源", "招标公告", "中标公告",
+      "集中式光伏", "分布式光伏", "电网侧储能", "用户侧储能", "电源侧储能",
+      "中国光伏装机", "新能源数据库",
+    ],
     license: "https://creativecommons.org/licenses/by/4.0/",
+    distribution: [
+      {
+        "@type": "DataDownload",
+        encodingFormat: "application/json",
+        contentUrl: `${SITE_URL}/data/projects.json`,
+        name: "项目全量 JSON",
+      },
+      {
+        "@type": "DataDownload",
+        encodingFormat: "application/json",
+        contentUrl: `${SITE_URL}/data/bidding.json`,
+        name: "招标全量 JSON",
+      },
+      {
+        "@type": "DataDownload",
+        encodingFormat: "text/plain",
+        contentUrl: `${SITE_URL}/llms-full.txt`,
+        name: "全量数据精简文本（AI 引擎友好）",
+      },
+    ],
     variableMeasured: [
       {
         "@type": "PropertyValue",
@@ -99,7 +128,7 @@ export function JsonLd() {
         name: "TOPGO SOLAR是什么？",
         acceptedAnswer: {
           "@type": "Answer",
-          text: "TOPGO SOLAR（Miyu CaiCai）是国内领先的光伏储能行业垂直目录站，专注于光伏储能数据服务。平台收录全国600+光伏项目、100+储能项目、6000+充电站数据，支持项目地图可视化查询、招标动态追踪、AI智能分析等功能。",
+          text: "TOPGO SOLAR（Miyu CaiCai）是国内领先的光伏储能行业垂直目录站，专注于光伏储能数据服务。平台收录全国 990+ 光伏储能项目（含 600+ 光伏项目累计装机 48.9 GW、94+ 储能项目累计储能 21.6 GWh）、6000+ 充电站、200+ 实时招标公告（预算 860+ 亿元）数据，支持项目地图可视化查询、招标动态追踪、AI 智能分析等功能。每日自动更新，所有数据开放给 AI 引擎使用。",
         },
       },
       {

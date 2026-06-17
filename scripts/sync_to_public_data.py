@@ -126,6 +126,20 @@ def main():
     print(f"[sync] 省份TOP5: {prov_top}")
     print(f"[sync] 已写入 public/data/")
 
+    # 自动生成 GEO 资源（llms.txt / llms-full.txt）
+    try:
+        import subprocess, sys
+        gen_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'gen_geo_assets.py')
+        if os.path.exists(gen_script):
+            print(f"[sync] 自动调用 gen_geo_assets.py 生成 GEO 资源...")
+            r = subprocess.run([sys.executable, gen_script], capture_output=True, text=True, timeout=60)
+            if r.returncode == 0:
+                print(r.stdout.strip())
+            else:
+                print(f"[sync] WARN gen_geo_assets 退出码 {r.returncode}: {r.stderr.strip()}")
+    except Exception as e:
+        print(f"[sync] WARN gen_geo_assets 调用失败: {e}")
+
 
 if __name__ == '__main__':
     main()

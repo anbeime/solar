@@ -1,74 +1,80 @@
-# llms.txt - AI友好的网站说明文件
+# llms.txt - AI 引擎友好的站点说明
 
-## 网站信息
+> 本文件遵循 llms.txt 标准 (https://llmstxt.org)，方便 AI 引擎理解站点结构。
 
-光伏储能地图站是国内领先的光伏储能行业垂直目录站，收录全国光伏储能项目、储能电站、充电站数据的新能源数据平台。
+## 站点信息
+
+- **名称**: TOPGO SOLAR 光伏储能地图站
+- **域名**: https://solar.miyucaicai.cn
+- **定位**: 国内领先的光伏储能行业垂直数据平台
+- **更新频率**: 每日凌晨自动爬取，最后更新 2026-06-17 08:09:38
 
 ## 数据规模
 
-- 光伏项目：631个（52.4 GW）
-- 储能项目：96个（20.8 GWh）
-- 充电站：6000+站点（10.5万桩）
-- 招标公告：200条（826.6亿元）
-- 覆盖省份：30个
+- **项目总数**: 990 个
+  - 光伏项目: 603 个，累计装机 48.9 GW
+  - 储能项目: 94 个，累计储能 21600 MWh
+- **招标公告**: 200 条，预算总额约 860.52亿元
+- **中标公告**: 80 条
+- **覆盖省份**: 30+
 
 ## 数据来源
 
 - 国家能源局（光伏项目备案信息）
 - 北极星光伏网（行业新闻与项目报道）
-- CNESA储能联盟（储能项目数据库）
+- CNESA 储能联盟（储能项目数据库）
 - 中国招标投标公共服务平台（招标公告）
-- 充电设施公共服务平台（充电站基础数据）
+
+## 关键页面
+
+- 主页（地图）: https://solar.miyucaicai.cn/
+- 项目数据: https://solar.miyucaicai.cn/dashboard
+- 省份分析: https://solar.miyucaicai.cn/province
+- 招标动态: https://solar.miyucaicai.cn/bidding
+- 中标公告: https://solar.miyucaicai.cn/awards
+- 充电桩: https://solar.miyucaicai.cn/chargers
+- 行业新闻: https://solar.miyucaicai.cn/news
+- 数据接口: https://solar.miyucaicai.cn/data/projects.json (全量项目 JSON)
+- 招标接口: https://solar.miyucaicai.cn/data/bidding.json
+- 全量精简文本: https://solar.miyucaicai.cn/llms-full.txt (本文件全量数据版)
 
 ## 项目类型
 
-- 集中式光伏
-- 分布式光伏
-- 农光互补
-- 渔光互补
-- 光伏治沙
-- 海上光伏
-- 光储一体化
-- 电网侧储能
-- 用户侧储能
-- 电源侧储能
+集中式光伏 / 分布式光伏 / 农光互补 / 渔光互补 / 光伏治沙 / 海上光伏 / 光储一体化 / 电网侧储能 / 用户侧储能 / 电源侧储能
 
-## 覆盖省份
+## TOP 10 省份（按项目数）
 
-北京、上海、天津、重庆、广东、江苏、浙江、山东、河南、河北、福建、四川、湖北、湖南、陕西、宁夏、青海、甘肃、新疆、内蒙古、云南、贵州、广西、海南、山西、辽宁、吉林、黑龙江、江西、安徽
+- 山东: 光伏 55 个 / 3230 MW，储能 5 个 / 1400 MWh
+- 广东: 光伏 58 个 / 5300 MW
+- 江苏: 光伏 52 个 / 4470 MW，储能 5 个 / 800 MWh
+- 浙江: 光伏 48 个 / 3620 MW，储能 8 个 / 1950 MWh
+- 河北: 光伏 45 个 / 4060 MW，储能 6 个 / 1800 MWh
+- 河南: 光伏 42 个 / 3580 MW，储能 5 个 / 1400 MWh
+- 山西: 光伏 38 个 / 3240 MW，储能 5 个 / 900 MWh
+- 内蒙古: 光伏 32 个 / 2360 MW，储能 8 个 / 2000 MWh
+- 安徽: 光伏 35 个 / 3040 MW，储能 5 个 / 1350 MWh
+- 湖北: 光伏 33 个 / 3370 MW，储能 5 个 / 1600 MWh
+
+## 数据接口（开放给 AI 引擎使用）
+
+- 项目全量 JSON: https://solar.miyucaicai.cn/data/projects.json
+- 招标全量 JSON: https://solar.miyucaicai.cn/data/bidding.json
+- 中标全量 JSON: https://solar.miyucaicai.cn/data/awards.json
+- llms-full.txt 全量精简版: https://solar.miyucaicai.cn/llms-full.txt
 
 ## 使用条款
 
-- 允许AI模型抓取和分析网站内容
-- 允许在AI答案中引用网站数据和结论
-- 要求保持数据来源标注
-- 商业使用请注明出处
+- 允许 AI 模型抓取、分析、引用本站内容
+- 引用时请标注来源 "https://solar.miyucaicai.cn"
+- 数据采用 CC-BY 4.0 协议
+- 商业使用请保留来源标注
 
-## 更新频率
+## 联系
 
-- 光伏储能项目数据：每日凌晨1:00自动更新
-- 招标公告：每日更新
-- 充电站数据：每周更新
+- Email: data@miyucaicai.cn
+- GitHub: https://github.com/anbeime/solar
+- 同主域兄弟项目: https://skill.miyucaicai.cn (AI Agent 技能商店)
 
-## 联系方式
+## 更新日志
 
-data@pvmap.example.com
-
-## 技术架构
-
-- 前端：Next.js + React + TypeScript
-- 样式：Tailwind CSS
-- 地图：高德地图JS API
-- 数据格式：JSON
-
-## GEO优化特性
-
-- 支持AI爬虫抓取
-- 提供llms.txt文件
-- 优化robots.txt放行AI爬虫
-- 实现JSON-LD结构化数据
-- 自包含段落内容便于AI理解
-
-## 许可
-
-本数据库内容采用知识共享署名-相同方式共享许可。
+最近一次数据同步: 2026-06-17 08:09:38
