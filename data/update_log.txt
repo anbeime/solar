@@ -2110,3 +2110,14 @@ GEO 自动化更新 - 2026-06-19 08:45 (日程 3b034e3e)
 - seo/structured-data.json 0 字节问题已修复
 
 [状态] ✅ 正常完成（按"数据正常静默"规则不打扰主人）
+
+
+[6/19 09:00 补记 - 部署事故修复]
+- 首次 push 触发 git index 损坏（0 字节），强制重建后 merge origin/main（与凌晨 c47eab12 日程冲突），冲突文件 public/data/{projects,bidding}.json 选 ours 时 bidding 端为空
+- 导致 commit b0e8bab 推上去后线上 bidding.json 变 0 字节
+- 已重新跑 sync_to_public_data.py 修复，commit f92c56f 二次 push
+- 最终线上验证（带 cache-bust）：
+  - https://solar.miyucaicai.cn/data/projects.json → 200 / 447,731 bytes / 993 条 list
+  - https://solar.miyucaicai.cn/data/bidding.json  → 200 / 12,303 bytes / 50 条 list
+  - https://solar.miyucaicai.cn/llms.txt           → 200 / 3,032 bytes
+- 状态：✅ 全部正常，达到工单"线上 990+ 条 list 格式"成功标准
