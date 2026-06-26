@@ -2934,9 +2934,68 @@ GEO 自动化执行 - 2026-06-26 01:26 (日程 c47eab12)
 | 6/25 | 988 | 46.8 | 20950 | 812.6 | 山东62 |
 | 6/26 | 998 | 48.6 | 22050 | 866.7 | 山东61 |
 
+[Git 故障与修复]
+- 本地 commit 时 .git/objects/52/7fdb... 损坏（连续第 3 天复现同类症状）
+- 修复 SOP（沿用 6/24-6/25 方案）：
+  1) mv .git → .git.broken_20260626_0126 备份
+  2) /tmp 新 clone github → /tmp/solar_fresh（远端最新 2e7efc7 为 6/25 06:01 工作流爬虫 commit）
+  3) Python 字节流复制 work tree 13 个目标文件到 /tmp
+  4) /tmp 仓库 commit + push origin main → 成功 46cefe6
+  5) Python 字节流（逐文件 fsync）复制 /tmp .git 47 个文件 → 沙箱 .git
+  6) git fsck 通过；恢复 core.filemode=false；清理 .git.broken_* / .git.failed_copy / /tmp/solar_fresh
+- 备注：tar 解压在该文件系统上会损坏 0~小字节文件（HEAD/config），仅 Python 逐文件 fsync 可靠
+
+[Commit]
+- 46cefe6 chore: GEO 自动化数据更新 2026-06-26
+- push:   2e7efc7..46cefe6  main -> main  ✓
+
+[线上验证 (90s 部署后, 带 cache-bust)]
+- https://solar.miyucaicai.cn/data/projects.json   → 200 / 998 条 list ✓
+- https://solar.miyucaicai.cn/data/bidding.json    → 200 /  50 条 list ✓
+- https://solar.miyucaicai.cn/llms.txt             → 200 ✓
+
 [异常检测]
 - 总项目 998，比近 7 日均值 (994) 高 4，处于历史合理区间（988-998），正常
 - 光伏 48.6 GW / 储能 22,050 MWh / 招标 866.7 亿，均在近 7 日合理波动区间
 - 招标走模拟数据兜底，属脚本既定降级
 
-[状态] ✅ 数据正常完成（爬虫 + GEO + sync + 资源生成全流程），按"数据正常静默"规则不打扰主人
+[状态] ✅ GEO 自动化全流程完成（爬虫 + FAQ + 结构化数据 + sync + push + 部署 + 验证），按"数据正常静默"规则不打扰主人
+
+
+============================================================
+GEO 自动化更新 - 2026-06-26 08:44 (日程 3b034e3e)
+============================================================
+[爬虫执行]
+- crawl_nea.py / crawl_bjx.py / crawl_bidding.py / merge_data.py 均成功
+
+[数据统计]
+- 总项目数:    993 个
+- 光伏装机:    46.2 GW
+- 储能容量:    22,750 MWh
+- 分布式光伏:  293 个
+- 集中式光伏:  286 个
+- 光储一体:    317 个
+- 储能电站:    97 个
+- 招标公告:    200 条
+- 中标公告:    80 条
+- 招标总金额:  848.2 亿元
+
+[省份TOP10]
+  1. 山东省: 62
+  2. 江苏省: 58
+  3. 广东省: 58
+  4. 浙江省: 56
+  5. 河北省: 51
+  6. 河南省: 48
+  7. 山西省: 43
+  8. 安徽省: 41
+  9. 湖北省: 39
+  10. 内蒙古: 38
+
+[GEO 更新]
+- ✓ seo/knowledge-snippets.html（6条FAQ Schema，含省份/类型/招标/最新项目）
+- ✓ seo/structured-data.json（Dataset/Organization/FAQPage 统计值与 dateModified）
+- ✓ robots.txt（Last Updated 时间戳）
+- ✓ knowledge/index.html（如存在则更新时间戳）
+
+[状态] 正常完成
