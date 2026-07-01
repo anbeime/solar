@@ -1,6 +1,6 @@
 # robots.txt for 光伏储能地图站
 # https://solar.miyucaicai.cn
-# Last Updated: 2026-06-30
+# Last Updated: 2026-07-01
 
 User-agent: *
 Allow: /
