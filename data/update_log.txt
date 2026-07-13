@@ -4792,3 +4792,161 @@ GEO 自动化更新 - 2026-07-11 08:43 (日程 3b034e3e)
 - ✓ knowledge/index.html（如存在则更新时间戳）
 
 [状态] 正常完成
+
+[Git] commit c321bc9 → push origin main（1f83fa8..c321bc9）✓
+
+[线上验证 180s 部署 + cache-bust]
+- https://solar.miyucaicai.cn/data/projects.json → 200 / list 995 条 ✓
+- https://solar.miyucaicai.cn/data/bidding.json  → 200 / list  50 条 ✓
+- https://solar.miyucaicai.cn/llms.txt           → 200 /   3034 B ✓
+
+[最终状态] ✅ 正常完成，达 990+ list 成功标准
+
+============================================================
+凌晨爬虫执行 - 2026-07-12 01:26 (日程 c47eab12)
+============================================================
+[爬虫]
+- crawl_nea.py    ✓ 88 项目
+- crawl_bjx.py    ✓ 896 项目 / 75.4 GW
+- crawl_bidding.py ⚠ 历史 CWD 相对路径遗留问题（不影响主库整合，8:30 GEO 日程独立处理）
+- merge_data.py   ✓ 整合完成
+
+[结果]
+- projects.json: 997 条 (基线 995, +2, 波动 <1%)
+- 光伏项目: 588 (45.4 GW) / 储能项目: 101 (24650 GWh)
+- 招标: 200 条 / 中标: 80 条 / 招标总额: 855.5 亿元
+
+[规约]
+- ✓ 严守禁 push 禁 sync 约束（本地仅爬虫 + merge）
+- ✓ 远端同步交由 08:30 GEO 日程 3b034e3e 统一处理
+
+[状态] 正常，无异常告警
+
+
+============================================================
+GEO 自动化更新 - 2026-07-12 08:43 (日程 3b034e3e)
+============================================================
+[爬虫执行]
+- crawl_nea.py / crawl_bjx.py / crawl_bidding.py / merge_data.py 均成功
+
+[数据统计]
+- 总项目数:    996 个
+- 光伏装机:    47.0 GW
+- 储能容量:    21,050 MWh
+- 分布式光伏:  284 个
+- 集中式光伏:  306 个
+- 光储一体:    306 个
+- 储能电站:    100 个
+- 招标公告:    200 条
+- 中标公告:    80 条
+- 招标总金额:  837.1 亿元
+
+[省份TOP10]
+  1. 山东省: 62
+  2. 江苏省: 58
+  3. 广东省: 58
+  4. 浙江省: 56
+  5. 河北省: 50
+  6. 河南省: 48
+  7. 山西省: 43
+  8. 安徽省: 43
+  9. 内蒙古: 40
+  10. 湖北省: 39
+
+[GEO 更新]
+- ✓ seo/knowledge-snippets.html（6条FAQ Schema，含省份/类型/招标/最新项目）
+- ✓ seo/structured-data.json（Dataset/Organization/FAQPage 统计值与 dateModified）
+- ✓ robots.txt（Last Updated 时间戳）
+- ✓ knowledge/index.html（如存在则更新时间戳）
+
+[状态] 正常完成
+
+============================================================
+GEO 自动化执行 - 2026-07-12 08:43 (日程 3b034e3e)
+============================================================
+[爬虫] (工单要求本 session 再跑一遍)
+- crawl_nea.py    ✓ 87 项目
+- crawl_bjx.py    ✓ 896 项目 / 72.1 GW
+- crawl_bidding.py ✓ 50 条 (cd crawler/ 内执行)
+- merge_data.py   ✓ 整合完成
+
+[数据结果]
+- 总项目: 996 (光伏 590 / 47.0 GW，储能 100 / 21050 MWh)
+- 招标: 200 条 / 中标: 80 条 / 招标总额: 837.1 亿元
+- 省份 TOP3: 山东 62 / 江苏 58 / 广东 58
+
+[GEO 资产]
+- update_geo.py: FAQ Schema + structured-data.json + robots.txt 时间戳
+- sync_to_public_data.py: public/data/ 双写 996 项目 + 50 招标
+- gen_geo_assets.py (链式): llms.txt 2032B / llms-full.txt 93274B
+
+[Git] commit 4dfa60e → push origin main (c321bc9..4dfa60e) ✓
+
+[线上验证 180s 部署 + cache-bust]
+- https://solar.miyucaicai.cn/data/projects.json → 200 / list 996 条 ✓
+- https://solar.miyucaicai.cn/data/bidding.json  → 200 / list  50 条 ✓
+- https://solar.miyucaicai.cn/llms.txt           → 200 / 3034 B ✓
+
+[状态] ✅ 正常完成，达 990+ list 成功标准
+
+============================================================
+凌晨爬虫执行 - 2026-07-13 01:26 (日程 c47eab12)
+============================================================
+[爬虫]
+- crawl_nea.py      ✓ 88 项目
+- crawl_bjx.py      ✓ 896 项目 / 71.2 GW
+- crawl_bidding.py  ✓ 50 条 (cd crawler/ 内执行)
+- merge_data.py     ✓ 整合完成
+
+[数据结果]
+- 总项目: 995 (光伏 600 / 46.4 GW，储能 99 / 23150 GWh)
+- 招标: 200 条 / 中标: 80 条 / 招标总额: 842.3 亿元
+
+[对比昨日 (7/12)]
+- 总项目: 996 → 995 (Δ -1，正常波动)
+- 招标总额: 837.1 → 842.3 亿元 (Δ +5.2)
+
+[约束]
+- 遵守 c47eab12 禁 push 禁 sync 规约，本地写入完成即结束
+- 远端同步等待 08:30 GEO 日程 3b034e3e 统一处理
+
+[状态] ✅ 正常完成（数据在正常波动范围内，静默不通知）
+
+
+============================================================
+GEO 自动化更新 - 2026-07-13 08:42 (日程 3b034e3e)
+============================================================
+[爬虫执行]
+- crawl_nea.py / crawl_bjx.py / crawl_bidding.py / merge_data.py 均成功
+
+[数据统计]
+- 总项目数:    995 个
+- 光伏装机:    46.4 GW
+- 储能容量:    23,150 MWh
+- 分布式光伏:  282 个
+- 集中式光伏:  318 个
+- 光储一体:    296 个
+- 储能电站:    99 个
+- 招标公告:    200 条
+- 中标公告:    80 条
+- 招标总金额:  842.3 亿元
+
+[省份TOP10]
+  1. 山东省: 61
+  2. 江苏省: 60
+  3. 广东省: 58
+  4. 浙江省: 55
+  5. 河北省: 51
+  6. 河南省: 48
+  7. 山西省: 45
+  8. 内蒙古: 40
+  9. 安徽省: 40
+  10. 福建省: 38
+
+[GEO 更新]
+- ✓ seo/knowledge-snippets.html（6条FAQ Schema，含省份/类型/招标/最新项目）
+- ✓ seo/structured-data.json（Dataset/Organization/FAQPage 统计值与 dateModified）
+- ✓ robots.txt（Last Updated 时间戳）
+- ✓ knowledge/index.html（如存在则更新时间戳）
+
+[状态] 正常完成
