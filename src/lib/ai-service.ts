@@ -319,14 +319,13 @@ async function callLLM(
     throw new Error(`API Key 未配置，请在 Vercel 环境变量中设置 ${providerKey === 'nvidia' ? 'NVIDIA_API_KEY' : 'ZHIPUAI_API_KEY'}`);
   }
 
-  // 模型选择：支持多模型 fallback
-  let models: string[];
-  if (providerKey === 'nvidia') {
-    models = ['meta/llama-3.1-70b-instruct', 'minimaxai/minimax-m2.7'];
-  } else {
-    models = ['glm-4-flash', 'glm-4-plus', 'glm-4.7-flash'];
+  // 模型选择：从 ai-providers.ts 的 models 定义里取，避免硬编码已下线的模型名
+  // (此前硬编码 meta/llama-3.1-70b-instruct 和 glm-4-flash 已不可用，导致 LLM 调用必失败)
+  const providerModels = Object.keys(provider.models);
+  if (providerModels.length === 0) {
+    throw new Error(`Provider ${providerKey} 未配置任何模型`);
   }
-  const model = models[0];
+  const model = providerModels[0];
 
   log('info', `调用LLM: provider=${providerKey}, model=${model}, messages=${messages.length}, hasTools=${!!tools?.length}`);
 
