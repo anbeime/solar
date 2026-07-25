@@ -406,6 +406,96 @@ async function callLLMWithFallback(
   throw new Error(`所有 AI 服务均不可用。请检查环境变量 ZHIPUAI_API_KEY / NVIDIA_API_KEY 是否正确配置。`);
 }
 
+// ===== 本地降级回答（无 API Key 或 LLM 失败时使用）=====
+
+async function localFallbackAnswer(message: string): Promise<AIChatResponse> {
+  await loadData();
+  const msg = message.toLowerCase().trim();
+
+  // 关键词分词
+  const stopwords = new Set(['的', '了', '是', '在', '有', '哪些', '最新', '帮', '我', '查', '一下', '请问', '什么', '怎么', '如何', '关于']);
+  const keywords = msg
+    .split(/[\s,，。？?！!、:：;；()（）]+/)
+    .map(k => k.trim())
+    .filter(k => k.length > 1 && !stopwords.has(k));
+
+  // 1. 检索 QA 知识库
+  const qaMatches = qaCache
+    .map(qa => {
+      let score = 0;
+      const qLower = qa.question.toLowerCase();
+      const aLower = qa.answer.toLowerCase();
+      if (qLower.includes(msg)) score += 10;
+      for (const tag of qa.tags || []) {
+        if (msg.includes(tag.toLowerCase())) score += 5;
+      }
+      for (const kw of keywords) {
+        if (qLower.includes(kw)) score += 3;
+        if (aLower.includes(kw)) score += 1;
+      }
+      return { qa, score };
+    })
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3);
+
+  // 2. 检索项目数据
+  const projectMatches = projectsCache
+    .filter(p => {
+      const name = (p.name || '').toLowerCase();
+      const summary = (p.summary || '').toLowerCase();
+      return keywords.some(kw => name.includes(kw) || summary.includes(kw));
+    })
+    .slice(0, 5);
+
+  // 3. 检索招标数据
+  const biddingMatches = biddingCache
+    .filter(b => {
+      const title = (b.title || '').toLowerCase();
+      const summary = (b.summary || '').toLowerCase();
+      return keywords.some(kw => title.includes(kw) || summary.includes(kw));
+    })
+    .slice(0, 5);
+
+  const parts: string[] = [];
+  const sources: string[] = [];
+
+  if (qaMatches.length > 0) {
+    parts.push('📚 知识库匹配结果：');
+    qaMatches.forEach(({ qa }, i) => {
+      parts.push(`\n${i + 1}. ${qa.question}\n${qa.answer.slice(0, 600)}${qa.answer.length > 600 ? '...' : ''}`);
+      if (qa.source) sources.push(qa.source);
+    });
+  }
+
+  if (projectMatches.length > 0) {
+    parts.push('\n\n📊 相关项目：');
+    projectMatches.forEach((p, i) => {
+      parts.push(`${i + 1}. ${p.name || '-'} | ${p.province || ''} | ${p.capacity || ''} | ${p.company || ''}`);
+    });
+  }
+
+  if (biddingMatches.length > 0) {
+    parts.push('\n\n🔥 相关招标：');
+    biddingMatches.forEach((b, i) => {
+      parts.push(`${i + 1}. ${b.title || '-'} | ${b.province || ''} | ${b.amount || ''}`);
+    });
+  }
+
+  if (parts.length === 0) {
+    return {
+      content: `抱歉，AI 大模型服务暂未启用（未配置 API Key），本地知识库中未匹配到 "${message}" 的相关内容。\n\n您可以：\n1. 换个关键词试试，例如"广东储能"、"光伏招标"、"风电项目"\n2. 联系管理员配置 ZHIPUAI_API_KEY 或 NVIDIA_API_KEY 启用完整 AI 能力\n3. 直接访问项目地图、招标动态等页面浏览数据`,
+    };
+  }
+
+  parts.push('\n\n---\n💡 当前为本地知识库降级模式（AI 大模型未配置），配置 API Key 后可获得更智能的回答。');
+
+  return {
+    content: parts.join(''),
+    sources: [...new Set(sources)].filter(Boolean),
+  };
+}
+
 // ===== 主函数 =====
 
 export async function chatWithAI(request: AIChatRequest): Promise<AIChatResponse> {
@@ -436,6 +526,14 @@ export async function chatWithAI(request: AIChatRequest): Promise<AIChatResponse
 - 用户给网址 → 用 fetch_url 抓取
 - 用户问纯行业知识（如技术原理、政策解读）→ 可直接基于你的知识回答
 - 用户问天气/电价 → 调用对应工具`;
+
+  // 检查 API Key 是否配置 - 未配置直接走本地降级
+  const provider = AI_PROVIDERS[providerKey];
+  const fallbackProvider = AI_PROVIDERS[FALLBACK_PROVIDER];
+  if (!provider?.apiKey && !fallbackProvider?.apiKey) {
+    log('warn', `所有 Provider API Key 均未配置，使用本地降级模式`);
+    return localFallbackAnswer(request.message);
+  }
 
   const messages: ChatMessage[] = [
     { role: 'system', content: systemPrompt },
@@ -501,9 +599,7 @@ export async function chatWithAI(request: AIChatRequest): Promise<AIChatResponse
     return { content: finalContent };
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : '未知错误';
-    log('error', `chatWithAI 异常: ${errMsg}`);
-    return {
-      content: `抱歉，AI 服务暂时不可用。原因：${errMsg}\n\n请检查：\n1. Vercel 环境变量中是否配置了 ZHIPUAI_API_KEY 或 NVIDIA_API_KEY\n2. API Key 是否有效且有余额`,
-    };
+    log('error', `chatWithAI 异常: ${errMsg}，降级到本地知识库回答`);
+    return localFallbackAnswer(request.message);
   }
 }
