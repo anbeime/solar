@@ -13,7 +13,7 @@
         "width": 200,
         "height": 60
       },
-      "description": "中国领先的光伏储能行业大数据平台，汇集全国989+ 光伏储能项目，提供项目查询、招标信息、行业分析等综合服务",
+      "description": "中国领先的光伏储能行业大数据平台，汇集全国994+ 光伏储能项目，提供项目查询、招标信息、行业分析等综合服务",
       "foundingDate": "2024",
       "areaServed": {
         "@type": "Country",
@@ -81,7 +81,7 @@
         "@id": "https://solar.miyucaicai.cn/#organization"
       },
       "datePublished": "2026-07-23",
-      "dateModified": "2026-07-23",
+      "dateModified": "2026-07-25",
       "temporalCoverage": "2020/2026",
       "spatialCoverage": {
         "@type": "Country",
@@ -319,5 +319,5 @@
       "priceRange": "免费基础服务"
     }
   ],
-  "dateModified": "2026-07-23"
+  "dateModified": "2026-07-25"
 }
