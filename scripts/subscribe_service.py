@@ -9,7 +9,7 @@ from datetime import datetime
 
 class SubscribeService:
     def __init__(self):
-        self.subscribers_file = "public/data/subscribers.json"
+        self.subscribers_file = "data/subscribers.json"
         self.gitee_token = "f759f8fdac5ac2849c9d3777010ba38b"
         self.gitee_repo = "anbeime/solar"
     

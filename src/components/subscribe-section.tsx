@@ -107,21 +107,21 @@ export function SubscribeSection() {
                   className="bg-slate-700/80 border-slate-500 text-white placeholder:text-slate-300 focus:border-cyan-400 focus:ring-cyan-400 h-11 px-4 rounded-lg"
                 />
               </div>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm text-slate-200 font-medium flex items-center gap-1">
-                📧 邮箱地址
-              </label>
-              <Input
-                type="email"
-                placeholder="请输入邮箱地址"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                required
-                className="bg-slate-700/80 border-slate-500 text-white placeholder:text-slate-300 focus:border-cyan-400 focus:ring-cyan-400 h-11 px-4 rounded-lg"
-              />
+              <div className="space-y-2">
+                <label className="text-sm text-slate-200 font-medium flex items-center gap-1">
+                  📧 邮箱地址
+                </label>
+                <Input
+                  type="email"
+                  placeholder="请输入邮箱地址"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  required
+                  className="bg-slate-700/80 border-slate-500 text-white placeholder:text-slate-300 focus:border-cyan-400 focus:ring-cyan-400 h-11 px-4 rounded-lg"
+                />
+              </div>
             </div>
 
             {error && (
