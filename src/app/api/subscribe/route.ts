@@ -96,14 +96,12 @@ export async function POST(request: NextRequest) {
     subscribers.push(newSubscriber);
     await saveSubscribers(subscribers);
 
-    // 发邮件不阻塞订阅流程
-    try {
-      await sendWelcomeEmail(newSubscriber);
-      console.log("📧 新订阅并已发送欢迎邮件:", newSubscriber);
-    } catch (emailError) {
-      console.error("📧 邮件发送失败，但订阅已保存:", emailError);
-      // 邮件失败不影响订阅成功
-    }
+    // 发邮件改为 fire-and-forget，避免 SMTP 未配置或超时阻塞订阅响应
+    void sendWelcomeEmail(newSubscriber)
+      .then(() => console.log("📧 新订阅并已发送欢迎邮件:", newSubscriber.email))
+      .catch((emailError) =>
+        console.error("📧 邮件发送失败，但订阅已保存:", emailError),
+      );
 
     return NextResponse.json({
       success: true,

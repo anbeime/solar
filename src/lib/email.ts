@@ -1,17 +1,28 @@
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.2925.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER || "wasonbeer@2925.com",
-    pass: process.env.SMTP_PASS,
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 10000,
-});
+let transporter: nodemailer.Transporter | null = null;
+
+function getTransporter(): nodemailer.Transporter | null {
+  // SMTP_PASS 未配置时直接返回 null，不创建无意义的 transporter
+  if (!process.env.SMTP_PASS) {
+    return null;
+  }
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || "smtp.2925.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER || "wasonbeer@2925.com",
+        pass: process.env.SMTP_PASS,
+      },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
+    });
+  }
+  return transporter;
+}
 
 interface Subscriber {
   id: number;
@@ -22,8 +33,13 @@ interface Subscriber {
 }
 
 export async function sendEmail(to: string, subject: string, html: string) {
+  const tp = getTransporter();
+  if (!tp) {
+    console.warn("邮件发送跳过：SMTP_PASS 未配置");
+    return false;
+  }
   try {
-    const info = await transporter.sendMail({
+    const info = await tp.sendMail({
       from: '"TOPGO SOLAR" <wasonbeer@2925.com>',
       to,
       subject,
