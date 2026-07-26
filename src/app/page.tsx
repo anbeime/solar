@@ -43,7 +43,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { SubscribeSection } from "@/components/subscribe-section";
 import { useSiteData } from "@/hooks/use-data";
 import { getTypeStyle } from "@/lib/data";
 import { DATA_SOURCE_LINKS } from "@/lib/constants";
@@ -570,52 +569,36 @@ export default function Home() {
         </Card>
       </section>
 
-      {/* 行业报告 + 订阅侧边栏 */}
+      {/* 行业报告 + 数据来源 */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-3">
-            {/* 数据来源 */}
-            <Card className="border-slate-200/80 shadow-sm mb-6">
-              <CardHeader className="pb-2 pt-4 px-5">
-                <CardTitle className="text-sm font-bold flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-slate-500" />
-                  数据来源：{BRAND_NAME}
-                </CardTitle>
-                <CardDescription>
-                  {BRAND_NAME}数据均标注原始出处，支持回源验证
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="px-5 pb-4">
-                <div className="flex flex-wrap gap-2">
-                  {DATA_SOURCE_LINKS.map((s) => (
-                    <a
-                      key={s.name}
-                      href={s.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 rounded-lg text-xs text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors border border-slate-100"
-                    >
-                      <Globe className="w-3 h-3" />
-                      {s.name}
-                    </a>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* 免费订阅入口 - 小型侧边栏 */}
-            <div className="lg:hidden">
-              <SubscribeSection />
+        {/* 数据来源 */}
+        <Card className="border-slate-200/80 shadow-sm">
+          <CardHeader className="pb-2 pt-4 px-5">
+            <CardTitle className="text-sm font-bold flex items-center gap-2">
+              <Globe className="w-4 h-4 text-slate-500" />
+              数据来源：{BRAND_NAME}
+            </CardTitle>
+            <CardDescription>
+              {BRAND_NAME}数据均标注原始出处，支持回源验证
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="px-5 pb-4">
+            <div className="flex flex-wrap gap-2">
+              {DATA_SOURCE_LINKS.map((s) => (
+                <a
+                  key={s.name}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 rounded-lg text-xs text-slate-600 hover:bg-blue-50 hover:text-blue-700 transition-colors border border-slate-100"
+                >
+                  <Globe className="w-3 h-3" />
+                  {s.name}
+                </a>
+              ))}
             </div>
-          </div>
-
-          {/* 右侧订阅卡片 - 仅大屏幕显示 */}
-          <div className="hidden lg:block">
-            <div className="sticky top-24">
-              <SubscribeSection />
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </section>
 
       <div className="flex-1" />

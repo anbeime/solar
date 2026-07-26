@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JsonLd } from "./json-ld";
+import { SubscribeSection } from "@/components/subscribe-section";
 import "./globals.css";
 
 const SITE_URL = "https://solar.miyucaicai.cn";
@@ -71,6 +72,7 @@ export default function RootLayout({
       <body className="antialiased">
         <JsonLd />
         {children}
+        <SubscribeSection />
       </body>
     </html>
   );
