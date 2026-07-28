@@ -319,5 +319,13 @@
       "priceRange": "免费基础服务"
     }
   ],
-  "dateModified": "2026-07-25"
+  "dateModified": "2026-07-28",
+  "datePublished": "2026-07-28",
+  "stats": {
+    "totalProjects": 989,
+    "solarProjects": 582,
+    "storageProjects": 407,
+    "totalCapacityGW": 72.72,
+    "biddingCount": 50
+  }
 }
