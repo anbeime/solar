@@ -2,9 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, readFile } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
-import { sendWelcomeEmail } from "@/lib/email";
+import { sendWelcomeEmail, sendEmail } from "@/lib/email";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+const ADMIN_EMAIL = "wasonbeer@2925.com";
+
+// Vercel 生产环境文件系统只读, /tmp 可写但实例间不共享
+// 优先用 /tmp, 退回项目 data 目录
+const DATA_DIR =
+  process.env.VERCEL === "1"
+    ? path.join("/tmp", "data")
+    : path.join(process.cwd(), "data");
 const SUBSCRIBERS_FILE = path.join(DATA_DIR, "subscribers.json");
 
 interface Subscriber {
@@ -94,14 +101,35 @@ export async function POST(request: NextRequest) {
     };
 
     subscribers.push(newSubscriber);
-    await saveSubscribers(subscribers);
 
-    // 发邮件改为 fire-and-forget，避免 SMTP 未配置或超时阻塞订阅响应
-    void sendWelcomeEmail(newSubscriber)
-      .then(() => console.log("📧 新订阅并已发送欢迎邮件:", newSubscriber.email))
-      .catch((emailError) =>
-        console.error("📧 邮件发送失败，但订阅已保存:", emailError),
+    // 文件写入失败不阻塞订阅 (Vercel 只读文件系统会失败, 仅 log)
+    try {
+      await saveSubscribers(subscribers);
+    } catch (saveErr) {
+      console.warn(
+        "⚠️ 订阅数据文件写入失败 (生产环境只读?), 订阅信息将通过邮件留存:",
+        saveErr instanceof Error ? saveErr.message : saveErr,
       );
+    }
+
+    // 给管理员发通知邮件 (持久化订阅信息, 即使文件写不进去也不丢)
+    const adminHtml = `
+      <h2>🔔 新订阅通知</h2>
+      <table style="border-collapse:collapse;font-size:14px;">
+        <tr><td style="padding:8px 12px;color:#6b7280;">公司</td><td style="padding:8px 12px;font-weight:bold;">${newSubscriber.company}</td></tr>
+        <tr><td style="padding:8px 12px;color:#6b7280;">电话</td><td style="padding:8px 12px;font-weight:bold;">${newSubscriber.phone}</td></tr>
+        <tr><td style="padding:8px 12px;color:#6b7280;">邮箱</td><td style="padding:8px 12px;font-weight:bold;">${newSubscriber.email}</td></tr>
+        <tr><td style="padding:8px 12px;color:#6b7280;">时间</td><td style="padding:8px 12px;">${newSubscriber.subscribeTime}</td></tr>
+      </table>
+    `;
+
+    // 欢迎邮件 + 管理员通知 fire-and-forget, 不阻塞响应
+    void Promise.allSettled([
+      sendWelcomeEmail(newSubscriber),
+      sendEmail(ADMIN_EMAIL, `🔔 新订阅: ${newSubscriber.company}`, adminHtml),
+    ]).then((results) => {
+      console.log("📧 邮件发送结果:", results.map(r => r.status).join(", "));
+    });
 
     return NextResponse.json({
       success: true,
