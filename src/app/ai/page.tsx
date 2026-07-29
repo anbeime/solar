@@ -69,9 +69,11 @@ export default function AIPage() {
         body: JSON.stringify({ message: messageText, provider }),
       });
       const data = await resp.json();
+      // 兜底: 后端可能返回 content 或 error, 都显示出来避免空白
+      const replyContent = data.content || data.error || '抱歉，服务暂时不可用，请稍后重试。';
       setMessages(prev => prev.map(m => 
         m.id === assistantMessage.id 
-          ? { ...m, content: data.content, sources: data.sources, loading: false }
+          ? { ...m, content: replyContent, sources: data.sources, loading: false }
           : m
       ));
     } catch (e) {
