@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // nodemailer 等纯 Node 模块需标记为外部依赖, 否则 webpack 打包进
+  // server bundle 会报错, 导致 /api/subscribe route 模块加载失败 (500)
+  serverExternalPackages: ['nodemailer'],
+
   // 实验性配置
   experimental: {
     serverActions: {

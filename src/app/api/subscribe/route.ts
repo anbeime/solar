@@ -136,9 +136,20 @@ export async function POST(request: NextRequest) {
       message: "订阅成功！",
     });
   } catch (error: any) {
-    console.error("订阅错误:", error?.message || error?.code || error);
+    // 详细打印错误便于定位 (含 stack 前 500 字符)
+    const errInfo = {
+      message: error?.message,
+      code: error?.code,
+      stack: error?.stack?.slice(0, 500),
+    };
+    console.error("订阅错误:", JSON.stringify(errInfo, null, 2));
     return NextResponse.json(
-      { success: false, message: "服务器错误，请稍后重试" },
+      {
+        success: false,
+        message: "服务器错误，请稍后重试",
+        // 开发环境返回详细错误, 生产环境不暴露
+        debug: process.env.NODE_ENV === 'development' ? errInfo : undefined,
+      },
       { status: 500 },
     );
   }
