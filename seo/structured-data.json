@@ -2,52 +2,83 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "name": "全国光伏储能项目数据库",
-  "description": "覆盖全国30个省份的996个光伏储能项目，含装机容量、项目类型、开发商、招标信息等结构化数据。",
+  "description": "覆盖全国994个光伏储能项目的结构化数据集，包含项目位置、装机容量、储能配置、招投标信息等",
   "url": "https://solar.miyucaicai.cn",
-  "dateModified": "2026-08-01",
-  "datePublished": "2026-04-27",
+  "dateModified": "2026-08-02",
+  "datePublished": "2025-04-15",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "creator": {
     "@type": "Organization",
     "name": "光伏储能地图站",
     "url": "https://solar.miyucaicai.cn"
   },
-  "measurementTechnique": "自动化数据采集+人工校验",
+  "keywords": [
+    "光伏",
+    "储能",
+    "光伏电站",
+    "储能电站",
+    "光储一体",
+    "新能源",
+    "招投标",
+    "项目地图"
+  ],
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "https://solar.miyucaicai.cn/data/projects.json"
+    },
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "https://solar.miyucaicai.cn/data/bidding.json"
+    }
+  ],
   "variableMeasured": [
     {
       "@type": "PropertyValue",
       "name": "总项目数",
-      "value": 996
+      "value": 994
     },
     {
       "@type": "PropertyValue",
-      "name": "光伏项目",
-      "value": 604
+      "name": "光伏项目数",
+      "value": 590
     },
     {
       "@type": "PropertyValue",
-      "name": "储能项目",
-      "value": 100
+      "name": "储能项目数",
+      "value": 98
     },
     {
       "@type": "PropertyValue",
-      "name": "光伏装机容量GW",
-      "value": 47.8
+      "name": "光伏总装机(GW)",
+      "value": 47.2
     },
     {
       "@type": "PropertyValue",
-      "name": "储能规模MWh",
-      "value": 20600
+      "name": "储能总容量(GWh)",
+      "value": 22600
     },
     {
       "@type": "PropertyValue",
-      "name": "招标金额(亿元)",
-      "value": 861.7
+      "name": "招标公告数",
+      "value": 200
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "中标公告数",
+      "value": 80
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "招标总金额(万元)",
+      "value": 9156123
     }
   ],
   "spatialCoverage": {
     "@type": "Place",
     "name": "中国"
   },
-  "temporalCoverage": "2024-01/2026-08"
+  "temporalCoverage": "2015-01-01/2026-08-02"
 }

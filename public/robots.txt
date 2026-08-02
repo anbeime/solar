@@ -1,5 +1,5 @@
 # 光伏储能地图站 robots.txt
-# 更新时间: 2026-08-01 08:46
+# 更新时间: 2026-08-02 08:43
 # 网站: https://solar.miyucaicai.cn
 
 User-agent: *
