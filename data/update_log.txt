@@ -507,3 +507,20 @@ GEO 自动化更新 - 2026-07-30 08:44 (日程 3b034e3e)
 - ✓ robots.txt 已更新（AI爬虫全放行）
 - ✓ llms.txt / llms-full.txt 自动生成
 - [状态] 数据正常（994 >= 990），准备 push
+
+[爬虫] 2026-08-03 01:24
+- NEA: 93 项目
+- BJX: 896 项目 (72.2 GW)
+- 招投标: 200 招标 + 80 中标
+- 整合后: 991 项目 (光伏575/48.5GW, 储能95/20350GWh)
+- [状态] 正常完成（991 >= 990）
+
+[GEO自动化] 2026-08-03 08:42
+- 爬虫数据已就绪（凌晨01:24完成：991项目，575光伏/48.5GW，95储能/20350GWh）
+- ✓ sync_to_public_data.py 完成：991条项目同步至 public/data/
+- ✓ FAQ Schema (knowledge-snippets.html) 已更新：8个Q&A
+- ✓ structured-data.json 已更新（2026-08-03）
+- ✓ knowledge/index.html 已更新
+- ✓ robots.txt 已更新（AI爬虫全放行）
+- ✓ llms.txt / llms-full.txt 自动生成
+- [状态] 数据正常（991 >= 990），准备 push
