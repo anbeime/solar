@@ -2,9 +2,9 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "name": "全国光伏储能项目数据库",
-  "description": "覆盖全国991个光伏储能项目的结构化数据集，包含项目位置、装机容量、储能配置、招投标信息等",
+  "description": "覆盖全国992个光伏储能项目的结构化数据集，包含项目位置、装机容量、储能配置、招投标信息等",
   "url": "https://solar.miyucaicai.cn",
-  "dateModified": "2026-08-03",
+  "dateModified": "2026-08-04",
   "datePublished": "2025-04-15",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "creator": {
@@ -38,47 +38,42 @@
     {
       "@type": "PropertyValue",
       "name": "总项目数",
-      "value": 991
+      "value": "992"
     },
     {
       "@type": "PropertyValue",
       "name": "光伏项目数",
-      "value": 575
+      "value": "594"
     },
     {
       "@type": "PropertyValue",
       "name": "储能项目数",
-      "value": 95
+      "value": "96"
     },
     {
       "@type": "PropertyValue",
       "name": "光伏总装机(GW)",
-      "value": 48.5
+      "value": "48.2"
     },
     {
       "@type": "PropertyValue",
       "name": "储能总容量(GWh)",
-      "value": 20350
+      "value": "21150"
     },
     {
       "@type": "PropertyValue",
-      "name": "招标公告数",
-      "value": 200
+      "name": "招标数量",
+      "value": "200"
     },
     {
       "@type": "PropertyValue",
-      "name": "中标公告数",
-      "value": 80
+      "name": "中标数量",
+      "value": "80"
     },
     {
       "@type": "PropertyValue",
-      "name": "招标总金额(万元)",
-      "value": 8773097
+      "name": "招标总金额(亿元)",
+      "value": "856.1"
     }
-  ],
-  "spatialCoverage": {
-    "@type": "Place",
-    "name": "中国"
-  },
-  "temporalCoverage": "2015-01-01/2026-08-03"
+  ]
 }
