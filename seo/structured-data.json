@@ -2,16 +2,33 @@
   "@context": "https://schema.org",
   "@type": "Dataset",
   "name": "全国光伏储能项目数据库",
-  "description": "覆盖全国30个省份的光伏储能项目数据，含1005个项目、200条招标信息",
   "url": "https://solar.miyucaicai.cn",
-  "dateModified": "2026-08-07",
-  "version": "2.0",
-  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "dateModified": "2026-08-08",
+  "description": "覆盖全国30个省份的光伏储能项目数据库，截至2026-08-08共收录1002个项目",
   "creator": {
     "@type": "Organization",
     "name": "光伏储能地图站",
-    "url": "https://solar.miyucaicai.cn",
-    "email": "xiaotop@coze.email"
+    "url": "https://solar.miyucaicai.cn"
+  },
+  "distribution": {
+    "@type": "DataDownload",
+    "encodingFormat": "application/json",
+    "contentUrl": "https://solar.miyucaicai.cn/data/projects.json"
+  },
+  "measuredProperties": {
+    "totalProjects": 1002,
+    "pvProjects": 597,
+    "storageProjects": 106,
+    "pvCapacityGW": 49.8,
+    "storageGWh": 19750,
+    "biddingEntries": 200,
+    "winningEntries": 80,
+    "biddingAmountWan": 8481258
+  },
+  "temporalCoverage": "2024-01-01/2026-08-08",
+  "spatialCoverage": {
+    "@type": "Place",
+    "name": "中国"
   },
   "keywords": [
     "光伏",
@@ -20,83 +37,6 @@
     "新能源",
     "太阳能",
     "电池储能",
-    "项目地图",
-    "招投标",
-    "装机容量"
-  ],
-  "spatialCoverage": {
-    "@type": "Place",
-    "name": "中国",
-    "geo": {
-      "@type": "GeoShape",
-      "box": "18.0 73.5 53.5 135.0"
-    }
-  },
-  "temporalCoverage": "2024-01-01/2026-08-07",
-  "distribution": [
-    {
-      "@type": "DataDownload",
-      "name": "项目数据JSON",
-      "encodingFormat": "application/json",
-      "contentUrl": "https://solar.miyucaicai.cn/data/projects.json",
-      "description": "全量项目数据（JSON格式）"
-    },
-    {
-      "@type": "DataDownload",
-      "name": "招投标数据JSON",
-      "encodingFormat": "application/json",
-      "contentUrl": "https://solar.miyucaicai.cn/data/bidding.json",
-      "description": "招投标信息数据"
-    },
-    {
-      "@type": "DataDownload",
-      "name": "FAQ知识片段",
-      "encodingFormat": "text/html",
-      "contentUrl": "https://solar.miyucaicai.cn/seo/knowledge-snippets.html",
-      "description": "FAQ Schema格式知识问答"
-    }
-  ],
-  "measurementTechnique": "自动化数据采集与人工审核",
-  "variableMeasured": [
-    {
-      "@type": "PropertyValue",
-      "name": "总项目数",
-      "value": 1005
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "光伏项目数",
-      "value": 613
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "储能项目数",
-      "value": 109
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "光伏总装机GW",
-      "value": 50.1
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "储能总容量GWh",
-      "value": 25100
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "招标数",
-      "value": 200
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "中标数",
-      "value": 80
-    },
-    {
-      "@type": "PropertyValue",
-      "name": "覆盖省份数",
-      "value": 30
-    }
+    "项目地图"
   ]
 }
