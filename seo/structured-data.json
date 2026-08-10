@@ -3,8 +3,8 @@
   "@type": "Dataset",
   "name": "全国光伏储能项目数据库",
   "url": "https://solar.miyucaicai.cn",
-  "dateModified": "2026-08-09",
-  "description": "覆盖全国30个省份的光伏储能项目数据库，截至2026-08-09共收录1000个项目",
+  "dateModified": "2026-08-10",
+  "description": "覆盖全国30个省份的光伏储能项目数据库，截至2026-08-10共收录989个项目",
   "creator": {
     "@type": "Organization",
     "name": "光伏储能地图站",
@@ -16,16 +16,16 @@
     "contentUrl": "https://solar.miyucaicai.cn/data/projects.json"
   },
   "measuredProperties": {
-    "totalProjects": 1000,
-    "pvProjects": 585,
-    "storageProjects": 104,
-    "pvCapacityGW": 46.2,
-    "storageGWh": 23650,
+    "totalProjects": 989,
+    "pvProjects": 587,
+    "storageProjects": 93,
+    "pvCapacityGW": 47.8,
+    "storageGWh": 20600,
     "biddingEntries": 200,
     "winningEntries": 80,
-    "biddingAmountWan": 8874060
+    "biddingAmountWan": 7964545
   },
-  "temporalCoverage": "2024-01-01/2026-08-09",
+  "temporalCoverage": "2024-01-01/2026-08-10",
   "spatialCoverage": {
     "@type": "Place",
     "name": "中国"
