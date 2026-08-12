@@ -1,137 +1,39 @@
-# robots.txt for 光伏储能地图站
-# https://solar.miyucaicai.cn
-# Last Updated: 2026-08-11
+# robots.txt for solar.miyucaicai.cn
+# Updated: 2026-08-12
 
 User-agent: *
 Allow: /
-
-# Sitemap
-Sitemap: https://solar.miyucaicai.cn/sitemap.xml
-
-# Crawl-delay
-Crawl-delay: 1
-
-# Disallow sensitive paths
 Disallow: /admin/
 Disallow: /api/
-Disallow: /private/
-Disallow: /config/
-Disallow: /scripts/
 
-# AI爬虫 - 明确允许
+# AI Crawlers - Welcome
 User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Claude-Web
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: PerplexityBot
 Allow: /
 
 User-agent: Google-Extended
 Allow: /
 
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-User-agent: AnthropicAI
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: Bytespider
-Allow: /
-
-User-agent: Diffbot
-Allow: /
-
-User-agent: FacebookBot
-Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-User-agent: Pinterestbot
-Allow: /
-
-User-agent: Slackbot
-Allow: /
-
-User-agent: TelegramBot
-Allow: /
-
-User-agent: TwitterBot
-Allow: /
-
-User-agent: YouBot
-Allow: /
-
-User-agent: AhrefsBot
-Allow: /
-
-User-agent: SemrushBot
-Allow: /
-
-User-agent: Majestic-12
-Allow: /
-
-User-agent: Sitebulb
-Allow: /
-
-# 允许搜索的主要AI服务
 User-agent: CCBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
 Allow: /
 
 User-agent: cohere-ai
 Allow: /
 
-User-agent: Meta-ExternalAgent
-Allow: /
+# Knowledge snippets for AI
+# See: /seo/knowledge-snippets.html
+# See: /seo/structured-data.json
+# See: /llms.txt
 
-User-agent: Amazonbot
-Allow: /
-
-# Allow province pages for better indexing
-Allow: /province/
-Allow: /data/
-Allow: /components/
-
-# 特定文件类型
-Allow: *.html
-Allow: *.json
-Allow: *.xml
-
-# Disallow non-HTML assets that may cause issues
-Disallow: *.css
-Disallow: *.js.map
-Disallow: *.png
-Disallow: *.jpg
-Disallow: *.gif
-Disallow: *.svg
-Disallow: *.ico
-Disallow: *.woff
-Disallow: *.woff2
-Disallow: *.ttf
-Disallow: *.eot
-
-# Crawl-delay for AI crawlers
-Crawl-delay: GPTBot: 10
-Crawl-delay: ClaudeBot: 10
-Crawl-delay: PerplexityBot: 10
-Crawl-delay: Google-Extended: 10
+Sitemap: https://solar.miyucaicai.cn/sitemap.xml

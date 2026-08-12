@@ -40,5 +40,22 @@
     "项目备案",
     "装机容量",
     "光储一体"
-  ]
+  ],
+  "lastUpdated": "2026-08-12",
+  "totalProjects": 1075,
+  "pvProjects": 973,
+  "storageProjects": 102,
+  "totalCapacityGW": 84.3,
+  "storageGWh": 31.62,
+  "totalBidding": 50,
+  "totalWinning": 80,
+  "biddingAmountYi": 629.6,
+  "dataSources": [
+    "国家能源局",
+    "北极星光伏网",
+    "CNESA",
+    "招投标平台"
+  ],
+  "siteUrl": "https://solar.miyucaicai.cn",
+  "schemaVersion": "2.0"
 }
