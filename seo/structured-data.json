@@ -3,8 +3,8 @@
   "@type": "Dataset",
   "name": "全国光伏储能项目数据库",
   "url": "https://solar.miyucaicai.cn",
-  "dateModified": "2026-08-11",
-  "description": "覆盖全国30个省份的光伏储能项目数据库，截至2026-08-11共收录992个项目",
+  "dateModified": "2026-08-13",
+  "description": "覆盖全国30个省份的光伏储能项目数据库，截至2026-08-13共收录996个项目",
   "creator": {
     "@type": "Organization",
     "name": "光伏储能地图站",
@@ -16,16 +16,16 @@
     "contentUrl": "https://solar.miyucaicai.cn/data/projects.json"
   },
   "measuredProperties": {
-    "totalProjects": 992,
-    "pvProjects": 594,
-    "storageProjects": 96,
-    "pvCapacityGW": 46.9,
-    "storageGWh": 21750,
+    "totalProjects": 996,
+    "pvProjects": 607,
+    "storageProjects": 100,
+    "pvCapacityGW": 48.2,
+    "storageGWh": 21.85,
     "biddingEntries": 200,
     "winningEntries": 80,
-    "biddingAmountWan": 8916143
+    "biddingAmountWan": 8432031
   },
-  "temporalCoverage": "2024-01-01/2026-08-11",
+  "temporalCoverage": "2024-01-01/2026-08-13",
   "spatialCoverage": {
     "@type": "Place",
     "name": "中国",
@@ -41,15 +41,15 @@
     "装机容量",
     "光储一体"
   ],
-  "lastUpdated": "2026-08-12",
-  "totalProjects": 1075,
-  "pvProjects": 973,
-  "storageProjects": 102,
-  "totalCapacityGW": 84.3,
-  "storageGWh": 31.62,
-  "totalBidding": 50,
+  "lastUpdated": "2026-08-13",
+  "totalProjects": 996,
+  "pvProjects": 607,
+  "storageProjects": 100,
+  "totalCapacityGW": 48.2,
+  "storageGWh": 21.85,
+  "totalBidding": 200,
   "totalWinning": 80,
-  "biddingAmountYi": 629.6,
+  "biddingAmountYi": 843.2,
   "dataSources": [
     "国家能源局",
     "北极星光伏网",
