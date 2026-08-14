@@ -829,3 +829,14 @@ GEO 自动化更新 - 2026-08-14 08:46 (日程 3b034e3e)
 - ✓ knowledge/index.html（如存在则更新时间戳）
 
 [状态] 正常完成
+
+
+=== GEO 自动化 2026-08-14 08:46 ===
+- 爬虫: NEA 88条 / BJX 896条(68.6GW) / Bidding 50条(模拟)
+- 整合后: 993 项目 (光伏609/47.0GW, 储能97/20250GWh)
+- 招标金额: 874.6 亿元
+- [对比昨日08:44] 总996→993(-3), 光伏607→609(+2), 储能100→97(-3)
+- [状态] 正常完成，数据波动在合理范围内
+- [GEO] FAQ Schema + structured-data.json + robots.txt + llms.txt 已更新
+- [同步] sync_to_public_data.py 完成, public/data/ 993条list
+- [部署] git push github main 成功, commit b10a573
