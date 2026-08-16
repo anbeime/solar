@@ -1,5 +1,5 @@
 # robots.txt for solar.miyucaicai.cn
-# Updated: 2026-08-14
+# Updated: 2026-08-16
 
 User-agent: *
 Allow: /
@@ -34,7 +34,7 @@ Allow: /
 # Knowledge snippets for AI
 # See: /seo/knowledge-snippets.html
 # See: /seo/structured-data.json
-# Updated: 2026-08-14
+# Updated: 2026-08-16
 # See: /llms.txt
 
 Sitemap: https://solar.miyucaicai.cn/sitemap.xml
