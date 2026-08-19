@@ -3,8 +3,8 @@
   "@type": "Dataset",
   "name": "全国光伏储能项目数据库",
   "url": "https://solar.miyucaicai.cn",
-  "dateModified": "2026-08-18",
-  "description": "覆盖全国31个省份的光伏储能项目数据库，截至2026-08-18共收录991个项目",
+  "dateModified": "2026-08-19",
+  "description": "覆盖全国31个省份的光伏储能项目数据库，截至2026-08-19共收录994个项目",
   "creator": {
     "@type": "Organization",
     "name": "光伏储能地图站",
@@ -20,42 +20,47 @@
     {
       "@type": "PropertyValue",
       "name": "总项目数",
-      "value": "991"
+      "value": "994"
     },
     {
       "@type": "PropertyValue",
       "name": "光伏项目数",
-      "value": "896"
+      "value": "616"
     },
     {
       "@type": "PropertyValue",
       "name": "储能项目数",
-      "value": "95"
+      "value": "98"
     },
     {
       "@type": "PropertyValue",
-      "name": "光伏装机容量",
-      "value": "68.5 GW"
+      "name": "光伏装机容量(GW)",
+      "value": "49.9"
     },
     {
       "@type": "PropertyValue",
-      "name": "储能总容量",
-      "value": "20.8 GWh"
+      "name": "储能容量(MWh)",
+      "value": "21000"
     },
     {
       "@type": "PropertyValue",
-      "name": "招标总数",
+      "name": "招标公告数",
       "value": "200"
     },
     {
       "@type": "PropertyValue",
-      "name": "招标总金额",
-      "value": "839.4亿元"
+      "name": "中标信息数",
+      "value": "80"
     },
     {
       "@type": "PropertyValue",
-      "name": "覆盖省份",
-      "value": "31个省级行政区"
+      "name": "招标总金额(万元)",
+      "value": "8371547"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "数据更新日期",
+      "value": "2026-08-19"
     }
   ]
 }
