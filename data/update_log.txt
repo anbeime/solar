@@ -1140,3 +1140,13 @@ GEO 自动化更新 - 2026-08-16 08:44 (日程 3b034e3e)
 
 [状态] 正常完成，数据波动在模拟数据合理范围内
 [规约] 严守禁push禁sync，仅本地写入data/*.json
+
+[2026-08-19 08:45] GEO自动化数据更新
+- 爬虫数据: NEA=96, BJX=896, Bidding=50
+- 整合项目: 994个 (光伏616, 储能98)
+- 光伏容量: 49.9GW | 储能容量: 21,000MWh
+- 招标: 200条 | 中标: 80条 | 金额: 837.2亿
+- SEO更新: FAQ Schema, structured-data.json, knowledge/index.html, llms.txt, robots.txt
+- sync_to_public_data: public/data/projects.json (994条)
+- git push: commit 509aeec -> github main
+- 状态: 正常完成，等待Coze Space自动部署
