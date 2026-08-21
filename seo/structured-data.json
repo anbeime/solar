@@ -3,7 +3,7 @@
   "@type": "Dataset",
   "name": "全国光伏储能项目数据库",
   "url": "https://solar.miyucaicai.cn",
-  "dateModified": "2026-08-20",
+  "dateModified": "2026-08-21",
   "description": "覆盖全国31个省份的光伏储能项目数据库，截至2026-08-20共收录1002个项目",
   "creator": {
     "@type": "Organization",
