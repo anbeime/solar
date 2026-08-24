@@ -1,77 +1,77 @@
 {
-    "@context": "https://schema.org",
-    "@type": "Dataset",
-    "name": "光伏储能项目数据库",
-    "description": "全国光伏储能项目实时数据库，覆盖光伏备案、储能装机、招投标信息，每日自动更新",
-    "url": "https://solar.miyucaicai.cn",
-    "dateModified": "2026-08-23",
-    "license": "https://creativecommons.org/licenses/by/4.0/",
-    "creator": {
-        "@type": "Organization",
-        "name": "光伏储能地图站",
-        "url": "https://solar.miyucaicai.cn"
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "光伏储能项目数据库",
+  "description": "全国光伏储能项目实时数据库，覆盖光伏备案、储能装机、招投标信息，每日自动更新",
+  "url": "https://solar.miyucaicai.cn",
+  "dateModified": "2026-08-24",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "creator": {
+    "@type": "Organization",
+    "name": "光伏储能地图站",
+    "url": "https://solar.miyucaicai.cn"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "application/json",
+      "contentUrl": "https://solar.miyucaicai.cn/data/projects.json"
+    }
+  ],
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "项目总数",
+      "value": 994
     },
-    "distribution": [
-        {
-            "@type": "DataDownload",
-            "encodingFormat": "application/json",
-            "contentUrl": "https://solar.miyucaicai.cn/data/projects.json"
-        }
-    ],
-    "variableMeasured": [
-        {
-            "@type": "PropertyValue",
-            "name": "项目总数",
-            "value": 994
-        },
-        {
-            "@type": "PropertyValue",
-            "name": "光伏项目数",
-            "value": 600
-        },
-        {
-            "@type": "PropertyValue",
-            "name": "光伏装机容量",
-            "value": "48.6GW"
-        },
-        {
-            "@type": "PropertyValue",
-            "name": "储能项目数",
-            "value": 98
-        },
-        {
-            "@type": "PropertyValue",
-            "name": "储能装机规模",
-            "value": "18900GWh"
-        },
-        {
-            "@type": "PropertyValue",
-            "name": "光储一体项目数",
-            "value": 296
-        },
-        {
-            "@type": "PropertyValue",
-            "name": "招标数",
-            "value": 200
-        },
-        {
-            "@type": "PropertyValue",
-            "name": "中标数",
-            "value": 80
-        },
-        {
-            "@type": "PropertyValue",
-            "name": "招标总金额",
-            "value": "890.8亿元"
-        }
-    ],
-    "spatialCoverage": {
-        "@type": "Place",
-        "name": "中华人民共和国",
-        "geo": {
-            "@type": "GeoShape",
-            "box": "18.0 73.0 53.5 135.0"
-        }
+    {
+      "@type": "PropertyValue",
+      "name": "光伏项目数",
+      "value": 600
     },
-    "temporalCoverage": "2024-01-01/2026-08-23"
+    {
+      "@type": "PropertyValue",
+      "name": "光伏装机容量",
+      "value": "48.6GW"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "储能项目数",
+      "value": 98
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "储能装机规模",
+      "value": "18900GWh"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "光储一体项目数",
+      "value": 296
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "招标数",
+      "value": 200
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "中标数",
+      "value": 80
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "招标总金额",
+      "value": "890.8亿元"
+    }
+  ],
+  "spatialCoverage": {
+    "@type": "Place",
+    "name": "中华人民共和国",
+    "geo": {
+      "@type": "GeoShape",
+      "box": "18.0 73.0 53.5 135.0"
+    }
+  },
+  "temporalCoverage": "2024-01-01/2026-08-23"
 }
