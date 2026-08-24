@@ -14,7 +14,23 @@ export function SiteFooter() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-3">
-            {DATA_SOURCE_LINKS.map(s => (
+            <a
+              href="https://ai123.miyucaicai.cn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
+            >
+              🧠 知易AI
+            </a>
+            <a
+              href="https://github.com/anbeime/skill"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-amber-400 hover:text-amber-300 transition-colors font-medium"
+            >
+              ⭐ 技能商店
+            </a>
+            {DATA_SOURCE_LINKS.slice(0, 6).map(s => (
               <a
                 key={s.name}
                 href={s.url}
