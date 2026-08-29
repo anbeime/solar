@@ -1925,43 +1925,18 @@
         </div>
     </div>
 
-    <!-- 订阅入口区域 -->
+    <!-- 微信社群入口 -->
     <div class="subscribe-section">
-        <div class="subscribe-container">
+        <div class="subscribe-container" style="text-align:center;max-width:480px;">
             <div class="subscribe-header">
-                <span class="subscribe-badge">🔥 限时免费订阅</span>
-                <h2 class="subscribe-title">获取最新光伏储能行业动态</h2>
-                <p class="subscribe-desc">专业团队实时爬取整理 | 满足GEO标准 | 精美排版即开即用</p>
+                <span class="subscribe-badge">💬 加入行业交流群</span>
+                <h2 class="subscribe-title">扫码加微信，获取最新行业动态</h2>
+                <p class="subscribe-desc">光伏储能项目数据 · 招投标情报 · AI工具分享</p>
             </div>
-            <form class="subscribe-form" id="subscribeForm" onsubmit="handleSubscribe(event)">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="company">🏢 公司名称</label>
-                        <input type="text" id="company" name="company" placeholder="请输入公司名称" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone">📞 联系电话</label>
-                        <input type="tel" id="phone" name="phone" placeholder="请输入联系电话" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group full-width">
-                        <label for="email">📧 邮箱地址</label>
-                        <input type="email" id="email" name="email" placeholder="请输入邮箱地址" required>
-                    </div>
-                </div>
-                <div class="form-footer">
-                    <button type="submit" class="subscribe-btn" id="subscribeBtn">
-                        <span class="btn-text">立即免费订阅</span>
-                        <span class="btn-loading" style="display:none;">订阅中...</span>
-                    </button>
-                    <p class="subscribe-note">🔒 我们尊重您的隐私，不会向第三方透露您的信息</p>
-                </div>
-            </form>
-            <div class="subscribe-success" id="subscribeSuccess" style="display:none;">
-                <div class="success-icon">✅</div>
-                <h3>订阅成功！</h3>
-                <p>感谢您的信任，我们将定期发送最新行业动态到您的邮箱</p>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 0;">
+                <img src="/wechat-qr.jpg" alt="微信二维码" style="width:200px;height:200px;border-radius:16px;border:2px solid rgba(0,212,255,0.4);box-shadow:0 0 30px rgba(0,212,255,0.2);background:#fff;padding:8px;">
+                <p style="color:#8892b0;font-size:14px;margin:0;">📱 微信扫码添加，备注「光伏」拉你进群</p>
+                <p style="color:#5a6a8a;font-size:12px;margin:0;">🔒 尊重隐私，不发广告，不定期分享行业数据</p>
             </div>
         </div>
     </div>
@@ -2159,9 +2134,9 @@
         <div class="footer-left">
             <span class="footer-logo">PV ENERGY MAP</span>
             <div class="footer-links">
-                <a href="#">关于我们</a>
+                <a href="https://ai123.miyucaicai.cn" target="_blank">知易AI</a>
+                <a href="https://github.com/anbeime/skill" target="_blank">技能商店</a>
                 <a href="#">数据说明</a>
-                <a href="#">API接口</a>
                 <a href="#">联系我们</a>
             </div>
         </div>
