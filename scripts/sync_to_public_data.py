@@ -25,6 +25,25 @@ TYPE_MAP = {
 }
 
 
+def interleave_by_province(projects):
+    """省份轮转交错排序：避免按省份连续生成的数据在前端扎堆。
+    每个省份取一条轮询入列，同省内保持原顺序（update_date 新的在前由上游保证）。"""
+    from collections import OrderedDict, Counter
+    prov_count = Counter(p.get('province') or '未知' for p in projects)
+    # 按省份项目数降序排桶（装机大省打头），再轮转交错，避免单一省份扎堆
+    order = [prov for prov, _ in prov_count.most_common()]
+    buckets = OrderedDict((prov, []) for prov in order)
+    for p in projects:
+        buckets[p.get('province') or '未知'].append(p)
+    result = []
+    while any(buckets.values()):
+        for prov in list(buckets.keys()):
+            if buckets[prov]:
+                result.append(buckets[prov].pop(0))
+    return result
+
+
+
 def trim_province(p: str) -> str:
     if not p:
         return ''
@@ -96,7 +115,7 @@ def main():
     with open(src, 'r', encoding='utf-8') as f:
         raw = json.load(f)
     raw_projects = raw['projects'] if isinstance(raw, dict) else raw
-    projects = convert_projects(raw_projects)
+    projects = interleave_by_province(convert_projects(raw_projects))
     dst_p = os.path.join(ROOT, 'public', 'data', 'projects.json')
     with open(dst_p, 'w', encoding='utf-8') as f:
         json.dump(projects, f, ensure_ascii=False, separators=(',', ':'))

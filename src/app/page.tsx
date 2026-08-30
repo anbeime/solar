@@ -24,7 +24,7 @@ import {
   Eye,
   Bot,
   Shield,
-} from "lucide-react";
+  ArrowRight} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -191,27 +191,13 @@ const dcicCards = [
 ];
 
 export default function Home() {
-  const { projects, bidding, awards, stats, provinces, types, loading } =
+  const { projects, stats, loading } =
     useSiteData();
-  const [selectedProvince, setSelectedProvince] = useState("全部");
-  const [selectedType, setSelectedType] = useState("全部");
-  const [searchQuery, setSearchQuery] = useState("");
+  const { projects, stats, loading } =
+    useSiteData();
 
-  const filteredProjects = useMemo(
-    () =>
-      projects.filter((p) => {
-        const matchP =
-          selectedProvince === "全部" || p.province === selectedProvince;
-        const matchT = selectedType === "全部" || p.type === selectedType;
-        const matchS =
-          !searchQuery ||
-          p.name.includes(searchQuery) ||
-          p.province.includes(searchQuery) ||
-          p.company?.includes(searchQuery) ||
-          p.summary?.includes(searchQuery);
-        return matchP && matchT && matchS;
-      }),
-    [projects, selectedProvince, selectedType, searchQuery],
+  // 首页只展示最新 8 条项目预览，全量列表在 /projects
+  const previewProjects = useMemo(() => projects.slice(0, 8), [projects]);
   );
 
   const navStats: Record<string, string> = useMemo(
@@ -369,50 +355,21 @@ export default function Home() {
           <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <Building2 className="w-5 h-5 text-blue-600" />
             项目数据
+            <span className="text-xs font-normal text-slate-400">
+              共 {projects.length} 条
+            </span>
           </h2>
-          <span className="text-xs text-slate-400">
-            共 {filteredProjects.length} 条
-          </span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-2 mb-4">
-          <div className="relative flex-1 min-w-[180px]">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
-            <Input
-              placeholder="搜索项目名称、省份、公司..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 h-9 text-sm"
-            />
-          </div>
-          <Select value={selectedType} onValueChange={setSelectedType}>
-            <SelectTrigger className="w-24 h-9 text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {types.map((t) => (
-                <SelectItem key={t} value={t}>
-                  {t}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-            <SelectTrigger className="w-24 h-9 text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {provinces.map((p) => (
-                <SelectItem key={p} value={p}>
-                  {p}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <a
+            href="/projects"
+            className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline font-medium whitespace-nowrap"
+          >
+            查看全部
+            <ArrowRight className="w-3 h-3" />
+          </a>
         </div>
 
         <div className="space-y-3">
-          {filteredProjects.slice(0, 30).map((p) => (
+          {previewProjects.map((p) => (
             <Card
               key={p.id}
               className="hover:shadow-md transition-shadow border border-slate-200/80 shadow-sm"
@@ -489,7 +446,7 @@ export default function Home() {
               </CardContent>
             </Card>
           ))}
-          {filteredProjects.length === 0 && !loading && (
+          {!loading && previewProjects.length === 0 && (
             <Card className="border-0 shadow-sm">
               <CardContent className="p-8 text-center">
                 <Search className="w-8 h-8 text-slate-300 mx-auto mb-3" />
