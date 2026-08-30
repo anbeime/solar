@@ -4,27 +4,28 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import {
   MapPin,
-  FileText,
-  Trophy,
-  BarChart3,
-  Plug,
   BookOpen,
-  Sun,
-  Battery,
   Zap,
   TrendingUp,
   Building2,
   Clock,
   Search,
-  Activity,
   ExternalLink,
   Globe,
   Brain,
+  ArrowRight,
+  FileText,
+  Trophy,
+  BarChart3,
+  Plug,
+  Sun,
+  Battery,
+  Activity,
   LayoutDashboard,
   Eye,
   Bot,
   Shield,
-  ArrowRight} from "lucide-react";
+} from "lucide-react";
 import {
   Card,
   CardContent,
@@ -32,15 +33,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { useSiteData } from "@/hooks/use-data";
