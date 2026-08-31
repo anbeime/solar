@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import {
   MapPin,
@@ -39,7 +39,6 @@ import { SiteFooter } from "@/components/site-footer";
 import { useSiteData } from "@/hooks/use-data";
 import { getTypeStyle } from "@/lib/data";
 import { DATA_SOURCE_LINKS } from "@/lib/constants";
-import type { Project } from "@/lib/types";
 
 // ===== 品牌配置 =====
 const BRAND_NAME = "TOPGO SOLAR";
@@ -184,14 +183,10 @@ const dcicCards = [
 ];
 
 export default function Home() {
-  const { projects, stats, loading } =
-    useSiteData();
-  const { projects, stats, loading } =
-    useSiteData();
+  const { projects, stats, loading } = useSiteData();
 
   // 首页只展示最新 8 条项目预览，全量列表在 /projects
   const previewProjects = useMemo(() => projects.slice(0, 8), [projects]);
-  );
 
   const navStats: Record<string, string> = useMemo(
     () => ({
