@@ -4,7 +4,7 @@
   "name": "光伏储能项目数据库",
   "description": "全国光伏储能项目实时数据库，覆盖光伏备案、储能装机、招投标信息，每日自动更新",
   "url": "https://solar.miyucaicai.cn",
-  "dateModified": "2026-09-02",
+  "dateModified": "2026-09-03",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "creator": {
     "@type": "Organization",
