@@ -1,40 +1,32 @@
-# robots.txt for solar.miyucaicai.cn
-# Updated: 2026-08-31
+# solar.miyucaicai.cn - robots.txt
+# 最后更新: 2026-09-06
 
 User-agent: *
 Allow: /
-Disallow: /admin/
 Disallow: /api/
+Disallow: /admin/
 
-# AI Crawlers - Welcome
+# AI爬虫友好：允许主流AI爬虫抓取公开数据页面
 User-agent: GPTBot
 Allow: /
+Allow: /data/projects.json
+Allow: /data/bidding.json
+Disallow: /api/
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /data/projects.json
+Allow: /data/bidding.json
+Disallow: /api/
 
 User-agent: Google-Extended
-Allow: /
-
-User-agent: CCBot
-Allow: /
-
-User-agent: ChatGPT-User
 Allow: /
 
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: anthropic-ai
+User-agent: CCBot
 Allow: /
 
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: cohere-ai
-Allow: /
-
-# Knowledge snippets for AI
-# See: /seo/knowledge-snippets.html
-# See: /seo/structured-data.json
-# Updated: 2026-08-31
-# See: /llms.txt
-
+# sitemap
 Sitemap: https://solar.miyucaicai.cn/sitemap.xml

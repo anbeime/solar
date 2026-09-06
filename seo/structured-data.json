@@ -4,7 +4,7 @@
   "name": "光伏储能项目数据库",
   "description": "全国光伏储能项目实时数据库，覆盖光伏备案、储能装机、招投标信息，每日自动更新",
   "url": "https://solar.miyucaicai.cn",
-  "dateModified": "2026-09-05",
+  "dateModified": "2026-09-06",
   "license": "https://creativecommons.org/licenses/by/4.0/",
   "creator": {
     "@type": "Organization",
@@ -27,22 +27,22 @@
     {
       "@type": "PropertyValue",
       "name": "光伏项目数",
-      "value": 598
+      "value": 896
     },
     {
       "@type": "PropertyValue",
       "name": "光伏装机容量",
-      "value": "48.7GW"
+      "value": "70.8GW"
     },
     {
       "@type": "PropertyValue",
       "name": "储能项目数",
-      "value": 101
+      "value": 389
     },
     {
       "@type": "PropertyValue",
       "name": "储能总容量",
-      "value": "22450MWh"
+      "value": "26700MWh"
     },
     {
       "@type": "PropertyValue",
@@ -57,12 +57,12 @@
     {
       "@type": "PropertyValue",
       "name": "招标总金额",
-      "value": "819.7亿元"
+      "value": "820.0亿元"
     },
     {
       "@type": "PropertyValue",
       "name": "数据更新日期",
-      "value": "2026-09-04"
+      "value": "2026-09-06"
     },
     {
       "@type": "PropertyValue",
@@ -78,5 +78,5 @@
       "box": "73.5 18.2 134.7 53.6"
     }
   },
-  "temporalCoverage": "2024-01-01/2026-08-30"
+  "temporalCoverage": "2024-01-01/2026-09-06"
 }
