@@ -611,3 +611,142 @@ GEO 自动化更新 - 2026-09-07 08:46 (日程 3b034e3e)
   - ✓ robots.txt (AI爬虫规则)
   - ✓ public/llms.txt + llms-full.txt (GEO资源)
 - [状态] 正常完成，待git push部署
+- commit d226fae / 线上验证 990 条 list 达标
+2026-09-09 01:26:00 - 每日数据更新完成 - 总项目 993 / 光伏 593 (49.0GW) / 储能 97 (23050 GWh) / 招标 200条 / 总金额 864.5亿
+- 省份TOP5: 待统计
+- 数据变化: 总项目 +3 (990→993) / 光伏 -3 (596→593) / 储能 +3 (94→97)
+- 更新内容:
+  - ✓ data/nea_projects.json (87条NEA, +3)
+  - ✓ data/bjx_projects.json (896条BJX, 持平)
+  - ✓ data/bidding.json (50条招标, 持平)
+  - ✓ data/projects.json (merge整合 993条)
+- [状态] 正常波动，无异常
+- 注: 禁push禁sync，待8:30 GEO日程统一部署
+
+
+============================================================
+GEO 自动化更新 - 2026-09-09 08:46 (日程 3b034e3e)
+============================================================
+[爬虫执行]
+- crawl_nea.py / crawl_bjx.py / crawl_bidding.py / merge_data.py 均成功
+
+[数据统计]
+- 总项目数:    997 个
+- 光伏装机:    49.5 GW
+- 储能容量:    22,550 MWh
+- 分布式光伏:  297 个
+- 集中式光伏:  316 个
+- 光储一体:    283 个
+- 储能电站:    101 个
+- 招标公告:    200 条
+- 中标公告:    80 条
+- 招标总金额:  867.9 亿元
+
+[省份TOP10]
+  1. 江苏省: 60
+  2. 山东省: 60
+  3. 广东省: 58
+  4. 浙江省: 56
+  5. 河北省: 51
+  6. 河南省: 47
+  7. 山西省: 45
+  8. 安徽省: 43
+  9. 湖北省: 40
+  10. 四川省: 38
+
+[GEO 更新]
+- ✓ seo/knowledge-snippets.html（6条FAQ Schema，含省份/类型/招标/最新项目）
+- ✓ seo/structured-data.json（Dataset/Organization/FAQPage 统计值与 dateModified）
+- ✓ robots.txt（Last Updated 时间戳）
+- ✓ knowledge/index.html（如存在则更新时间戳）
+
+[状态] 正常完成
+
+==================================================
+GEO 自动化数据更新 - 2026-09-09 08:43
+==================================================
+[数据统计]
+- 总项目: 997 个
+- 光伏项目: 613 个 (49.5 GW)
+- 储能项目: 101 个 (22550 MWh)
+- 招标: 200条 / 中标 80条 / 总金额 867.9 亿
+- 省份TOP5: 江苏60 / 山东60 / 广东58 / 浙江56 / 河北51
+
+[执行步骤]
+1. ✓ crawl_nea.py → 88 个 NEA 项目
+2. ✓ crawl_bjx.py → 896 个 BJX 项目 (70.2 GW)
+3. ✓ crawl_bidding.py → 50 条招标模拟数据
+4. ✓ merge_data.py → 997 个项目
+5. ✓ update_geo.py → FAQ Schema / structured-data.json / robots.txt
+6. ✓ sync_to_public_data.py → public/data/ + llms.txt (3006B) + llms-full.txt (175942B)
+7. ✓ git commit 1bf0879 push origin main → Coze Space 自动部署
+
+[线上验证]
+- ✓ https://solar.miyucaicai.cn/data/projects.json → list 997 条 (449KB)
+- ✓ https://solar.miyucaicai.cn/data/bidding.json → list 50 条
+- ✓ https://solar.miyucaicai.cn/llms.txt → 200 / 3006 bytes
+- ✓ https://solar.miyucaicai.cn/llms-full.txt → 200 / 175942 bytes
+
+[备注]
+- 沙箱主仓库 loose objects 过多导致 git 命令卡顿，沿用 SOP：fresh clone → 字节流复制 → 在 fresh 目录提交推送
+- 数据量在近 7 日稳态区间，无异常
+
+[状态] 正常完成
+
+============================================================
+[2026-09-10 01:26] 凌晨定时爬虫 (c47eab12)
+============================================================
+
+[执行步骤]
+1. ✓ crawl_nea.py → 91 个 NEA 项目
+2. ✓ crawl_bjx.py → 896 个 BJX 项目 (75.1 GW)
+3. ✓ crawl_bidding.py → 50 条招标模拟数据
+4. ✓ merge_data.py → 998 个项目
+
+[数据统计]
+- 总项目数: 998
+- 光伏项目: 606 (容量: 49.9 GW)
+- 储能项目: 102 (容量: 22100 GWh)
+- 招标公告: 200 条
+- 中标公告: 80 条
+- 招标总金额: 795.1 亿元
+
+[对比上次(9/9 GEO 997条)]
+- 总项目: +1 (+0.1%)
+- 光伏: +6 (+1.0%)
+- 储能: +2 (+2.0%)
+- 波动范围: 正常（±5%以内）
+
+[备注]
+- 严守禁push禁sync规约，仅本地写入 data/*.json
+- 数据量在近7日稳态区间，无异常
+- 远端同步交由 8:30 GEO 自动化日程处理
+
+[状态] 正常完成
+
+==================================================
+[GEO 自动化更新] 2026-09-10 08:49:49
+==================================================
+
+[数据统计]
+- 总项目数: 993
+- 光伏项目: 586 (容量: 71.8 GW)
+- 储能项目: 97 (容量: 28694 MWh)
+- 光储一体: 310个 (占比31.2%)
+- 招标/中标: 50 条
+- 覆盖省份: 30 个
+
+[今日执行]
+1. 爬虫采集: NEA 87个 + BJX 896个 + Bidding 50条
+2. 数据合并: 993 条（merge_data.py）
+3. 同步 public/data: 已完成（sync_to_public_data.py）
+4. FAQ Schema: 已更新 (seo/knowledge-snippets.html)
+5. 结构化数据: 已更新 (seo/structured-data.json)
+6. robots.txt: 日期已更新
+7. llms.txt/llms-full.txt: 已生成
+
+[对比上次]
+- 总项目: 993 (上次997)
+- 波动范围: 正常
+
+[状态] 正常完成

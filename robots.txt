@@ -1,5 +1,5 @@
 # solar.miyucaicai.cn - robots.txt
-# 最后更新: 2026-09-08
+# 最后更新: 2026-09-10
 
 User-agent: *
 Allow: /
