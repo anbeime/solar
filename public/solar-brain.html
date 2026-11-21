@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>光储智脑 · 无人值班站长一体机</title>
+<style>
+  @page { size: A4; margin: 14mm 16mm; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; color: #1a2b22; font-size: 10.5pt; line-height: 1.55; }
+  .page { page-break-after: always; }
+  .page:last-child { page-break-after: auto; }
+
+  /* ---------- cover ---------- */
+  .cover { background: linear-gradient(150deg, #052e1b 0%, #0a4a2c 55%, #0d6b3f 100%); color: #fff; border-radius: 10px; padding: 34px 38px 30px; }
+  .cover .brand { font-size: 10pt; letter-spacing: 2px; opacity: .85; }
+  .cover h1 { font-size: 27pt; margin: 14px 0 6px; letter-spacing: 1px; }
+  .cover .sub { font-size: 13pt; opacity: .92; }
+  .cover .tagline { margin-top: 22px; font-size: 11.5pt; line-height: 1.8; opacity: .95; border-left: 3px solid #4ade80; padding-left: 12px; }
+  .cover .stats { display: flex; gap: 26px; margin-top: 26px; }
+  .cover .stats .st { flex: 1; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); border-radius: 8px; padding: 12px 14px; }
+  .cover .stats b { display: block; font-size: 16pt; color: #4ade80; }
+  .cover .stats span { font-size: 8.5pt; opacity: .8; }
+
+  h2 { font-size: 14pt; color: #0a4a2c; margin: 18px 0 8px; border-bottom: 2px solid #0d6b3f; padding-bottom: 4px; }
+  h3 { font-size: 11.5pt; color: #0d6b3f; margin: 10px 0 4px; }
+  p { margin: 4px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.5pt; }
+  th { background: #0a4a2c; color: #fff; padding: 6px 8px; text-align: left; font-weight: 600; }
+  td { border: 1px solid #cbd5cf; padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f2f8f4; }
+
+  .roles { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .role { width: calc(50% - 5px); border: 1.5px solid #0d6b3f; border-radius: 8px; padding: 10px 12px; }
+  .role h3 { margin: 0 0 4px; font-size: 11pt; }
+  .role .pri { float: right; font-size: 8pt; background: #0d6b3f; color: #fff; border-radius: 10px; padding: 1px 8px; }
+  .role p { font-size: 9pt; color: #3c5247; }
+
+  .note { background: #fff7e0; border: 1px solid #e6c860; border-radius: 6px; padding: 7px 10px; font-size: 9pt; color: #6b5312; margin-top: 8px; }
+  .grid2 { display: flex; gap: 14px; }
+  .grid2 > div { flex: 1; }
+  ul { margin: 4px 0 4px 18px; }
+  li { margin: 2px 0; }
+
+  .flow { display: flex; align-items: stretch; gap: 8px; margin: 10px 0; }
+  .flow .node { flex: 1; text-align: center; border-radius: 8px; padding: 10px 8px; color: #fff; }
+  .flow .node b { display: block; font-size: 11pt; }
+  .flow .node span { font-size: 8.5pt; opacity: .85; }
+  .flow .arr { align-self: center; color: #0d6b3f; font-weight: bold; font-size: 14pt; }
+  .n1 { background: #0d6b3f; } .n2 { background: #0a4a2c; } .n3 { background: #157a4d; }
+
+  .footer { margin-top: 16px; padding-top: 8px; border-top: 1px solid #cbd5cf; font-size: 8.5pt; color: #62726a; display: flex; justify-content: space-between; }
+  .hl { color: #0d6b3f; font-weight: bold; }
+  .price b { color: #0d6b3f; }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 ================= -->
+<div class="page">
+  <div class="cover">
+    <div class="brand">TOPGO SOLAR · 珠海安能宇新能源科技</div>
+    <h1>光储智脑 · 无人值班站长一体机</h1>
+    <div class="sub">光储充电站的 AI 运营官 —— 插电即用，数据不出站</div>
+    <div class="tagline">
+      一台装在站里的「值班站长」：<br>
+      会算钱（每日收益账本）· 会看家（设备健康值守）· 会读政策（充放电策略参谋）· 会拉客（充电用户经营）
+    </div>
+    <div class="stats">
+      <div class="st"><b>990</b><span>行业项目数据库（平台在线）</span></div>
+      <div class="st"><b>7 个</b><span>自研行业 AI 应用</span></div>
+      <div class="st"><b>3 端</b><span>平台 / 一体机 / 小程序闭环</span></div>
+      <div class="st"><b>¥999/月起</b><span>订阅制 · 硬件可租</span></div>
+    </div>
+  </div>
+
+  <h2>为什么光储充运营商需要它</h2>
+  <p>一个 50–100 万投入的充电站，老板每天只关心三件事：<span class="hl">今天赚了多少、哪根桩在亏钱</span>；<span class="hl">设备有没有在坏</span>；<span class="hl">电价政策变了，策略要不要跟着改</span>。这三件事今天靠 Excel、靠人跑现场、靠看不懂的文件——本机把三件事变成三个常开页面。</p>
+
+  <h2>四个岗位，一台机器</h2>
+  <div class="roles">
+    <div class="role"><span class="pri">优先级 1</span><h3>💰 财务室</h3><p>每日收益账本：峰谷套利明细、每根桩度电收益排名、回本进度条。老板每天打开的唯一页面，取代手算 Excel。</p></div>
+    <div class="role"><span class="pri">优先级 2</span><h3>🛠 值班室</h3><p>设备健康值守：桩/储能/逆变器状态监控、故障预警、告警推送、工单生成。替代值班员，月省 4,000–6,000 元人力。</p></div>
+    <div class="role"><span class="pri">优先级 3</span><h3>📜 参谋部</h3><p>政策月报：电价与竞价政策解读 → 「本月起充放电策略建议这样改」。每月 OTA 更新行业情报与知识库。</p></div>
+    <div class="role"><span class="pri">增值</span><h3>📣 经营台</h3><p>桩利用率分析、分时定价建议、小程序优惠券核销回流。让闲桩转起来。</p></div>
+  </div>
+  <div class="note">产品原则：AI 的价值必须可计量——本机按月汇报「上月帮你多赚多少元（附套利明细）+ 替你值了多少天班」。收益可视化是产品，AI 在账本背后。</div>
+
+  <div class="footer"><span>TOPGO SOLAR · 光储智脑一体机招商方案</span><span>第 1 / 3 页</span></div>
+</div>
+
+<!-- ================= PAGE 2 ================= -->
+<div class="page">
+  <h2>三端流量闭环：加盟当天即开业</h2>
+  <div class="flow">
+    <div class="node n1"><b>获客平台</b><span>solar.miyucaicai.cn<br>990 项目 / 招标 / 中标 / 充电桩查询</span></div>
+    <div class="arr">→</div>
+    <div class="node n2"><b>一体机运营</b><span>站内 AI 店长<br>账本 · 值守 · 政策 · 知识库</span></div>
+    <div class="arr">→</div>
+    <div class="node n3"><b>小程序 C 端</b><span>扫码充电<br>订单数据回流一体机</span></div>
+  </div>
+  <p style="font-size:9.5pt;color:#3c5247;">获客、运营、C 端回流三端一套：预装行业 AI 的电站大脑 + 在线获客平台 + 扫码充电小程序，硬件可租、按月订阅、持续 OTA 升级。</p>
+
+  <h2>SKU 与定价（对齐三档加盟政策）</h2>
+  <table class="price">
+    <tr><th>档位</th><th>适配客户</th><th>硬件形态</th><th>硬件价</th><th>月费</th></tr>
+    <tr><td><b>店长版</b></td><td>单站轻装合伙人</td><td>ARM NPU 低功耗主机（&lt;15W）</td><td>¥6,800 或 0 元押金租用</td><td><b>¥999/月</b></td></tr>
+    <tr><td><b>区域版</b></td><td>3–10 站区域服务商</td><td>高性能主机（64GB 统一内存级）</td><td>¥19,800</td><td><b>¥2,999/月</b></td></tr>
+    <tr><td><b>集团版</b></td><td>连锁 / 战略合作方</td><td>双机热备 + 私有网关</td><td>面议</td><td><b>¥8,999/月起</b></td></tr>
+  </table>
+  <p style="font-size:9pt;color:#3c5247;">月费含：四岗位软件订阅 + 云端大模型额度 + 每月行业知识/政策 OTA + 远程运维。增值模块（充电站优化调度、巡检缺陷检测、智能选址测算）按需加订；充电流水分润另按分润表结算。</p>
+
+  <h2>已就绪的行业资产</h2>
+  <table>
+    <tr><th>已就绪资产</th><th>状态</th></tr>
+    <tr><td>TOPGO SOLAR 数据平台（solar.miyucaicai.cn）</td><td>在线运行：990 项目 / 72.3GW 光伏 / 22.7GWh 储能 / 招标中标追踪</td></tr>
+    <tr><td>7 个自研行业 AI 应用（充电站优化 / 功率预测 / 充电桩布局选址 / 缺陷检测 / 数字孪生等）</td><td>平台已上线，平移进一体机</td></tr>
+    <tr><td>光伏储能智能体矩阵（设备监控工单 / 营销文案 / 热点榜单 / 知识问答）</td><td>自研 IP（Coze 全量导出），正在平移为机内技能</td></tr>
+    <tr><td>光储充行业内容流水线（每日深度文章自动生产）</td><td>每日运行，构成月度知识 OTA 护城河</td></tr>
+    <tr><td>扫码充电微信小程序（C 端）</td><td>自研，充电数据回流一体机</td></tr>
+    <tr><td>端侧 AI 硬件底座</td><td>X86 / Mac / 高通 ARM 三平台实测跑通（高通 AIPC 竞赛冠军技术栈）</td></tr>
+  </table>
+  <div class="note">交付节奏：店长版首期交付财务室 + 行业知识库 + 数据雷达；EMS 充放电调度引擎与桩/储能协议接入（OCPP / Modbus）随版本升级解锁。</div>
+
+  <div class="footer"><span>TOPGO SOLAR · 光储智脑一体机招商方案</span><span>第 2 / 3 页</span></div>
+</div>
+
+<!-- ================= PAGE 3 ================= -->
+<div class="page">
+  <h2>数据不出站：中小企业最在意的那条线</h2>
+  <div class="grid2">
+    <div>
+      <h3>本地优先架构</h3>
+      <ul>
+        <li>合同、电价、客户、订单数据全部留在站内主机</li>
+        <li>断网降级不瘫痪：本地规则引擎与账本照常运行</li>
+        <li>云端大模型仅处理脱敏后的通用任务（政策解读/文案）</li>
+        <li>数据主权归站长：换平台不清零，随时导出</li>
+      </ul>
+    </div>
+    <div>
+      <h3>为什么这件事值钱</h3>
+      <ul>
+        <li>中小企业上云 AI 的第一大顾虑就是数据外流</li>
+        <li>运营数据现在普遍锁在上游平台手里，换平台=清零</li>
+        <li>本机把数据主权还给站长——这是与纯云 SaaS 的根本区别</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>交付与上线流程</h2>
+  <table>
+    <tr><th>阶段</th><th>内容</th><th>时长</th></tr>
+    <tr><td>1. 选址测算</td><td>平台数据 + 智能选址测算器出投资回收报告</td><td>1 天</td></tr>
+    <tr><td>2. 硬件进场</td><td>一体机寄达，插电联网，开机自动激活</td><td>10 分钟</td></tr>
+    <tr><td>3. 数据接通</td><td>小程序订单 / 电价表 / 桩平台账号绑定</td><td>1 天</td></tr>
+    <tr><td>4. 账本上线</td><td>每日收益账本与回本进度条开始运转</td><td>次日</td></tr>
+    <tr><td>5. 持续增值</td><td>值守/参谋/经营模块与调度引擎随版本 OTA 解锁</td><td>持续</td></tr>
+  </table>
+
+  <h2>适合谁</h2>
+  <ul>
+    <li>手握 1–10 个充电站、想升级光储一体运营的加盟商与服务商</li>
+    <li>被上游平台锁死数据、想拿回数据主权的存量站主</li>
+    <li>计划进入光储充赛道、需要「开业即数字化」的新投资人</li>
+  </ul>
+
+  <div style="margin-top:18px; background:#052e1b; color:#fff; border-radius:10px; padding:18px 22px; display:flex; justify-content:space-between; align-items:center;">
+    <div>
+      <div style="font-size:13pt; font-weight:bold;">让每一座电站，都有一位不下班的站长。</div>
+      <div style="font-size:9pt; opacity:.8; margin-top:4px;">TOPGO SOLAR · 珠海安能宇新能源科技有限公司</div>
+    </div>
+    <div style="text-align:right; font-size:9.5pt; line-height:1.7;">
+      🌐 solar.miyucaicai.cn<br>
+      📧 anbeime@qq.com<br>
+      💬 加微信进群（见平台首页）
+    </div>
+  </div>
+
+  <div class="footer"><span>TOPGO SOLAR · 光储智脑一体机招商方案 · 2026-11</span><span>第 3 / 3 页</span></div>
+</div>
+
+</body>
+</html>

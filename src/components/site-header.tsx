@@ -6,6 +6,12 @@ import { usePathname } from 'next/navigation';
 import { Sun, Menu, X, Zap } from 'lucide-react';
 import { NAV_ITEMS } from '@/lib/constants';
 
+// 光储智脑招商页：在统一导航末尾追加站点级入口（NAV_ITEMS 定义保持不变）
+const SITE_NAV = [
+  ...NAV_ITEMS,
+  { label: "光储智脑", href: "/solar-brain", key: "solar-brain" as const },
+];
+
 interface SiteHeaderProps {
   title?: string;
 }
@@ -25,7 +31,7 @@ export function SiteHeader({ title = '光伏储能地图站' }: SiteHeaderProps)
         </Link>
 
         <nav className="hidden md:flex items-center gap-1 text-sm">
-          {NAV_ITEMS.map(item => {
+          {SITE_NAV.map(item => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             return (
               <Link
@@ -54,7 +60,7 @@ export function SiteHeader({ title = '光伏储能地图站' }: SiteHeaderProps)
 
       {mobileOpen && (
         <nav className="md:hidden border-t border-slate-100 bg-white px-4 py-2 space-y-0.5">
-          {NAV_ITEMS.map(item => {
+          {SITE_NAV.map(item => {
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             return (
               <Link

@@ -17,6 +17,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/solar-brain`,
+      lastModified: new Date("2026-11-21T00:00:00Z"),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/bidding`,
       lastModified: new Date(),
       changeFrequency: "daily",
